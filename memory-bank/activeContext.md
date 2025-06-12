@@ -1,9 +1,16 @@
 # Active Context - Price Checker Bot
 
 ## Current Work Focus
-Recently resolved a critical GitHub Actions deployment issue related to package dependency synchronization. The system is now fully operational and ready for production use.
+Recently resolved a critical TypeError in the web scraper that was causing the price checker to fail during product detection. The system is now fully operational and ready for production use.
 
 ## Recent Changes
+### TypeError Fix for className.includes (June 2025)
+- **Issue**: `TypeError: className.includes is not a function` causing scraper to fail during dynamic product container detection
+- **Root Cause**: `element.className` property can be undefined, null, or a non-string type (like DOMTokenList), but code was calling `.includes()` directly
+- **Resolution**: Added proper type checking to ensure className is converted to string before calling `.includes()` method
+- **Impact**: Scraper now handles all DOM element types safely and continues operation without crashing
+- **Files Modified**: `src/scraper.js` - Added type safety checks in two locations within the dynamic selector detection logic
+
 ### CSS Selector Fix for Web Scraping (December 2025)
 - **Issue**: GitHub Actions failing with "Waiting for selector `.product-tile` failed" timeout error
 - **Root Cause**: Holt Renfrew updated their website structure, changing CSS selectors from `.product-tile` to a different format

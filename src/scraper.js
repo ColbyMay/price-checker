@@ -23,9 +23,14 @@ async function scrapeProducts(url) {
 		console.log(`Navigating to: ${url}`);
 		await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
 		
+		// Wait a bit more for dynamic content to load
+		await new Promise(resolve => setTimeout(resolve, 3000));
+		
 		// Wait for products to load - try multiple possible selectors
 		let productSelector = null;
 		const possibleSelectors = [
+			'[class*="ProductTile_root"]',
+			'[class*="ProductTile"]',
 			'.product-tile',
 			'.product-card', 
 			'.product-item',
@@ -53,60 +58,175 @@ async function scrapeProducts(url) {
 		if (!productSelector) {
 			// If no standard selectors work, try to find any elements that might be product containers
 			console.log('No standard selectors found, searching for product containers...');
-			const foundSelector = await page.evaluate(() => {
-				// Look for elements that might contain product information
-				const potentialContainers = document.querySelectorAll('*');
-				const productContainers = [];
+			
+			// First, let's see what we can find on the page
+			const debugInfo = await page.evaluate(() => {
+				const allElements = document.querySelectorAll('*');
+				let elementsWithPrices = 0;
+				let elementsWithImages = 0;
+				let elementsWithLinks = 0;
+				let elementsWithProductClass = 0;
 				
-				for (const element of potentialContainers) {
+				for (const element of allElements) {
+					const textContent = element.textContent || '';
+					if (/\$\d+/.test(textContent)) elementsWithPrices++;
+					if (element.querySelector('img') || element.tagName === 'IMG') elementsWithImages++;
+					if (element.querySelector('a') || element.tagName === 'A') elementsWithLinks++;
+					
 					const className = element.className || '';
-					const hasProductClass = className.includes('product') || 
-										  className.includes('tile') || 
-										  className.includes('card') || 
-										  className.includes('item');
-					
-					// Check if element contains typical product info (price, brand, etc.)
-					const hasPrice = element.textContent && /\$\d+/.test(element.textContent);
-					const hasImage = element.querySelector('img');
-					const hasLink = element.querySelector('a');
-					
-					if (hasProductClass && hasPrice && hasImage && hasLink) {
-						productContainers.push(element);
+					const classNameStr = typeof className === 'string' ? className : String(className || '');
+					if (classNameStr.includes('product') || classNameStr.includes('tile') || classNameStr.includes('card') || classNameStr.includes('item')) {
+						elementsWithProductClass++;
 					}
 				}
 				
-				if (productContainers.length > 0) {
-					// Return the most common class name pattern
-					const firstContainer = productContainers[0];
-					const classes = firstContainer.className.split(' ');
-					for (const cls of classes) {
-						if (cls && document.querySelectorAll(`.${cls}`).length >= 2) {
-							return `.${cls}`;
+				return {
+					totalElements: allElements.length,
+					elementsWithPrices,
+					elementsWithImages,
+					elementsWithLinks,
+					elementsWithProductClass
+				};
+			});
+			
+			console.log('Page element analysis:', debugInfo);
+			
+			const foundSelector = await page.evaluate(() => {
+				// Much more aggressive approach - just find elements with prices first
+				const elementsWithPrices = [];
+				const allElements = document.querySelectorAll('*');
+				
+				// Step 1: Find ALL elements with prices
+				for (const element of allElements) {
+					const textContent = element.textContent || '';
+					const hasPrice = /\$\d+/.test(textContent);
+					
+					if (hasPrice) {
+						elementsWithPrices.push(element);
+					}
+				}
+				
+				// Return debug info
+				const debugInfo = {
+					totalElements: allElements.length,
+					elementsWithPrices: elementsWithPrices.length,
+					firstFewPriceElements: elementsWithPrices.slice(0, 5).map(el => ({
+						tagName: el.tagName,
+						className: typeof el.className === 'string' ? el.className : String(el.className || ''),
+						textContent: el.textContent ? el.textContent.substring(0, 100) : '',
+						hasImage: !!(el.querySelector('img') || el.tagName === 'IMG'),
+						hasLink: !!(el.querySelector('a') || el.tagName === 'A' || el.closest('a'))
+					}))
+				};
+				
+				// If we have price elements, try to find a good selector
+				if (elementsWithPrices.length > 0) {
+					// Try to find elements that also have images or links
+					const betterElements = [];
+					for (const element of elementsWithPrices) {
+						const hasImage = element.querySelector('img') || element.tagName === 'IMG';
+						const hasLink = element.querySelector('a') || element.tagName === 'A' || element.closest('a');
+						
+						if (hasImage || hasLink) {
+							betterElements.push(element);
+						}
+					}
+					
+					debugInfo.elementsWithPricesAndMedia = betterElements.length;
+					
+					if (betterElements.length > 0) {
+						// Use the first element to find a selector
+						const firstElement = betterElements[0];
+						const className = firstElement.className || '';
+						const classNameStr = typeof className === 'string' ? className : String(className || '');
+						
+						if (classNameStr) {
+							const classes = classNameStr.split(' ');
+							for (const cls of classes) {
+								// Look specifically for ProductTile classes or other valid CSS class names
+								if (cls && (/^ProductTile_/.test(cls) || /^[a-zA-Z_-][a-zA-Z0-9_-]*$/.test(cls))) {
+									try {
+										const matchingElements = document.querySelectorAll(`.${CSS.escape(cls)}`);
+										if (matchingElements.length >= 2 && matchingElements.length <= 100) {
+											debugInfo.selectedSelector = `.${cls}`;
+											debugInfo.selectedSelectorCount = matchingElements.length;
+											return { selector: `.${CSS.escape(cls)}`, debugInfo };
+										}
+									} catch (error) {
+										continue;
+									}
+								}
+							}
+						}
+						
+						// If no class works, try tag name
+						const tagName = firstElement.tagName.toLowerCase();
+						const tagElements = document.querySelectorAll(tagName);
+						if (tagElements.length >= 2 && tagElements.length <= 200) {
+							debugInfo.selectedSelector = tagName;
+							debugInfo.selectedSelectorCount = tagElements.length;
+							return { selector: tagName, debugInfo };
 						}
 					}
 				}
 				
-				return null;
+				return { selector: null, debugInfo };
 			});
 			
-			if (foundSelector) {
-				productSelector = foundSelector;
-				console.log(`Found products using dynamic selector: ${foundSelector}`);
+			console.log('Dynamic selector result:', foundSelector);
+			
+			if (foundSelector && foundSelector.selector) {
+				productSelector = foundSelector.selector;
+				console.log(`Found products using dynamic selector: ${foundSelector.selector}`);
+				console.log('Selector debug info:', foundSelector.debugInfo);
 			} else {
+				if (foundSelector && foundSelector.debugInfo) {
+					console.log('Failed to find selector, debug info:', foundSelector.debugInfo);
+				}
+				// Let's get some debugging info about the page
+				const pageInfo = await page.evaluate(() => {
+					const priceElements = document.querySelectorAll('*');
+					let priceCount = 0;
+					let imageCount = 0;
+					let linkCount = 0;
+					
+					for (const el of priceElements) {
+						if (el.textContent && /\$\d+/.test(el.textContent)) priceCount++;
+						if (el.tagName === 'IMG') imageCount++;
+						if (el.tagName === 'A') linkCount++;
+					}
+					
+					return {
+						title: document.title,
+						url: window.location.href,
+						priceElements: priceCount,
+						images: imageCount,
+						links: linkCount,
+						bodyText: document.body ? document.body.textContent.substring(0, 500) : 'No body'
+					};
+				});
+				
+				console.log('Page debugging info:', pageInfo);
 				throw new Error('Could not find any product containers on the page');
 			}
 		}
 		
-		// Extract product information
+		// Extract product information with debugging
 		const products = await page.evaluate((selector) => {
 			const productElements = document.querySelectorAll(selector);
 			const results = [];
 			
-			productElements.forEach(element => {
+			console.log(`Processing ${productElements.length} product elements`);
+			
+			productElements.forEach((element, index) => {
 				try {
+					if (index < 2) {
+						console.log(`Element ${index} HTML:`, element.outerHTML.substring(0, 300));
+					}
+					
 					// Extract product name - try multiple possible selectors
 					const nameSelectors = [
-						'.product-tile__name', '.product-name', '.name', '.title', 
+						'[class*="ProductInfo"]', '[class*="product-name"]', '.product-tile__name', '.product-name', '.name', '.title', 
 						'h3', 'h2', 'h4', '[data-name]', '.product-title'
 					];
 					let name = '';
@@ -114,6 +234,7 @@ async function scrapeProducts(url) {
 						const nameElement = element.querySelector(sel);
 						if (nameElement && nameElement.textContent.trim()) {
 							name = nameElement.textContent.trim();
+							if (index < 2) console.log(`Found name with selector ${sel}: ${name}`);
 							break;
 						}
 					}
@@ -142,40 +263,73 @@ async function scrapeProducts(url) {
 						}
 					}
 					
-					// Extract current price - try multiple possible selectors
-					const currentPriceSelectors = [
-						'.price-current', '.current-price', '.sale-price', '.price-sale',
-						'.price', '[data-price]', '.product-price'
-					];
+					// Extract prices - try Holt Renfrew specific selectors first
 					let currentPrice = '';
-					for (const sel of currentPriceSelectors) {
-						const priceElement = element.querySelector(sel);
-						if (priceElement && priceElement.textContent.trim()) {
-							currentPrice = priceElement.textContent.trim();
-							break;
+					let originalPrice = '';
+					
+					// Look for Holt Renfrew price structure: <div class="PriceRange_price__Oo2kz">
+					const priceContainer = element.querySelector('[class*="PriceRange_price"]');
+					if (priceContainer) {
+						if (index < 2) console.log(`Found price container:`, priceContainer.outerHTML);
+						
+						// Original price: <span class="PriceRange_price--original__PFbqY">$398</span>
+						const originalPriceElement = priceContainer.querySelector('[class*="price--original"]');
+						if (originalPriceElement) {
+							originalPrice = originalPriceElement.textContent.trim();
+							if (index < 2) console.log(`Found original price: ${originalPrice}`);
+						}
+						
+						// Current price: <span>$159</span> (the span without a specific class)
+						const spans = priceContainer.querySelectorAll('span');
+						for (const span of spans) {
+							if (!span.className || !span.className.includes('original')) {
+								const text = span.textContent.trim();
+								if (/\$\d+/.test(text)) {
+									currentPrice = text;
+									if (index < 2) console.log(`Found current price: ${currentPrice}`);
+									break;
+								}
+							}
 						}
 					}
 					
-					// If no specific price element, look for price patterns in text
+					// Fallback to generic price selectors
+					if (!currentPrice) {
+						const currentPriceSelectors = [
+							'.price-current', '.current-price', '.sale-price', '.price-sale',
+							'.price', '[data-price]', '.product-price'
+						];
+						for (const sel of currentPriceSelectors) {
+							const priceElement = element.querySelector(sel);
+							if (priceElement && priceElement.textContent.trim()) {
+								currentPrice = priceElement.textContent.trim();
+								break;
+							}
+						}
+					}
+					
+					// If still no current price, look for price patterns in text
 					if (!currentPrice) {
 						const priceMatch = element.textContent.match(/\$\d+(?:,\d{3})*(?:\.\d{2})?/g);
 						if (priceMatch && priceMatch.length > 0) {
 							// If multiple prices, the last one is usually the current price
 							currentPrice = priceMatch[priceMatch.length - 1];
+							if (index < 2) console.log(`Found price via regex: ${currentPrice}`);
 						}
 					}
 					
-					// Extract original price - try multiple possible selectors
-					const originalPriceSelectors = [
-						'.price-original', '.original-price', '.was-price', '.price-was',
-						'.price-regular', '[data-original-price]', '.regular-price'
-					];
-					let originalPrice = '';
-					for (const sel of originalPriceSelectors) {
-						const priceElement = element.querySelector(sel);
-						if (priceElement && priceElement.textContent.trim()) {
-							originalPrice = priceElement.textContent.trim();
-							break;
+					// Fallback for original price if not found above
+					if (!originalPrice) {
+						const originalPriceSelectors = [
+							'.price-original', '.original-price', '.was-price', '.price-was',
+							'.price-regular', '[data-original-price]', '.regular-price'
+						];
+						for (const sel of originalPriceSelectors) {
+							const priceElement = element.querySelector(sel);
+							if (priceElement && priceElement.textContent.trim()) {
+								originalPrice = priceElement.textContent.trim();
+								break;
+							}
 						}
 					}
 					
@@ -208,6 +362,17 @@ async function scrapeProducts(url) {
 					// Make sure image URL is absolute
 					if (imageUrl && !imageUrl.startsWith('http')) {
 						imageUrl = new URL(imageUrl, window.location.origin).href;
+					}
+					
+					if (index < 2) {
+						console.log(`Product ${index} extracted data:`, {
+							name: name || 'NO NAME',
+							brand: brand || 'NO BRAND',
+							currentPrice: currentPrice || 'NO CURRENT PRICE',
+							originalPrice: originalPrice || 'NO ORIGINAL PRICE',
+							productUrl: productUrl || 'NO URL',
+							imageUrl: imageUrl || 'NO IMAGE'
+						});
 					}
 					
 					if (name && currentPrice) {

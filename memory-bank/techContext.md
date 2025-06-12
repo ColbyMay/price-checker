@@ -69,14 +69,18 @@ DISCORD_TOKEN=your_discord_bot_token_here
 ```json
 {
   "website": {
-    "url": "https://www.holtrenfrew.com/en/sale",
-    "name": "Holt Renfrew"
+    "url": "https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale?sort=relevance&q=%3Adate-desc%3AstorefrontFacetCategories%3AWomensBags",
+    "name": "Holt Renfrew Sale - Women's Bags"
   },
   "monitoring": {
-    "frequency": "hourly",
+    "frequency": "0 * * * *",
     "minDiscountPercent": 50,
-    "categories": ["handbags", "bags", "purses"],
-    "designerBrands": ["Gucci", "Prada", "Louis Vuitton", ...]
+    "categories": ["handbag", "bag", "purse", "clutch", "tote"],
+    "designerBrands": [
+      "Gucci", "Louis Vuitton", "Chanel", "Prada", "Hermès", "Dior", 
+      "Saint Laurent", "Bottega Veneta", "Celine", "Balenciaga", 
+      "Givenchy", "Valentino", "Fendi", "Burberry", "Coach"
+    ]
   },
   "discord": {
     "enabled": true,
@@ -89,9 +93,11 @@ DISCORD_TOKEN=your_discord_bot_token_here
 
 #### Web Scraping Strategy
 - **Browser Automation**: Puppeteer with headless Chrome
+- **Dynamic Selector Detection**: Multiple fallback selectors for resilience to website changes
 - **Anti-Detection**: User agent spoofing, realistic timing
 - **Error Handling**: Timeout protection, graceful failures
 - **Resource Management**: Proper browser cleanup in finally blocks
+- **Adaptive Parsing**: Intelligent product container discovery when standard selectors fail
 
 #### Data Processing
 - **Price Parsing**: Regex-based extraction with fallback to zero
@@ -171,6 +177,18 @@ workflow_dispatch:
 - **Dependency Updates**: Both package.json and package-lock.json committed together
 - **Release Management**: No formal releases (continuous deployment)
 
+### Current Brand Configuration
+The system currently monitors 15 specific luxury brands:
+- **High-End Luxury**: Gucci, Louis Vuitton, Chanel, Prada, Hermès, Dior
+- **Contemporary Luxury**: Saint Laurent, Bottega Veneta, Celine, Balenciaga
+- **Established Luxury**: Givenchy, Valentino, Fendi, Burberry, Coach
+
+**Brand Filtering Logic**:
+- Products must match one of the designated brands exactly
+- Brand names are extracted from website and compared to the configured list
+- Case-sensitive matching ensures accuracy
+- Easy to modify by updating the `designerBrands` array in config.json
+
 ### Future Technical Considerations
 
 #### Scalability
@@ -178,9 +196,11 @@ workflow_dispatch:
 - **Database Integration**: Optional persistence layer
 - **API Development**: REST endpoints for external integration
 - **Containerization**: Docker support for local development
+- **Brand Expansion**: Easy to add more brands or create brand categories
 
 #### Monitoring
 - **Health Checks**: System status monitoring
 - **Performance Metrics**: Execution time and success rates
 - **Error Tracking**: Centralized error reporting
 - **Alerting**: Enhanced notification system
+- **Brand Performance**: Track which brands generate most alerts

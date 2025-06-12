@@ -68,17 +68,21 @@
 - ✅ Comprehensive error handling and logging
 - ✅ Local development and testing capabilities
 - ✅ Package dependency synchronization resolved (December 2025)
+- ✅ CSS selector issues fixed with dynamic detection (December 2025)
+- ✅ Adaptive web scraping resilient to website changes
 
 ### Recent Issues Resolved
+- **CSS Selector Fix**: Fixed GitHub Actions timeout errors by implementing dynamic selector detection for web scraping
+- **Website Structure Adaptation**: Updated scraper to handle Holt Renfrew's changed CSS selectors with multiple fallback strategies
 - **Package Lock Synchronization**: Fixed GitHub Actions `npm ci` failures due to package-lock.json being out of sync with package.json
 - **Puppeteer Dependencies**: Resolved version conflicts with puppeteer and related packages
 - **Missing Dependencies**: Added missing packages (semver, zod, bare-fs) to lock file
 
 ### Known Limitations
-- **Website Dependency**: CSS selectors may need updates if Holt Renfrew changes their site structure
 - **Rate Limiting**: Limited to 10 notifications per run to prevent spam
 - **Single Website**: Currently hardcoded for Holt Renfrew (though easily extensible)
 - **No Persistence**: No database to track previously seen items (stateless by design)
+- **Brand Filtering**: Currently monitors 15 specific luxury brands only (configurable in config.json)
 
 ## 🚀 Ready for Production
 
@@ -91,6 +95,12 @@ The system is production-ready with the following characteristics:
 - **Dependency Management**: Package-lock.json properly synchronized for reproducible builds
 
 ## 🔧 Recent Maintenance (December 2025)
+
+### CSS Selector and Web Scraping Fix
+- **Problem**: GitHub Actions failing with "Waiting for selector `.product-tile` failed" timeout error
+- **Solution**: Implemented dynamic selector detection with 8 fallback selectors and intelligent product container discovery
+- **Impact**: Scraper now adapts automatically to website structure changes
+- **Enhancement**: Updated URL to specifically target women's bags section for better filtering
 
 ### Package Dependency Resolution
 - **Problem**: GitHub Actions failing with `npm ci` due to package-lock.json synchronization issues
