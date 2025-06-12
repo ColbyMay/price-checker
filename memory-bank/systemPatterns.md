@@ -1,82 +1,101 @@
-# System Patterns: Price Checker App
+# System Patterns - Price Checker Bot
 
-## 1. System Architecture Overview
+## Architecture Overview
+The system follows a modular, pipeline-based architecture with clear separation of concerns:
 
-The application will consist of two main parts:
-1.  **Node.js Script (`price-checker.js` or similar):** This script will contain the core logic for:
-    *   Fetching the content of the target URL.
-    *   Parsing the HTML to extract product details (name, prices).
-    *   Calculating discount percentages.
-    *   Filtering products based on the desired discount.
-    *   Composing and sending a Discord notification.
-2.  **GitHub Actions Workflow (`.github/workflows/main.yml` or similar):** This YAML file will define:
-    *   The schedule (cron expression) for running the script.
-    *   The environment setup (Node.js version).
-    *   Steps to checkout the code, install dependencies, and execute the Node.js script.
-    *   Management of environment variables/secrets for configuration (URL, discount threshold, Discord Bot Token, Discord Channel ID).
-
-```mermaid
-graph TD
-    A[GitHub Scheduler (Cron)] --> B{GitHub Actions Runner};
-    B --> C[Checkout Code];
-    C --> D[Setup Node.js];
-    D --> E[Install Dependencies e.g., Axios, Cheerio, discord.js];
-    E --> F[Run price-checker.js Script];
-    F -- Fetches HTML --> G[(Target URL)];
-    F -- Parses Data --> H{Product Data Extraction};
-    H -- Filters Products --> I{Discount Calculation & Filtering};
-    I -- Sends Message --> J[Discord API via discord.js];
-    J -- Delivers Message --> K[(User's Discord Channel)];
-
-    subgraph Node.js Script
-        direction LR
-        G
-        H
-        I
-        J
-    end
+```
+GitHub Actions → Scraper → Filter → Discord → Cleanup
 ```
 
-## 2. Key Technical Decisions
+## Core Components
 
-*   **Language:** Node.js (JavaScript) - As per user request. Suitable for I/O-bound tasks like web scraping and API interactions.
-*   **Scheduling:** GitHub Actions - As per user request. Provides a free and convenient way to run scheduled tasks without dedicated server infrastructure.
-*   **Web Scraping:**
-    *   **HTTP Client:** `axios` or Node.js built-in `https` module for fetching the webpage. `axios` is generally more user-friendly.
-    *   **HTML Parsing:** `cheerio` for server-side HTML parsing and manipulation, offering a jQuery-like API. This is generally robust for static or server-rendered pages.
-    *   **Alternative for Dynamic Content:** If the target site heavily relies on JavaScript to render content, `puppeteer` or `playwright` might be necessary. However, these are heavier dependencies and more complex to run in a typical GitHub Actions environment (though possible). For a "super basic" app, `cheerio` is the preferred starting point. We will assume static content initially.
-*   **Discord Notifications:**
-    *   **Library:** `discord.js` is a powerful Node.js module that allows direct interaction with the Discord API.
-    *   **Authentication:** Requires a Discord Bot Token.
-    *   **Target:** Sends messages to a specific Discord Channel ID.
-*   **Configuration Management:**
-    *   Environment variables managed via GitHub Actions Secrets (for sensitive data like Discord Bot Token, Discord Channel ID, Target URL, Discount Percentage).
-    *   `process.env.VARIABLE_NAME` in Node.js to access these.
+### 1. Web Scraper (`src/scraper.js`)
+- **Pattern**: Puppeteer-based headless browser automation
+- **Responsibility**: Extract product data from target website
+- **Key Functions**:
+  - `scrapeProducts()`: Main scraping orchestrator
+  - `parsePrice()`: Normalize price strings to numeric values
+  - `calculateDiscount()`: Compute discount percentages
+- **Error Handling**: Browser cleanup in finally blocks, timeout protection
+- **Anti-Detection**: User agent spoofing, network idle waiting
 
-## 3. Data Flow
+### 2. Product Filter (`src/filter.js`)
+- **Pattern**: Rule-based filtering with configurable criteria
+- **Responsibility**: Identify qualifying products based on business rules
+- **Key Logic**:
+  - Handbag category matching (keyword-based)
+  - Designer brand recognition (brand list matching)
+  - Discount threshold validation
+  - Priority sorting (discount % → brand name)
+- **Extensibility**: Easy to add new filtering criteria
 
-1.  GitHub Actions cron job triggers the workflow.
-2.  The workflow sets up the Node.js environment and runs the `price-checker.js` script.
-3.  The script reads configuration (Target URL, Discount %, Discord Bot Token, Discord Channel ID) from environment variables.
-4.  The script makes an HTTP GET request to the Target URL.
-5.  The HTML response is parsed using `cheerio`.
-6.  Relevant product data (name, current price, original price) is extracted based on predefined CSS selectors.
-    *   *Initial Challenge:* These selectors will be specific to the Target URL and will need to be determined by inspecting the website's HTML structure. This is the most fragile part of any scraper.
-7.  For each product, the discount percentage is calculated: `((originalPrice - currentPrice) / originalPrice) * 100`.
-8.  Products meeting the minimum discount threshold are added to a list.
-9.  If the list is not empty, `discord.js` is used to send a message containing the list of discounted products to the configured Discord Channel ID using the Bot Token.
-10. The script logs its actions (e.g., "Scraping started," "X deals found," "Discord message sent").
+### 3. Discord Notifier (`src/discord.js`)
+- **Pattern**: Class-based service with connection lifecycle management
+- **Responsibility**: Send formatted notifications to Discord channels
+- **Key Features**:
+  - Rich embed formatting with product images
+  - Rate limiting protection (1s delays between messages)
+  - Graceful degradation (max 10 alerts per run)
+  - Connection state management
+- **Error Recovery**: Isolated error handling per notification
 
-## 4. Error Handling and Resilience
+### 4. Main Orchestrator (`src/index.js`)
+- **Pattern**: Pipeline orchestration with comprehensive error handling
+- **Responsibility**: Coordinate all components and manage execution flow
+- **Key Patterns**:
+  - Configuration loading from JSON
+  - Environment variable integration
+  - Graceful shutdown handling
+  - Discord connection lifecycle management
+  - Comprehensive logging
 
-*   **Network Errors:** Implement try-catch blocks for HTTP requests. Retry mechanisms could be added but might be overkill for a basic version.
-*   **Parsing Errors:** If website structure changes, selectors might fail. The script should handle cases where expected data is not found (e.g., log a warning, skip the product).
-*   **Discord Message Sending Errors:** Log any errors from the Discord API (e.g., invalid token, incorrect channel ID, permissions issues).
-*   **GitHub Actions Logs:** Standard output and errors from the script will be captured in GitHub Actions logs, which will be the primary way to debug issues.
+## Configuration System
+- **Pattern**: JSON-based configuration with environment variable overrides
+- **Structure**:
+  ```json
+  {
+    "website": { "url", "name" },
+    "monitoring": { "frequency", "minDiscountPercent", "categories", "designerBrands" },
+    "discord": { "enabled", "channelName" }
+  }
+  ```
+- **Flexibility**: Easy to modify without code changes
 
-## 5. Key Patterns
+## GitHub Actions Integration
+- **Pattern**: Scheduled serverless execution
+- **Workflow**: `.github/workflows/price-checker.yml`
+- **Features**:
+  - Cron-based scheduling (hourly)
+  - Manual trigger capability
+  - Secret management for Discord token
+  - Artifact upload on failure
+  - Node.js environment setup with caching
 
-*   **Environment-Driven Configuration:** Rely on environment variables for all configurable aspects, making it easy to adapt in GitHub Actions.
-*   **Selector-Based Scraping:** Use CSS selectors to identify and extract data. This is common but requires maintenance if the target site changes.
-*   **Scheduled Task:** The core logic is designed to be run as an atomic, scheduled operation.
-*   **Fail-Fast/Log:** If critical errors occur (e.g., cannot fetch URL, cannot send Discord message), log the error and exit.
+## Error Handling Strategy
+1. **Graceful Degradation**: Continue operation when non-critical components fail
+2. **Comprehensive Logging**: Detailed console output for debugging
+3. **Discord Error Notifications**: Alert users when system fails
+4. **Resource Cleanup**: Always close browser/Discord connections
+5. **Exit Code Management**: Proper exit codes for GitHub Actions
+
+## Testing Architecture
+- **Pattern**: Modular test suite with network test isolation
+- **Components**:
+  - Configuration validation
+  - Price parsing logic
+  - Product filtering rules
+  - Discord connection (without sending)
+  - Optional web scraping (with warnings)
+- **CI Integration**: Skip network tests in automated environments
+
+## Scalability Considerations
+- **Rate Limiting**: Built-in delays to avoid overwhelming target sites
+- **Resource Management**: Browser instances properly cleaned up
+- **Notification Limits**: Max 10 alerts per run to prevent spam
+- **Stateless Design**: No persistent storage requirements
+
+## Security Patterns
+- **Secret Management**: Discord token via GitHub Secrets
+- **Environment Isolation**: Local .env for development, secrets for production
+- **Input Validation**: Price parsing with fallback to zero
+- **Error Information**: Sanitized error messages in Discord notifications

@@ -1,0 +1,20 @@
+{
+	"website": {
+		"url": "https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale",
+		"name": "Holt Renfrew Sale"
+	},
+	"monitoring": {
+		"frequency": "0 * * * *",
+		"minDiscountPercent": 50,
+		"categories": ["handbag", "bag", "purse", "clutch", "tote"],
+		"designerBrands": [
+			"Gucci", "Louis Vuitton", "Chanel", "Prada", "Hermès", "Dior", 
+			"Saint Laurent", "Bottega Veneta", "Celine", "Balenciaga", 
+			"Givenchy", "Valentino", "Fendi", "Burberry", "Coach"
+		]
+	},
+	"discord": {
+		"enabled": true,
+		"channelName": "price-alerts"
+	}
+}
