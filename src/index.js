@@ -98,9 +98,24 @@ async function runPriceCheck() {
 			console.log('No products matched the filtering criteria');
 			
 			if (discordNotifier) {
+				// Create a summary of what was found
+				const brandsSeen = [...new Set(allProducts.map(p => p.brand).filter(b => b))];
+				const topBrands = brandsSeen.slice(0, 5); // Show top 5 brands
+				const remainingCount = brandsSeen.length - 5;
+				
+				let brandsText = topBrands.join(', ');
+				if (remainingCount > 0) {
+					brandsText += ` and ${remainingCount} others`;
+				}
+				
+				const summaryMessage = `✅ **Price Check Summary**\n` +
+					`📦 Found **${allProducts.length} products** from brands like: ${brandsText}\n` +
+					`🎯 None meet your **${CONFIG.monitoring.minDiscountPercent}% discount** threshold\n` +
+					`⏰ Next check in 1 hour`;
+				
 				await discordNotifier.sendStatusMessage(
 					CONFIG.discord.channelName,
-					`✅ Price check completed. Found ${allProducts.length} products but none matched your criteria.`
+					summaryMessage
 				);
 			}
 			
