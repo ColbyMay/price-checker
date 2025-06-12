@@ -3,7 +3,7 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const { scrapeProducts } = require('./scraper');
-const { filterProducts, sortProductsByPriority } = require('./filter');
+const { filterProducts, categorizeProducts, sortProductsByPriority } = require('./filter');
 const DiscordNotifier = require('./discord');
 
 // Global configuration object
@@ -82,109 +82,119 @@ async function runPriceCheck() {
 			console.log('No products found during scraping');
 			
 			if (discordNotifier) {
-				await discordNotifier.sendStatusMessage(
-					CONFIG.discord.channelName,
-					'⚠️ Price check completed but no products were found. The website might be down or the scraper needs updating.'
+				await discordNotifier.sendSummaryMessage(
+					CONFIG.discord.summaryChannelName,
+					'⚠️ **Hourly Summary** - No products found. The website might be down or the scraper needs updating.'
 				);
 			}
 			
 			return;
 		}
 		
-		// Filter products based on criteria
-		const qualifyingProducts = filterProducts(allProducts, CONFIG);
+		// Categorize products into high-value alerts and summary items
+		const { highValueAlerts, summaryItems } = categorizeProducts(allProducts, CONFIG);
 		
-		if (qualifyingProducts.length === 0) {
-			console.log('No products matched the filtering criteria');
+		// Log results
+		console.log('=== Product Categorization Results ===');
+		console.log(`High-value alerts (${CONFIG.monitoring.minDiscountPercent}%+): ${highValueAlerts.length}`);
+		console.log(`Summary items (lower discounts): ${summaryItems.length}`);
+		
+		if (highValueAlerts.length > 0) {
+			console.log('\n=== High-Value Alerts ===');
+			highValueAlerts.forEach((product, index) => {
+				console.log(`${index + 1}. ${product.brand} - ${product.name}`);
+				console.log(`   Price: ${product.currentPrice} (${product.discountPercent}% off)`);
+				console.log(`   Reason: ${product.matchReason}`);
+				console.log(`   URL: ${product.productUrl}`);
+				console.log('');
+			});
+		}
+		
+		// Send Discord notifications
+		if (discordNotifier) {
+			// Handle high-value alerts (70%+ discounts) - send to price-alerts with @here
+			if (highValueAlerts.length > 0) {
+				console.log(`Sending ${highValueAlerts.length} high-value alerts to #${CONFIG.discord.alertChannelName}`);
+				
+				// Send alert message with @here mention
+				const alertMessage = `🚨 **High-Value Deals Found!**\n` +
+					`Found **${highValueAlerts.length} item${highValueAlerts.length > 1 ? 's' : ''}** with ${CONFIG.monitoring.minDiscountPercent}%+ discounts!`;
+				
+				await discordNotifier.sendAlertMessage(
+					CONFIG.discord.alertChannelName,
+					alertMessage
+				);
+				
+				// Send detailed product alerts to the alerts channel (with @here mentions)
+				await discordNotifier.sendPriceAlerts(
+					highValueAlerts,
+					CONFIG.discord.alertChannelName,
+					CONFIG.website.name,
+					false // Not silent - include @here mentions
+				);
+			}
 			
-			if (discordNotifier) {
-				// Create a summary of what was found
-				const brandsSeen = [...new Set(allProducts.map(p => p.brand).filter(b => b && b.length < 50))]; // Filter out long/messy brand names
+			// Always send hourly summary to hourly-summaries channel (silent)
+			const totalRelevantItems = highValueAlerts.length + summaryItems.length;
+			
+			if (totalRelevantItems === 0) {
+				// No relevant items found
+				const brandsSeen = [...new Set(allProducts.map(p => p.brand).filter(b => b && b.length < 50))];
 				const cleanBrands = brandsSeen
-					.map(brand => {
-						// Clean up brand names - remove prices and extra text
-						return brand.replace(/\$\d+.*$/, '').trim(); // Remove anything after a price
-					})
-					.filter(brand => brand && brand.length > 1 && brand.length < 30) // Keep reasonable length brands
-					.slice(0, 5); // Show top 5 brands
+					.map(brand => brand.replace(/\$\d+.*$/, '').trim())
+					.filter(brand => brand && brand.length > 1 && brand.length < 30)
+					.slice(0, 5);
 				
 				const remainingCount = Math.max(0, brandsSeen.length - 5);
-				
 				let brandsText = cleanBrands.join(', ');
 				if (remainingCount > 0) {
 					brandsText += ` and ${remainingCount} others`;
 				}
 				
-				// Show top 10 deals sorted by discount percentage
-				const productsWithDiscounts = allProducts.map(p => {
-					const discount = require('./scraper').calculateDiscount(p.originalPrice, p.currentPrice);
-					return { ...p, discountPercent: discount };
-				}).filter(p => p.discountPercent > 0); // Only include items with valid discounts
+				const summaryMessage = `📊 **Hourly Summary**\n` +
+					`📦 Found **${allProducts.length} products** from brands like: ${brandsText}\n` +
+					`🎯 None meet your criteria (${CONFIG.monitoring.minDiscountPercent}%+ discount + designer/handbag)\n` +
+					`⏰ Next check in 1 hour`;
 				
-				// Remove duplicates based on name and price
-				const uniqueProducts = [];
-				const seen = new Set();
-				for (const product of productsWithDiscounts) {
-					const key = `${product.name}-${product.currentPrice}-${product.originalPrice}`;
-					if (!seen.has(key)) {
-						seen.add(key);
-						uniqueProducts.push(product);
+				await discordNotifier.sendSummaryMessage(
+					CONFIG.discord.summaryChannelName,
+					summaryMessage
+				);
+			} else {
+				// Create summary with both high-value and lower-discount items
+				let summaryMessage = `📊 **Hourly Summary**\n` +
+					`📦 Found **${allProducts.length} total products**\n`;
+				
+				if (highValueAlerts.length > 0) {
+					summaryMessage += `🚨 **${highValueAlerts.length} high-value alert${highValueAlerts.length > 1 ? 's' : ''}** (${CONFIG.monitoring.minDiscountPercent}%+) → sent to #${CONFIG.discord.alertChannelName}\n`;
+				}
+				
+				if (summaryItems.length > 0) {
+					summaryMessage += `📋 **${summaryItems.length} other deal${summaryItems.length > 1 ? 's' : ''}** (lower discounts):\n`;
+					
+					// Show top 5 summary items
+					const topSummaryItems = summaryItems.slice(0, 5);
+					topSummaryItems.forEach((product, index) => {
+						let cleanName = product.name.replace(new RegExp(`^${product.brand}\\s*`, 'i'), '').trim();
+						if (cleanName.length > 25) {
+							cleanName = cleanName.substring(0, 22) + '...';
+						}
+						const productLink = product.productUrl ? `[${cleanName}](${product.productUrl})` : cleanName;
+						summaryMessage += `${index + 1}. **${product.brand}** ${productLink} - ${product.discountPercent}% off\n`;
+					});
+					
+					if (summaryItems.length > 5) {
+						summaryMessage += `... and ${summaryItems.length - 5} more\n`;
 					}
 				}
 				
-				// Sort by highest discount first and take top 5 to keep message short
-				const topDealsData = uniqueProducts
-					.sort((a, b) => b.discountPercent - a.discountPercent)
-					.slice(0, 5);
+				summaryMessage += `⏰ Next check in 1 hour`;
 				
-				const topDeals = topDealsData.map((p, index) => {
-					// Clean up product name - remove brand prefix and keep it concise
-					let cleanName = p.name.replace(new RegExp(`^${p.brand}\\s*`, 'i'), '').trim();
-					if (cleanName.length > 30) {
-						cleanName = cleanName.substring(0, 27) + '...';
-					}
-					
-					// Create clickable link if URL is available
-					const productLink = p.productUrl ? `[${cleanName}](${p.productUrl})` : cleanName;
-					
-					return `${index + 1}. **${p.brand}** ${productLink}\n${p.discountPercent}% off (${p.originalPrice} → ${p.currentPrice})`;
-				}).join('\n');
-				
-				const summaryMessage = `✅ **Price Check Summary**\n` +
-					`📦 Found **${allProducts.length} products** from brands like: ${brandsText}\n\n` +
-					`**🔥 Top ${topDealsData.length} Deals (by % off):**\n${topDeals}\n\n` +
-					`🎯 None meet your **${CONFIG.monitoring.minDiscountPercent}% discount** threshold\n` +
-					`⏰ Next check in 1 hour`;
-				
-				await discordNotifier.sendStatusMessage(
-					CONFIG.discord.channelName,
+				await discordNotifier.sendSummaryMessage(
+					CONFIG.discord.summaryChannelName,
 					summaryMessage
 				);
 			}
-			
-			return;
-		}
-		
-		// Sort products by priority
-		const sortedProducts = sortProductsByPriority(qualifyingProducts);
-		
-		// Log results
-		console.log('=== Qualifying Products ===');
-		sortedProducts.forEach((product, index) => {
-			console.log(`${index + 1}. ${product.brand} - ${product.name}`);
-			console.log(`   Price: ${product.currentPrice} (${product.discountPercent}% off)`);
-			console.log(`   Reason: ${product.matchReason}`);
-			console.log(`   URL: ${product.productUrl}`);
-			console.log('');
-		});
-		
-		// Send Discord notifications
-		if (discordNotifier) {
-			await discordNotifier.sendPriceAlerts(
-				sortedProducts,
-				CONFIG.discord.channelName,
-				CONFIG.website.name
-			);
 		}
 		
 		console.log('=== Price Check Completed Successfully ===');
@@ -196,7 +206,7 @@ async function runPriceCheck() {
 		if (discordNotifier) {
 			try {
 				await discordNotifier.sendStatusMessage(
-					CONFIG.discord.channelName,
+					CONFIG.discord.summaryChannelName,
 					`❌ Price check failed: ${error.message}`
 				);
 			} catch (discordError) {

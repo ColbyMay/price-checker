@@ -62,8 +62,9 @@ class DiscordNotifier {
 	 * @param {Array} products - Array of filtered products
 	 * @param {string} channelName - Discord channel name to send messages to
 	 * @param {string} websiteName - Name of the website being monitored
+	 * @param {boolean} silent - Whether to send silent notifications (no @here mention)
 	 */
-	async sendPriceAlerts(products, channelName, websiteName) {
+	async sendPriceAlerts(products, channelName, websiteName, silent = false) {
 		if (!this.isReady) {
 			throw new Error('Discord bot is not ready');
 		}
@@ -143,16 +144,22 @@ class DiscordNotifier {
 				throw new Error(errorMsg);
 			}
 
-			console.log(`Sending ${products.length} price alerts to #${channelName}`);
+			console.log(`Sending ${products.length} price alerts to #${channelName}${silent ? ' (silent)' : ''}`);
 
 			// Send summary message first
 			const summaryEmbed = new EmbedBuilder()
 				.setTitle(`🛍️ ${websiteName} Price Alert`)
 				.setDescription(`Found ${products.length} qualifying item${products.length > 1 ? 's' : ''} on sale!`)
-				.setColor(0x00AE86)
+				.setColor(silent ? 0x808080 : 0x00AE86) // Gray for silent, green for normal
 				.setTimestamp();
 
-			await channel.send({ embeds: [summaryEmbed] });
+			// Send with or without @here mention based on silent flag
+			const messageOptions = { embeds: [summaryEmbed] };
+			if (!silent) {
+				messageOptions.content = '@here';
+			}
+
+			await channel.send(messageOptions);
 
 			// Send individual product alerts (limit to prevent spam)
 			const maxAlerts = Math.min(products.length, 10);
@@ -225,27 +232,49 @@ class DiscordNotifier {
 	}
 
 	/**
-	 * Sends a simple status message
-	 * @param {string} channelName - Discord channel name
-	 * @param {string} message - Status message to send
+	 * Sends a status message to the specified channel
+	 * @param {string} channelName - Name of the Discord channel
+	 * @param {string} message - Message to send
+	 * @param {boolean} mentionHere - Whether to add @here mention for alerts
 	 */
-	async sendStatusMessage(channelName, message) {
-		if (!this.isReady) {
-			console.log('Discord bot not ready, skipping status message');
-			return;
-		}
-
+	async sendStatusMessage(channelName, message, mentionHere = false) {
 		try {
 			const channel = this.client.channels.cache.find(ch => 
 				ch.name === channelName && ch.type === 0
 			);
-
-			if (channel) {
-				await channel.send(message);
+			
+			if (!channel) {
+				console.error(`Channel #${channelName} not found`);
+				return;
 			}
+			
+			// Add @here mention for alert messages
+			const finalMessage = mentionHere ? `@here ${message}` : message;
+			
+			await channel.send(finalMessage);
+			console.log(`Status message sent to #${channelName}${mentionHere ? ' with @here mention' : ''}`);
+			
 		} catch (error) {
 			console.error('Error sending status message:', error);
 		}
+	}
+
+	/**
+	 * Sends a summary message to the hourly summaries channel
+	 * @param {string} channelName - Name of the Discord channel
+	 * @param {string} message - Summary message to send
+	 */
+	async sendSummaryMessage(channelName, message) {
+		await this.sendStatusMessage(channelName, message, false);
+	}
+
+	/**
+	 * Sends an alert message to the alerts channel with @here mention
+	 * @param {string} channelName - Name of the Discord channel
+	 * @param {string} message - Alert message to send
+	 */
+	async sendAlertMessage(channelName, message) {
+		await this.sendStatusMessage(channelName, message, true);
 	}
 
 	/**

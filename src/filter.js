@@ -111,8 +111,55 @@ function sortProductsByPriority(products) {
 	});
 }
 
+/**
+ * Separates products into high-value alerts and summary items
+ * @param {Array} products - Array of all scraped products
+ * @param {Object} config - Configuration object with filtering criteria
+ * @returns {Object} Object with highValueAlerts and summaryItems arrays
+ */
+function categorizeProducts(products, config) {
+	console.log(`Categorizing ${products.length} products...`);
+	
+	const highValueAlerts = [];
+	const summaryItems = [];
+	
+	products.forEach(product => {
+		// Check if product matches handbag categories
+		const matchesCategory = isHandbagCategory(product, config.monitoring.categories);
+		
+		// Check if product is from a designer brand
+		const isDesignerBrand = checkDesignerBrand(product, config.monitoring.designerBrands);
+		
+		// Calculate discount percentage
+		const discountPercent = calculateDiscount(product.originalPrice, product.currentPrice);
+		
+		// Add calculated discount to product object
+		product.discountPercent = discountPercent;
+		product.matchReason = getMatchReason(matchesCategory, isDesignerBrand, discountPercent >= config.monitoring.minDiscountPercent);
+		
+		// Check if product qualifies for high-value alerts (70%+ discount AND category/brand match)
+		const meetsHighValueThreshold = discountPercent >= config.monitoring.minDiscountPercent;
+		const qualifiesForHighValue = meetsHighValueThreshold && (matchesCategory || isDesignerBrand);
+		
+		if (qualifiesForHighValue) {
+			highValueAlerts.push(product);
+		} else if (discountPercent > 0 && (matchesCategory || isDesignerBrand)) {
+			// Add to summary if it has any discount and matches category/brand (but doesn't meet high threshold)
+			summaryItems.push(product);
+		}
+	});
+	
+	console.log(`Found ${highValueAlerts.length} high-value alerts and ${summaryItems.length} summary items`);
+	
+	return {
+		highValueAlerts: sortProductsByPriority(highValueAlerts),
+		summaryItems: sortProductsByPriority(summaryItems)
+	};
+}
+
 module.exports = {
 	filterProducts,
+	categorizeProducts,
 	isHandbagCategory,
 	checkDesignerBrand,
 	sortProductsByPriority

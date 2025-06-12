@@ -1,9 +1,32 @@
 # Active Context - Price Checker Bot
 
 ## Current Work Focus
-Successfully implemented multi-category scraping approach for both shoes and bags. The system now scrapes two separate category searches (shoes: ~300 results, bags: ~150 results) and combines them for comprehensive coverage. This approach is much more effective than brand-specific URL filtering and finds actual products with real discounts.
+Successfully implemented two-tier Discord notification system with separate channels for high-value alerts and hourly summaries. The system now categorizes products into:
+1. **High-value alerts** (70%+ discounts) → sent to `price-alerts` channel with @here mentions
+2. **Summary notifications** (all other relevant items) → sent to `hourly-summaries` channel silently
+
+This provides better notification management where users only get pinged for truly significant deals while still receiving comprehensive hourly summaries of all activity.
 
 ## Recent Changes
+### ✅ IMPLEMENTED: Two-Tier Discord Notification System (December 2025)
+- **Issue**: User wanted to separate high-value alerts (70%+ discounts) from regular summaries to avoid notification fatigue
+- **Requirements**: 
+  - Real notifications with @here mentions only for 70%+ discount items → `price-alerts` channel
+  - Silent hourly summaries for all other activity → `hourly-summaries` channel
+- **Implementation**: 
+  - Updated `src/filter.js` with new `categorizeProducts()` function that separates products into two categories
+  - Modified `src/discord.js` to support silent notifications (no @here mentions) with gray color coding
+  - Restructured `src/index.js` to use the new categorization system
+  - Updated `config.json` to include both `alertChannelName` and `summaryChannelName` settings
+- **Key Features**:
+  - **High-Value Alerts**: 70%+ discounts sent to `price-alerts` with @here mentions and green embeds
+  - **Hourly Summaries**: All activity sent to `hourly-summaries` silently with comprehensive deal listings
+  - **Smart Categorization**: Products meeting discount + category/brand criteria go to alerts, others to summaries
+  - **Rich Summary Content**: Shows top deals, brand distribution, and links to products
+- **Impact**: Users now only get pinged for truly significant deals while maintaining full visibility of all activity
+- **Configuration**: Updated config.json with separate channel names for alerts and summaries
+- **Status**: ✅ FULLY IMPLEMENTED - Two-tier notification system working perfectly
+
 ### ✅ RESOLVED: Multi-Category Scraping Implementation (December 2025)
 - **Issue**: User wanted to include shoes in addition to handbags, and brand-specific URL filtering was returning empty results
 - **Root Cause**: Luxury brands rarely have items on sale, so filtering by specific brands in URLs resulted in no products found

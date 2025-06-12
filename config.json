@@ -19,6 +19,7 @@
 	},
 	"discord": {
 		"enabled": true,
-		"channelName": "price-alerts"
+		"alertChannelName": "price-alerts",
+		"summaryChannelName": "hourly-summaries"
 	}
 }
