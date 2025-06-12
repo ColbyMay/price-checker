@@ -21,10 +21,10 @@ function filterProducts(products, config) {
 		const discountPercent = calculateDiscount(product.originalPrice, product.currentPrice);
 		const meetsDiscountThreshold = discountPercent >= config.monitoring.minDiscountPercent;
 		
-		// Product qualifies if it's either:
-		// 1. A handbag from any brand, OR
-		// 2. A designer item with significant discount
-		const qualifies = matchesCategory || (isDesignerBrand && meetsDiscountThreshold);
+		// Product qualifies if it meets ALL criteria:
+		// 1. Must meet the minimum discount threshold, AND
+		// 2. Must be either a handbag OR a designer item
+		const qualifies = meetsDiscountThreshold && (matchesCategory || isDesignerBrand);
 		
 		if (qualifies) {
 			// Add calculated discount to product object

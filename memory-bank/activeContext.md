@@ -1,9 +1,18 @@
 # Active Context - Price Checker Bot
 
 ## Current Work Focus
-Successfully resolved the critical TypeError and achieved full system functionality. The scraper now successfully finds and extracts products from Holt Renfrew, but there's a new optimization opportunity: expanding coverage from 84 products to the full 1600+ available results.
+Successfully resolved the discount threshold filtering issue. The system now properly respects the configured minimum discount percentage (70%) for ALL items, ensuring only items with significant discounts are reported. Next opportunity: expanding coverage from 84 products to the full 1600+ available results.
 
 ## Recent Changes
+### ✅ RESOLVED: Discount Threshold Filtering Issue (December 2025)
+- **Issue**: User changed minimum discount to 70% in config.json but system was still showing 50% off items
+- **Root Cause**: Filtering logic had two separate qualification paths - handbag items qualified regardless of discount percentage, while designer items required discount threshold
+- **Resolution**: Updated filtering logic in `src/filter.js` to require ALL items meet the minimum discount threshold (70%) AND be either handbags or designer items
+- **Logic Change**: `matchesCategory || (isDesignerBrand && meetsDiscountThreshold)` → `meetsDiscountThreshold && (matchesCategory || isDesignerBrand)`
+- **Impact**: Now all items must meet the configured 70% minimum discount to qualify for notifications
+- **Testing**: Confirmed with test suite - 0/4 mock products qualified (all had <70% discounts)
+- **Status**: ✅ FULLY RESOLVED - System now respects configured discount threshold for all items
+
 ### ✅ RESOLVED: TypeError Fix for className.includes (June 2025)
 - **Issue**: `TypeError: className.includes is not a function` causing scraper to fail during dynamic product container detection
 - **Root Cause**: `element.className` property can be undefined, null, or a non-string type (like DOMTokenList), but code was calling `.includes()` directly
