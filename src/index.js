@@ -99,17 +99,60 @@ async function runPriceCheck() {
 			
 			if (discordNotifier) {
 				// Create a summary of what was found
-				const brandsSeen = [...new Set(allProducts.map(p => p.brand).filter(b => b))];
-				const topBrands = brandsSeen.slice(0, 5); // Show top 5 brands
-				const remainingCount = brandsSeen.length - 5;
+				const brandsSeen = [...new Set(allProducts.map(p => p.brand).filter(b => b && b.length < 50))]; // Filter out long/messy brand names
+				const cleanBrands = brandsSeen
+					.map(brand => {
+						// Clean up brand names - remove prices and extra text
+						return brand.replace(/\$\d+.*$/, '').trim(); // Remove anything after a price
+					})
+					.filter(brand => brand && brand.length > 1 && brand.length < 30) // Keep reasonable length brands
+					.slice(0, 5); // Show top 5 brands
 				
-				let brandsText = topBrands.join(', ');
+				const remainingCount = Math.max(0, brandsSeen.length - 5);
+				
+				let brandsText = cleanBrands.join(', ');
 				if (remainingCount > 0) {
 					brandsText += ` and ${remainingCount} others`;
 				}
 				
+				// Show top 10 deals sorted by discount percentage
+				const productsWithDiscounts = allProducts.map(p => {
+					const discount = require('./scraper').calculateDiscount(p.originalPrice, p.currentPrice);
+					return { ...p, discountPercent: discount };
+				}).filter(p => p.discountPercent > 0); // Only include items with valid discounts
+				
+				// Remove duplicates based on name and price
+				const uniqueProducts = [];
+				const seen = new Set();
+				for (const product of productsWithDiscounts) {
+					const key = `${product.name}-${product.currentPrice}-${product.originalPrice}`;
+					if (!seen.has(key)) {
+						seen.add(key);
+						uniqueProducts.push(product);
+					}
+				}
+				
+				// Sort by highest discount first and take top 5 to keep message short
+				const topDealsData = uniqueProducts
+					.sort((a, b) => b.discountPercent - a.discountPercent)
+					.slice(0, 5);
+				
+				const topDeals = topDealsData.map((p, index) => {
+					// Clean up product name - remove brand prefix and keep it concise
+					let cleanName = p.name.replace(new RegExp(`^${p.brand}\\s*`, 'i'), '').trim();
+					if (cleanName.length > 30) {
+						cleanName = cleanName.substring(0, 27) + '...';
+					}
+					
+					// Create clickable link if URL is available
+					const productLink = p.productUrl ? `[${cleanName}](${p.productUrl})` : cleanName;
+					
+					return `${index + 1}. **${p.brand}** ${productLink}\n${p.discountPercent}% off (${p.originalPrice} → ${p.currentPrice})`;
+				}).join('\n');
+				
 				const summaryMessage = `✅ **Price Check Summary**\n` +
-					`📦 Found **${allProducts.length} products** from brands like: ${brandsText}\n` +
+					`📦 Found **${allProducts.length} products** from brands like: ${brandsText}\n\n` +
+					`**🔥 Top ${topDealsData.length} Deals (by % off):**\n${topDeals}\n\n` +
 					`🎯 None meet your **${CONFIG.monitoring.minDiscountPercent}% discount** threshold\n` +
 					`⏰ Next check in 1 hour`;
 				

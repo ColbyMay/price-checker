@@ -558,12 +558,29 @@ async function scrapeProductsFromPage(page) {
 					}
 					
 					// If no specific brand element, try to extract from text content
-					if (!brand) {
-						const textContent = element.textContent;
-						const lines = textContent.split('\n').map(line => line.trim()).filter(line => line);
-						// Brand is often the first line or before the product name
-						if (lines.length > 0) {
-							brand = lines[0];
+					if (!brand && name) {
+						// Try to extract brand from the product name
+						// Look for common brand patterns at the beginning of the name
+						const brandPatterns = [
+							/^([A-Z][A-Z\s&]+?)\s+/,  // All caps brand names like "VINCE ", "COMME DES GARÇONS "
+							/^([A-Z][a-z]+)\s+/,      // Title case brand names like "Gucci ", "Coach "
+							/^([A-Z][A-Za-z\s&]+?)\s+[A-Z]/  // Mixed case ending before another capital
+						];
+						
+						for (const pattern of brandPatterns) {
+							const match = name.match(pattern);
+							if (match) {
+								brand = match[1].trim();
+								break;
+							}
+						}
+						
+						// If still no brand, use first word if it's all caps or title case
+						if (!brand) {
+							const firstWord = name.split(/\s+/)[0];
+							if (firstWord && (/^[A-Z]{2,}$/.test(firstWord) || /^[A-Z][a-z]+$/.test(firstWord))) {
+								brand = firstWord;
+							}
 						}
 					}
 					
