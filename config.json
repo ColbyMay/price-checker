@@ -5,12 +5,16 @@
 	},
 	"monitoring": {
 		"frequency": "0 * * * *",
-		"minDiscountPercent": 50,
+		"minDiscountPercent": 70,
 		"categories": ["handbag", "bag", "purse", "clutch", "tote"],
 		"designerBrands": [
 			"Gucci", "Louis Vuitton", "Chanel", "Prada", "Hermès", "Dior", 
 			"Saint Laurent", "Bottega Veneta", "Celine", "Balenciaga", 
-			"Givenchy", "Valentino", "Fendi", "Burberry", "Coach"
+			"Givenchy", "Valentino", "Fendi", "Burberry", "Coach",
+			"Chloe", "Mach & Mach", "Miu Miu", "McQueen", "Ferragamo",
+			"Maison Margiela", "Tod's", "Jacquemus", "Issey Miyake", "Acne",
+			"Jimmy Choo", "Loewe", "Manolo Blahnik", "Akris", "Anzie",
+			"Louboutin"
 		]
 	},
 	"discord": {

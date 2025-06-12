@@ -74,13 +74,73 @@ class DiscordNotifier {
 		}
 
 		try {
-			// Find the channel
-			const channel = this.client.channels.cache.find(ch => 
+			// Debug: Log all available channels
+			console.log('=== Discord Channel Debug Info ===');
+			console.log(`Looking for channel: "${channelName}"`);
+			console.log(`Bot is in ${this.client.guilds.cache.size} guild(s)`);
+			
+			// Log all guilds the bot is in
+			this.client.guilds.cache.forEach(guild => {
+				console.log(`Guild: ${guild.name} (ID: ${guild.id})`);
+				console.log(`  Bot has access to ${guild.channels.cache.size} channels`);
+				
+				// Log all channels in this guild
+				guild.channels.cache.forEach(channel => {
+					console.log(`  - Channel: "${channel.name}" (Type: ${channel.type}, ID: ${channel.id})`);
+				});
+			});
+			
+			// Try to find the channel using multiple methods
+			let channel = null;
+			
+			// Method 1: Search in client.channels.cache (original method)
+			channel = this.client.channels.cache.find(ch => 
 				ch.name === channelName && ch.type === 0 // Text channel
 			);
+			
+			if (!channel) {
+				console.log(`Method 1 failed: Channel '${channelName}' not found in client.channels.cache`);
+				
+				// Method 2: Search through all guilds
+				for (const guild of this.client.guilds.cache.values()) {
+					channel = guild.channels.cache.find(ch => 
+						ch.name === channelName && ch.type === 0
+					);
+					if (channel) {
+						console.log(`Method 2 success: Found channel '${channelName}' in guild '${guild.name}'`);
+						break;
+					}
+				}
+			} else {
+				console.log(`Method 1 success: Found channel '${channelName}' in client.channels.cache`);
+			}
+			
+			if (!channel) {
+				// Method 3: Try case-insensitive search
+				for (const guild of this.client.guilds.cache.values()) {
+					channel = guild.channels.cache.find(ch => 
+						ch.name.toLowerCase() === channelName.toLowerCase() && ch.type === 0
+					);
+					if (channel) {
+						console.log(`Method 3 success: Found channel '${ch.name}' (case-insensitive match) in guild '${guild.name}'`);
+						break;
+					}
+				}
+			}
 
 			if (!channel) {
-				throw new Error(`Channel '${channelName}' not found`);
+				// Provide detailed error message with available channels
+				let availableChannels = [];
+				this.client.guilds.cache.forEach(guild => {
+					guild.channels.cache.forEach(ch => {
+						if (ch.type === 0) { // Text channels only
+							availableChannels.push(`${ch.name} (in ${guild.name})`);
+						}
+					});
+				});
+				
+				const errorMsg = `Channel '${channelName}' not found. Available text channels: ${availableChannels.length > 0 ? availableChannels.join(', ') : 'None found'}`;
+				throw new Error(errorMsg);
 			}
 
 			console.log(`Sending ${products.length} price alerts to #${channelName}`);

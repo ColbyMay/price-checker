@@ -178,10 +178,14 @@ workflow_dispatch:
 - **Release Management**: No formal releases (continuous deployment)
 
 ### Current Brand Configuration
-The system currently monitors 15 specific luxury brands:
+The system currently monitors 31 specific luxury brands:
 - **High-End Luxury**: Gucci, Louis Vuitton, Chanel, Prada, Hermès, Dior
 - **Contemporary Luxury**: Saint Laurent, Bottega Veneta, Celine, Balenciaga
 - **Established Luxury**: Givenchy, Valentino, Fendi, Burberry, Coach
+- **Fashion Forward**: Chloe, Mach & Mach, Miu Miu, McQueen, Jacquemus, Acne
+- **Italian Craftsmanship**: Ferragamo, Maison Margiela, Tod's
+- **Footwear Specialists**: Jimmy Choo, Manolo Blahnik, Louboutin
+- **Luxury Accessories**: Loewe, Issey Miyake, Akris, Anzie
 
 **Brand Filtering Logic**:
 - Products must match one of the designated brands exactly
