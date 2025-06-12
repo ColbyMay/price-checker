@@ -120,10 +120,25 @@ function sortProductsByPriority(products) {
 function categorizeProducts(products, config) {
 	console.log(`Categorizing ${products.length} products...`);
 	
+	// First, remove duplicates from the input products
+	const uniqueProducts = [];
+	const seen = new Set();
+	
+	for (const product of products) {
+		// Create a unique key based on brand, name, and prices
+		const key = `${product.brand}-${product.name}-${product.currentPrice}-${product.originalPrice}`;
+		if (!seen.has(key)) {
+			seen.add(key);
+			uniqueProducts.push(product);
+		}
+	}
+	
+	console.log(`Removed ${products.length - uniqueProducts.length} duplicate products, processing ${uniqueProducts.length} unique items`);
+	
 	const highValueAlerts = [];
 	const summaryItems = [];
 	
-	products.forEach(product => {
+	uniqueProducts.forEach(product => {
 		// Check if product matches handbag categories
 		const matchesCategory = isHandbagCategory(product, config.monitoring.categories);
 		

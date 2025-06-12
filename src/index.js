@@ -170,10 +170,23 @@ async function runPriceCheck() {
 				}
 				
 				if (summaryItems.length > 0) {
-					summaryMessage += `📋 **${summaryItems.length} other deal${summaryItems.length > 1 ? 's' : ''}** (lower discounts):\n`;
+					// Remove duplicates based on name and brand combination
+					const uniqueSummaryItems = [];
+					const seen = new Set();
 					
-					// Show top 5 summary items
-					const topSummaryItems = summaryItems.slice(0, 5);
+					for (const product of summaryItems) {
+						// Create a unique key based on brand, name, and discount percentage
+						const key = `${product.brand}-${product.name}-${product.discountPercent}`;
+						if (!seen.has(key)) {
+							seen.add(key);
+							uniqueSummaryItems.push(product);
+						}
+					}
+					
+					summaryMessage += `📋 **${uniqueSummaryItems.length} other deal${uniqueSummaryItems.length > 1 ? 's' : ''}** (lower discounts):\n`;
+					
+					// Show top 5 unique summary items
+					const topSummaryItems = uniqueSummaryItems.slice(0, 5);
 					topSummaryItems.forEach((product, index) => {
 						let cleanName = product.name.replace(new RegExp(`^${product.brand}\\s*`, 'i'), '').trim();
 						if (cleanName.length > 25) {
@@ -183,8 +196,8 @@ async function runPriceCheck() {
 						summaryMessage += `${index + 1}. **${product.brand}** ${productLink} - ${product.discountPercent}% off\n`;
 					});
 					
-					if (summaryItems.length > 5) {
-						summaryMessage += `... and ${summaryItems.length - 5} more\n`;
+					if (uniqueSummaryItems.length > 5) {
+						summaryMessage += `... and ${uniqueSummaryItems.length - 5} more\n`;
 					}
 				}
 				

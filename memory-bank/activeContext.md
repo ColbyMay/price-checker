@@ -23,9 +23,11 @@ This provides better notification management where users only get pinged for tru
   - **Hourly Summaries**: All activity sent to `hourly-summaries` silently with comprehensive deal listings
   - **Smart Categorization**: Products meeting discount + category/brand criteria go to alerts, others to summaries
   - **Rich Summary Content**: Shows top deals, brand distribution, and links to products
+  - **Duplicate Removal**: Comprehensive deduplication at both filtering and display levels to prevent duplicate notifications
 - **Impact**: Users now only get pinged for truly significant deals while maintaining full visibility of all activity
 - **Configuration**: Updated config.json with separate channel names for alerts and summaries
-- **Status**: ✅ FULLY IMPLEMENTED - Two-tier notification system working perfectly
+- **Follow-up Fix**: Added duplicate removal logic to prevent repeated items in summaries (December 2025)
+- **Status**: ✅ FULLY IMPLEMENTED - Two-tier notification system working perfectly with no duplicates
 
 ### ✅ RESOLVED: Multi-Category Scraping Implementation (December 2025)
 - **Issue**: User wanted to include shoes in addition to handbags, and brand-specific URL filtering was returning empty results
