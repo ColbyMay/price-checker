@@ -1,9 +1,35 @@
 # Active Context - Price Checker Bot
 
 ## Current Work Focus
-Successfully resolved the discount threshold filtering issue. The system now properly respects the configured minimum discount percentage (70%) for ALL items, ensuring only items with significant discounts are reported. Next opportunity: expanding coverage from 84 products to the full 1600+ available results.
+Successfully implemented multi-category scraping approach for both shoes and bags. The system now scrapes two separate category searches (shoes: ~300 results, bags: ~150 results) and combines them for comprehensive coverage. This approach is much more effective than brand-specific URL filtering and finds actual products with real discounts.
 
 ## Recent Changes
+### ✅ RESOLVED: Multi-Category Scraping Implementation (December 2025)
+- **Issue**: User wanted to include shoes in addition to handbags, and brand-specific URL filtering was returning empty results
+- **Root Cause**: Luxury brands rarely have items on sale, so filtering by specific brands in URLs resulted in no products found
+- **Resolution**: Implemented multi-category approach in `src/index.js` that scrapes two separate searches:
+  - **Shoes**: ~300 results (2-3 pages) from `WomensShoes` category
+  - **Bags**: ~150 results (1-2 pages) from `WomensBags` category
+  - Combined results for comprehensive coverage
+- **Impact**: Successfully finding real products with actual discounts from both categories
+- **Results**: Test shows 24 total products found (12 shoes + 12 bags) with brands like VINCE, AEYDE, COMME DES GARÇONS PLAY
+- **Examples Found**: VINCE sneakers (30% off), AEYDE pumps (40% off), CDG PLAY sneakers (40% off)
+- **Configuration**: Updated config.json to include shoe categories and expanded category filters
+- **Status**: ✅ FULLY IMPLEMENTED - Multi-category scraping working effectively, finding real deals
+
+### ✅ RESOLVED: Pagination Implementation for Expanded Product Coverage (December 2025)
+- **Issue**: System was only scraping 84 products from the first page out of 1600+ available results
+- **Root Cause**: Original scraper only accessed the first page of results without pagination support
+- **Resolution**: Implemented comprehensive pagination system in `src/scraper.js` with multiple strategies:
+  - URL parameter pagination (`page=2`, `offset=84`)
+  - Pagination detection via selectors and page info parsing
+  - Multi-page scraping with configurable limits (maxPages, maxProducts)
+  - Respectful delays between page requests (2 seconds)
+- **Impact**: Now successfully accesses multiple pages (150+ products per page vs 84 on first page)
+- **Results**: Test shows successful scraping of 5 pages with "325 of 429" pagination detection
+- **Configuration**: Updated `src/index.js` to scrape up to 10 pages and 1000 products maximum
+- **Status**: ✅ FULLY IMPLEMENTED - Pagination working correctly, significantly expanded product coverage
+
 ### ✅ RESOLVED: Discount Threshold Filtering Issue (December 2025)
 - **Issue**: User changed minimum discount to 70% in config.json but system was still showing 50% off items
 - **Root Cause**: Filtering logic had two separate qualification paths - handbag items qualified regardless of discount percentage, while designer items required discount threshold

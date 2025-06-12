@@ -48,9 +48,35 @@ async function runPriceCheck() {
 			await discordNotifier.initialize(discordToken);
 		}
 		
-		// Scrape products from the website
+		// Scrape products from multiple categories (bags and shoes)
 		console.log(`Scraping products from: ${CONFIG.website.name}`);
-		const allProducts = await scrapeProducts(CONFIG.website.url);
+		
+		const allProducts = [];
+		
+		// Scrape shoes (300 results, ~2 pages)
+		console.log('\n=== Scraping Shoes ===');
+		const shoesUrl = 'https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale?sort=relevance&q=%3Adate-desc%3AstorefrontFacetCategories%3AWomensShoes';
+		const shoesOptions = {
+			maxPages: 3, // 300 results should be ~3 pages
+			maxProducts: 400 // Limit for shoes
+		};
+		const shoesProducts = await scrapeProducts(shoesUrl, shoesOptions);
+		console.log(`Found ${shoesProducts.length} shoes products`);
+		allProducts.push(...shoesProducts);
+		
+		// Scrape bags (150 results, ~2 pages)
+		console.log('\n=== Scraping Bags ===');
+		const bagsUrl = 'https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale?sort=relevance&q=%3Adate-desc%3AstorefrontFacetCategories%3AWomensBags';
+		const bagsOptions = {
+			maxPages: 3, // 150 results should be ~2 pages
+			maxProducts: 400 // Limit for bags
+		};
+		const bagsProducts = await scrapeProducts(bagsUrl, bagsOptions);
+		console.log(`Found ${bagsProducts.length} bags products`);
+		allProducts.push(...bagsProducts);
+		
+		console.log(`\n=== Combined Results ===`);
+		console.log(`Total products from both categories: ${allProducts.length}`);
 		
 		if (allProducts.length === 0) {
 			console.log('No products found during scraping');

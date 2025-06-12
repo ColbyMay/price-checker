@@ -2,12 +2,24 @@
 const puppeteer = require('puppeteer');
 
 /**
- * Scrapes product information from the specified URL
+ * Scrapes product information from the specified URL with pagination support
  * @param {string} url - The URL to scrape
+ * @param {Object} options - Scraping options
+ * @param {number} options.maxPages - Maximum number of pages to scrape (default: 5)
+ * @param {number} options.maxProducts - Maximum number of products to scrape (default: 500)
+ * @param {Array} options.brandFilters - Array of brand names to filter by in URL
  * @returns {Promise<Array>} Array of product objects
  */
-async function scrapeProducts(url) {
-	console.log('Starting product scraping...');
+async function scrapeProducts(url, options = {}) {
+	const { maxPages = 5, maxProducts = 500, brandFilters = [] } = options;
+	
+	// If brand filters are specified, scrape each brand individually
+	if (brandFilters && brandFilters.length > 0) {
+		console.log(`Scraping ${brandFilters.length} brands individually to avoid empty result issues...`);
+		return await scrapeMultipleBrands(url, brandFilters, { maxPages, maxProducts });
+	}
+	
+	console.log(`Starting product scraping with pagination (max ${maxPages} pages, ${maxProducts} products)...`);
 	
 	const browser = await puppeteer.launch({
 		headless: true,
@@ -20,12 +32,304 @@ async function scrapeProducts(url) {
 		// Set user agent to avoid detection
 		await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
 		
-		console.log(`Navigating to: ${url}`);
-		await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
+		let allProducts = [];
+		let currentPage = 1;
 		
-		// Wait a bit more for dynamic content to load
-		await new Promise(resolve => setTimeout(resolve, 3000));
+		while (currentPage <= maxPages && allProducts.length < maxProducts) {
+			console.log(`\n=== Scraping Page ${currentPage} ===`);
+			
+			// Construct URL with pagination parameters
+			const pageUrl = addPaginationToUrl(url, currentPage);
+			console.log(`Navigating to: ${pageUrl}`);
+			
+			await page.goto(pageUrl, { waitUntil: 'networkidle2', timeout: 30000 });
+			
+			// Wait a bit more for dynamic content to load
+			await new Promise(resolve => setTimeout(resolve, 3000));
+			
+			// Try to scrape products from this page
+			const pageProducts = await scrapeProductsFromPage(page);
+			
+			if (pageProducts.length === 0) {
+				console.log(`No products found on page ${currentPage}, stopping pagination`);
+				break;
+			}
+			
+			console.log(`Found ${pageProducts.length} products on page ${currentPage}`);
+			allProducts = allProducts.concat(pageProducts);
+			
+			// Check if we've reached our limit
+			if (allProducts.length >= maxProducts) {
+				console.log(`Reached maximum product limit (${maxProducts}), stopping`);
+				allProducts = allProducts.slice(0, maxProducts);
+				break;
+			}
+			
+			// Check if there are more pages available
+			const hasNextPage = await checkForNextPage(page);
+			if (!hasNextPage) {
+				console.log(`No more pages available after page ${currentPage}`);
+				break;
+			}
+			
+			currentPage++;
+			
+			// Add delay between pages to be respectful
+			await new Promise(resolve => setTimeout(resolve, 2000));
+		}
 		
+		console.log(`\n=== Pagination Complete ===`);
+		console.log(`Total products scraped: ${allProducts.length} from ${currentPage} pages`);
+		return allProducts;
+		
+	} catch (error) {
+		console.error('Error during scraping:', error);
+		throw error;
+	} finally {
+		await browser.close();
+	}
+}
+
+/**
+ * Scrapes multiple brands individually to avoid empty result issues
+ * @param {string} baseUrl - Base URL
+ * @param {Array} brandNames - Array of brand names to scrape
+ * @param {Object} options - Scraping options
+ * @returns {Promise<Array>} Combined array of products from all brands
+ */
+async function scrapeMultipleBrands(baseUrl, brandNames, options = {}) {
+	const { maxPages = 2, maxProducts = 500 } = options;
+	const allProducts = [];
+	const maxBrands = 10; // Limit number of brands to avoid taking too long
+	const brandsToScrape = brandNames.slice(0, maxBrands);
+	
+	console.log(`Scraping ${brandsToScrape.length} brands individually...`);
+	
+	const browser = await puppeteer.launch({
+		headless: true,
+		args: ['--no-sandbox', '--disable-setuid-sandbox']
+	});
+	
+	try {
+		const page = await browser.newPage();
+		await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+		
+		for (let i = 0; i < brandsToScrape.length && allProducts.length < maxProducts; i++) {
+			const brand = brandsToScrape[i];
+			console.log(`\n=== Scraping Brand ${i + 1}/${brandsToScrape.length}: ${brand} ===`);
+			
+			try {
+				// Create URL for this specific brand
+				const brandUrl = addSingleBrandToUrl(baseUrl, brand);
+				console.log(`Brand URL: ${brandUrl}`);
+				
+				// Scrape first page for this brand
+				await page.goto(brandUrl, { waitUntil: 'networkidle2', timeout: 30000 });
+				await new Promise(resolve => setTimeout(resolve, 2000));
+				
+				const brandProducts = await scrapeProductsFromPage(page);
+				
+				if (brandProducts.length > 0) {
+					console.log(`Found ${brandProducts.length} products for ${brand}`);
+					allProducts.push(...brandProducts);
+				} else {
+					console.log(`No products found for ${brand}`);
+				}
+				
+				// Add delay between brands to be respectful
+				if (i < brandsToScrape.length - 1) {
+					await new Promise(resolve => setTimeout(resolve, 1000));
+				}
+				
+			} catch (error) {
+				console.error(`Error scraping brand ${brand}:`, error.message);
+				// Continue with next brand
+			}
+		}
+		
+		console.log(`\n=== Multi-Brand Scraping Complete ===`);
+		console.log(`Total products found: ${allProducts.length} from ${brandsToScrape.length} brands`);
+		
+		return allProducts;
+		
+	} catch (error) {
+		console.error('Error during multi-brand scraping:', error);
+		throw error;
+	} finally {
+		await browser.close();
+	}
+}
+
+/**
+ * Adds a single brand filter to URL
+ * @param {string} baseUrl - Base URL
+ * @param {string} brandName - Single brand name to filter by
+ * @returns {string} URL with single brand filter applied
+ */
+function addSingleBrandToUrl(baseUrl, brandName) {
+	const url = new URL(baseUrl);
+	
+	// Convert brand name to Holt Renfrew's URL format
+	const normalizedBrand = brandName.toLowerCase()
+		.replace(/\s+/g, '_')  // Replace spaces with underscores
+		.replace(/[^a-z0-9_]/g, ''); // Remove special characters except underscores
+	
+	// Get existing query parameter and decode it
+	const existingQ = decodeURIComponent(url.searchParams.get('q') || '');
+	
+	// Add single brand filter to the q parameter
+	let newQ = existingQ;
+	if (newQ && !newQ.endsWith(':')) {
+		newQ += ':';
+	}
+	newQ += `brand:${normalizedBrand}`;
+	
+	url.searchParams.set('q', newQ);
+	return url.toString();
+}
+
+/**
+ * Adds brand filters to URL using Holt Renfrew's query format
+ * @param {string} baseUrl - Base URL
+ * @param {Array} brandNames - Array of brand names to filter by
+ * @returns {string} URL with brand filters applied
+ */
+function addBrandFiltersToUrl(baseUrl, brandNames) {
+	const url = new URL(baseUrl);
+	
+	// Limit to top priority brands to avoid URL length issues
+	const priorityBrands = brandNames.slice(0, 10); // Only use first 10 brands
+	console.log(`Using priority brands: ${priorityBrands.join(', ')}`);
+	
+	// Convert brand names to Holt Renfrew's URL format
+	// Example: "Burberry" -> "brand:burberry"
+	// Multiple brands: "brand:burberry:brand:chloe"
+	const brandFilters = priorityBrands.map(brand => {
+		// Convert to lowercase and handle special characters
+		const normalizedBrand = brand.toLowerCase()
+			.replace(/\s+/g, '_')  // Replace spaces with underscores
+			.replace(/[^a-z0-9_]/g, ''); // Remove special characters except underscores
+		
+		return `brand:${normalizedBrand}`;
+	}).join(':');
+	
+	if (brandFilters) {
+		// Get existing query parameter and decode it
+		const existingQ = decodeURIComponent(url.searchParams.get('q') || '');
+		
+		// Add brand filters to the q parameter
+		// Format: q=:date-desc:brand:burberry:brand:chloe
+		let newQ = existingQ;
+		if (newQ && !newQ.endsWith(':')) {
+			newQ += ':';
+		}
+		newQ += brandFilters;
+		
+		url.searchParams.set('q', newQ);
+		console.log(`Applied brand filter URL: ${url.toString()}`);
+	}
+	
+	return url.toString();
+}
+
+/**
+ * Adds pagination parameters to URL
+ * @param {string} baseUrl - Base URL
+ * @param {number} pageNumber - Page number (1-based)
+ * @returns {string} URL with pagination parameters
+ */
+function addPaginationToUrl(baseUrl, pageNumber) {
+	const url = new URL(baseUrl);
+	
+	// Common pagination parameters to try
+	const paginationParams = [
+		{ key: 'page', value: pageNumber },
+		{ key: 'p', value: pageNumber },
+		{ key: 'offset', value: (pageNumber - 1) * 84 }, // 84 products per page
+		{ key: 'start', value: (pageNumber - 1) * 84 },
+		{ key: 'from', value: (pageNumber - 1) * 84 }
+	];
+	
+	// For Holt Renfrew, try the most common e-commerce pagination patterns
+	if (pageNumber > 1) {
+		// Try page parameter first
+		url.searchParams.set('page', pageNumber.toString());
+		
+		// Also try offset-based pagination
+		url.searchParams.set('offset', ((pageNumber - 1) * 84).toString());
+	}
+	
+	return url.toString();
+}
+
+/**
+ * Checks if there are more pages available
+ * @param {Object} page - Puppeteer page object
+ * @returns {Promise<boolean>} True if next page exists
+ */
+async function checkForNextPage(page) {
+	try {
+		// Look for common pagination indicators
+		const paginationSelectors = [
+			'a[aria-label*="next"]',
+			'a[aria-label*="Next"]',
+			'.pagination .next:not(.disabled)',
+			'.pagination-next:not(.disabled)',
+			'[class*="pagination"] [class*="next"]:not([class*="disabled"])',
+			'[class*="Pagination"] [class*="next"]:not([class*="disabled"])',
+			'.next-page:not(.disabled)',
+			'button[aria-label*="next"]:not([disabled])',
+			'button[aria-label*="Next"]:not([disabled])'
+		];
+		
+		for (const selector of paginationSelectors) {
+			const nextButton = await page.$(selector);
+			if (nextButton) {
+				console.log(`Found next page indicator: ${selector}`);
+				return true;
+			}
+		}
+		
+		// Also check for page numbers to see if we're at the end
+		const pageInfo = await page.evaluate(() => {
+			// Look for pagination info like "Page 1 of 20" or "1-84 of 1600"
+			const textContent = document.body.textContent;
+			const pageMatch = textContent.match(/(\d+)\s*-\s*(\d+)\s*of\s*(\d+)/i) || 
+							 textContent.match(/page\s*(\d+)\s*of\s*(\d+)/i) ||
+							 textContent.match(/(\d+)\s*\/\s*(\d+)/);
+			
+			if (pageMatch) {
+				return {
+					found: true,
+					current: parseInt(pageMatch[1]),
+					total: parseInt(pageMatch[pageMatch.length - 1])
+				};
+			}
+			
+			return { found: false };
+		});
+		
+		if (pageInfo.found) {
+			console.log(`Page info: ${pageInfo.current} of ${pageInfo.total}`);
+			return pageInfo.current < pageInfo.total;
+		}
+		
+		console.log('No pagination indicators found');
+		return false;
+		
+	} catch (error) {
+		console.error('Error checking for next page:', error);
+		return false;
+	}
+}
+
+/**
+ * Scrapes products from a single page
+ * @param {Object} page - Puppeteer page object
+ * @returns {Promise<Array>} Array of product objects from this page
+ */
+async function scrapeProductsFromPage(page) {
+	try {
 		// Wait for products to load - try multiple possible selectors
 		let productSelector = null;
 		const possibleSelectors = [
@@ -394,14 +698,12 @@ async function scrapeProducts(url) {
 			return results;
 		}, productSelector);
 		
-		console.log(`Scraped ${products.length} products`);
+		console.log(`Scraped ${products.length} products from this page`);
 		return products;
 		
 	} catch (error) {
-		console.error('Error during scraping:', error);
-		throw error;
-	} finally {
-		await browser.close();
+		console.error('Error scraping products from page:', error);
+		return []; // Return empty array on error instead of throwing
 	}
 }
 

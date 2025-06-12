@@ -1,12 +1,12 @@
 {
 	"website": {
-		"url": "https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale?sort=relevance&q=%3Adate-desc%3AstorefrontFacetCategories%3AWomensBags",
-		"name": "Holt Renfrew Sale - Women's Bags"
+		"url": "https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale?sort=relevance&q=%3Adate-desc%3AstorefrontFacetCategories%3AWomensBags%3AstorefrontFacetCategories%3AWomensShoes",
+		"name": "Holt Renfrew Sale - Women's Bags & Shoes"
 	},
 	"monitoring": {
 		"frequency": "0 * * * *",
 		"minDiscountPercent": 70,
-		"categories": ["handbag", "bag", "purse", "clutch", "tote"],
+		"categories": ["handbag", "bag", "purse", "clutch", "tote", "shoe", "shoes", "boot", "boots", "sandal", "sandals", "heel", "heels", "sneaker", "sneakers", "pump", "pumps", "flat", "flats", "loafer", "loafers"],
 		"designerBrands": [
 			"Gucci", "Louis Vuitton", "Chanel", "Prada", "Hermès", "Dior", 
 			"Saint Laurent", "Bottega Veneta", "Celine", "Balenciaga", 

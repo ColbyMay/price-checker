@@ -174,7 +174,26 @@ async function testScraping() {
 	
 	try {
 		console.log('Starting scraping test...');
-		const products = await scrapeProducts(config.website.url);
+		
+		const allProducts = [];
+		
+		// Test scraping shoes (limited for testing)
+		console.log('Testing shoes scraping...');
+		const shoesUrl = 'https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale?sort=relevance&q=%3Adate-desc%3AstorefrontFacetCategories%3AWomensShoes';
+		const shoesOptions = { maxPages: 2, maxProducts: 100 };
+		const shoesProducts = await scrapeProducts(shoesUrl, shoesOptions);
+		console.log(`Found ${shoesProducts.length} shoes products`);
+		allProducts.push(...shoesProducts);
+		
+		// Test scraping bags (limited for testing)
+		console.log('Testing bags scraping...');
+		const bagsUrl = 'https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale?sort=relevance&q=%3Adate-desc%3AstorefrontFacetCategories%3AWomensBags';
+		const bagsOptions = { maxPages: 2, maxProducts: 100 };
+		const bagsProducts = await scrapeProducts(bagsUrl, bagsOptions);
+		console.log(`Found ${bagsProducts.length} bags products`);
+		allProducts.push(...bagsProducts);
+		
+		const products = allProducts;
 		
 		console.log(`✅ Scraped ${products.length} products`);
 		
