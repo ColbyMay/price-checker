@@ -1,7 +1,7 @@
 {
 	"website": {
-		"url": "https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale",
-		"name": "Holt Renfrew Sale"
+		"url": "https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale?sort=relevance&q=%3Adate-desc%3AstorefrontFacetCategories%3AWomensBags",
+		"name": "Holt Renfrew Sale - Women's Bags"
 	},
 	"monitoring": {
 		"frequency": "0 * * * *",
