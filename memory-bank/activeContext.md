@@ -1,14 +1,33 @@
 # Active Context - Price Checker Bot
 
 ## Current Work Focus
-Successfully implemented two-tier Discord notification system with separate channels for high-value alerts and hourly summaries. The system now categorizes products into:
-1. **High-value alerts** (70%+ discounts) → sent to `price-alerts` channel with @here mentions
-2. **Summary notifications** (all other relevant items) → sent to `hourly-summaries` channel silently
+Expanded keyword and brand filtering system to monitor additional product categories and luxury brands. Added support for:
+- **New Categories**: Jewelry (bracelet, necklace, earring, ring, wallet), Footwear (mule, slingback, runner)
+- **New Brand**: Marni
 
-This provides better notification management where users only get pinged for truly significant deals while still receiving comprehensive hourly summaries of all activity.
+System continues to maintain two-tier notification system with high-value alerts and hourly summaries.
 
 ## Recent Changes
+### ✅ IMPLEMENTED: Expanded Keywords and Filters (December 2025)
+- **Issue**: User wanted to monitor additional product categories (jewelry, accessories) and new designer brands
+- **Changes Made**:
+  - **Added Categories**: wallet, bracelet, necklace, earring, earrings, ring, mule, mules, slingback, runner, runners
+  - **Added Brands**: Marni
+  - **Total Categories**: Now monitoring 32 different product type keywords
+  - **Total Brands**: Now monitoring 32 luxury designer brands
+- **Implementation**: Updated `config.json` monitoring section with new keywords and brands
+- **Impact**: System will now identify and alert on luxury jewelry, accessories, and additional footwear styles
+- **Keywords Added**:
+  - **Jewelry**: bracelet, necklace, earring/earrings, ring
+  - **Accessories**: wallet
+  - **Footwear**: mule/mules, slingback, runner/runners
+- **Brand Added**: Marni (Italian luxury fashion house)
+- **Architecture**: No code changes required - filtering logic automatically applies to new keywords
+- **Status**: ✅ FULLY IMPLEMENTED - Config updated, filtering logic ready to use
+- **Next Enhancement**: Could add dedicated jewelry scraping URL if needed to maximize jewelry product coverage
+
 ### ✅ IMPLEMENTED: Two-Tier Discord Notification System (December 2025)
+
 - **Issue**: User wanted to separate high-value alerts (70%+ discounts) from regular summaries to avoid notification fatigue
 - **Requirements**: 
   - Real notifications with @here mentions only for 70%+ discount items → `price-alerts` channel

@@ -6,7 +6,7 @@
 	"monitoring": {
 		"frequency": "0 * * * *",
 		"minDiscountPercent": 70,
-		"categories": ["handbag", "bag", "purse", "clutch", "tote", "shoe", "shoes", "boot", "boots", "sandal", "sandals", "heel", "heels", "sneaker", "sneakers", "pump", "pumps", "flat", "flats", "loafer", "loafers"],
+		"categories": ["handbag", "bag", "purse", "clutch", "tote", "wallet", "bracelet", "necklace", "earring", "earrings", "ring", "shoe", "shoes", "boot", "boots", "sandal", "sandals", "heel", "heels", "sneaker", "sneakers", "pump", "pumps", "flat", "flats", "loafer", "loafers", "mule", "mules", "slingback", "runner", "runners"],
 		"designerBrands": [
 			"Gucci", "Louis Vuitton", "Chanel", "Prada", "Hermès", "Dior", 
 			"Saint Laurent", "Bottega Veneta", "Celine", "Balenciaga", 
@@ -14,7 +14,7 @@
 			"Chloe", "Mach & Mach", "Miu Miu", "McQueen", "Ferragamo",
 			"Maison Margiela", "Tod's", "Jacquemus", "Issey Miyake", "Acne",
 			"Jimmy Choo", "Loewe", "Manolo Blahnik", "Akris", "Anzie",
-			"Louboutin"
+			"Louboutin", "Marni"
 		]
 	},
 	"discord": {
