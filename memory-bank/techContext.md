@@ -177,21 +177,33 @@ workflow_dispatch:
 - **Dependency Updates**: Both package.json and package-lock.json committed together
 - **Release Management**: No formal releases (continuous deployment)
 
-### Current Brand Configuration
-The system currently monitors 31 specific luxury brands:
+### Current Brand & Category Configuration
+
+**Total Brands**: 32 luxury designer brands
 - **High-End Luxury**: Gucci, Louis Vuitton, Chanel, Prada, Hermès, Dior
 - **Contemporary Luxury**: Saint Laurent, Bottega Veneta, Celine, Balenciaga
 - **Established Luxury**: Givenchy, Valentino, Fendi, Burberry, Coach
 - **Fashion Forward**: Chloe, Mach & Mach, Miu Miu, McQueen, Jacquemus, Acne
-- **Italian Craftsmanship**: Ferragamo, Maison Margiela, Tod's
+- **Italian Craftsmanship**: Ferragamo, Maison Margiela, Tod's, **Marni**
 - **Footwear Specialists**: Jimmy Choo, Manolo Blahnik, Louboutin
 - **Luxury Accessories**: Loewe, Issey Miyake, Akris, Anzie
+
+**Total Categories**: 32 product type keywords
+- **Bags & Accessories**: handbag, bag, purse, clutch, tote, wallet
+- **Jewelry**: bracelet, necklace, earring, earrings, ring
+- **Footwear**: shoe, shoes, boot, boots, sandal, sandals, heel, heels, sneaker, sneakers, pump, pumps, flat, flats, loafer, loafers, mule, mules, slingback, runner, runners
 
 **Brand Filtering Logic**:
 - Products must match one of the designated brands exactly
 - Brand names are extracted from website and compared to the configured list
 - Case-sensitive matching ensures accuracy
 - Easy to modify by updating the `designerBrands` array in config.json
+
+**Category Filtering Logic**:
+- Products match categories by keyword matching against product name and brand
+- Case-insensitive matching allows flexibility for brand variations
+- Products can match multiple categories (e.g., designer bag)
+- Easy to add new categories by updating `categories` array in config.json
 
 ### Future Technical Considerations
 

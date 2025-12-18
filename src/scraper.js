@@ -32,54 +32,17 @@ async function scrapeProducts(url, options = {}) {
 		// Set user agent to avoid detection
 		await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
 		
-		let allProducts = [];
-		let currentPage = 1;
+		console.log(`Navigating to: ${url}`);
+		await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
 		
-		while (currentPage <= maxPages && allProducts.length < maxProducts) {
-			console.log(`\n=== Scraping Page ${currentPage} ===`);
-			
-			// Construct URL with pagination parameters
-			const pageUrl = addPaginationToUrl(url, currentPage);
-			console.log(`Navigating to: ${pageUrl}`);
-			
-			await page.goto(pageUrl, { waitUntil: 'networkidle2', timeout: 30000 });
-			
-			// Wait a bit more for dynamic content to load
-			await new Promise(resolve => setTimeout(resolve, 3000));
-			
-			// Try to scrape products from this page
-			const pageProducts = await scrapeProductsFromPage(page);
-			
-			if (pageProducts.length === 0) {
-				console.log(`No products found on page ${currentPage}, stopping pagination`);
-				break;
-			}
-			
-			console.log(`Found ${pageProducts.length} products on page ${currentPage}`);
-			allProducts = allProducts.concat(pageProducts);
-			
-			// Check if we've reached our limit
-			if (allProducts.length >= maxProducts) {
-				console.log(`Reached maximum product limit (${maxProducts}), stopping`);
-				allProducts = allProducts.slice(0, maxProducts);
-				break;
-			}
-			
-			// Check if there are more pages available
-			const hasNextPage = await checkForNextPage(page);
-			if (!hasNextPage) {
-				console.log(`No more pages available after page ${currentPage}`);
-				break;
-			}
-			
-			currentPage++;
-			
-			// Add delay between pages to be respectful
-			await new Promise(resolve => setTimeout(resolve, 2000));
-		}
+		// Wait for initial content to load
+		await new Promise(resolve => setTimeout(resolve, 3000));
+		
+		// Use scroll-based loading for pagination (modern e-commerce approach)
+		const allProducts = await scrapeWithScrollPagination(page, maxProducts);
 		
 		console.log(`\n=== Pagination Complete ===`);
-		console.log(`Total products scraped: ${allProducts.length} from ${currentPage} pages`);
+		console.log(`Total products scraped: ${allProducts.length}`);
 		return allProducts;
 		
 	} catch (error) {
@@ -324,6 +287,78 @@ async function checkForNextPage(page) {
 }
 
 /**
+ * Scrapes products using scroll-based pagination (infinite scroll)
+ * @param {Object} page - Puppeteer page object
+ * @param {number} maxProducts - Maximum products to scrape
+ * @returns {Promise<Array>} All products found through scrolling
+ */
+async function scrapeWithScrollPagination(page, maxProducts = 500) {
+	const allProducts = [];
+	let previousScrollHeight = 0;
+	let noNewContentAttempts = 0;
+	const maxNoNewContentAttempts = 3; // Stop after 3 attempts with no new content
+	let scrollCount = 0;
+	
+	console.log(`Starting scroll-based pagination (max ${maxProducts} products)...`);
+	
+	while (allProducts.length < maxProducts && noNewContentAttempts < maxNoNewContentAttempts) {
+		// Scrape visible products on current page
+		const visibleProducts = await scrapeProductsFromPage(page);
+		
+		if (visibleProducts.length > 0) {
+			// Add new products, avoiding duplicates
+			for (const product of visibleProducts) {
+				const isDuplicate = allProducts.some(p => 
+					p.productUrl === product.productUrl || 
+					(p.name === product.name && p.brand === product.brand)
+				);
+				if (!isDuplicate) {
+					allProducts.push(product);
+				}
+			}
+			console.log(`Loaded ${visibleProducts.length} products (total: ${allProducts.length}/${maxProducts})`);
+		}
+		
+		// Stop if we've reached our limit
+		if (allProducts.length >= maxProducts) {
+			console.log(`Reached product limit (${maxProducts})`);
+			break;
+		}
+		
+		// Scroll to bottom
+		const newScrollHeight = await page.evaluate(() => {
+			window.scrollTo(0, document.body.scrollHeight);
+			return document.body.scrollHeight;
+		});
+		
+		// Check if we loaded new content
+		if (newScrollHeight === previousScrollHeight) {
+			noNewContentAttempts++;
+			console.log(`No new content. Attempts: ${noNewContentAttempts}/${maxNoNewContentAttempts}`);
+		} else {
+			noNewContentAttempts = 0; // Reset counter when new content appears
+		}
+		
+		previousScrollHeight = newScrollHeight;
+		scrollCount++;
+		
+		// Wait for new content to load after scroll
+		await new Promise(resolve => setTimeout(resolve, 2000));
+		
+		// Safety check - don't scroll more than 20 times to avoid infinite loops
+		if (scrollCount > 20) {
+			console.log('Reached maximum scroll attempts (20), stopping');
+			break;
+		}
+	}
+	
+	console.log(`\nScroll pagination complete. Total scrolls: ${scrollCount}`);
+	console.log(`Total unique products loaded: ${allProducts.length}`);
+	
+	return allProducts;
+}
+
+/**
  * Scrapes products from a single page
  * @param {Object} page - Puppeteer page object
  * @returns {Promise<Array>} Array of product objects from this page
@@ -515,19 +550,21 @@ async function scrapeProductsFromPage(page) {
 			}
 		}
 		
-		// Extract product information with debugging
+		// Extract product information with detailed logging and lenient extraction
 		const products = await page.evaluate((selector) => {
 			const productElements = document.querySelectorAll(selector);
 			const results = [];
+			const extractionStats = {
+				total: productElements.length,
+				extracted: 0,
+				failed: 0,
+				failureReasons: {}
+			};
 			
 			console.log(`Processing ${productElements.length} product elements`);
 			
 			productElements.forEach((element, index) => {
 				try {
-					if (index < 2) {
-						console.log(`Element ${index} HTML:`, element.outerHTML.substring(0, 300));
-					}
-					
 					// Extract product name - try multiple possible selectors
 					const nameSelectors = [
 						'[class*="ProductInfo"]', '[class*="product-name"]', '.product-tile__name', '.product-name', '.name', '.title', 
@@ -538,8 +575,15 @@ async function scrapeProductsFromPage(page) {
 						const nameElement = element.querySelector(sel);
 						if (nameElement && nameElement.textContent.trim()) {
 							name = nameElement.textContent.trim();
-							if (index < 2) console.log(`Found name with selector ${sel}: ${name}`);
 							break;
+						}
+					}
+					
+					// If no name found, try to extract from all text content
+					if (!name) {
+						const allText = element.textContent.trim().split('\n')[0];
+						if (allText && allText.length > 5) {
+							name = allText;
 						}
 					}
 					
@@ -557,14 +601,13 @@ async function scrapeProductsFromPage(page) {
 						}
 					}
 					
-					// If no specific brand element, try to extract from text content
+					// If no specific brand element, try to extract from product name
 					if (!brand && name) {
-						// Try to extract brand from the product name
 						// Look for common brand patterns at the beginning of the name
 						const brandPatterns = [
-							/^([A-Z][A-Z\s&]+?)\s+/,  // All caps brand names like "VINCE ", "COMME DES GARÇONS "
-							/^([A-Z][a-z]+)\s+/,      // Title case brand names like "Gucci ", "Coach "
-							/^([A-Z][A-Za-z\s&]+?)\s+[A-Z]/  // Mixed case ending before another capital
+							/^([A-Z][A-Z\s&]+?)\s+/,  // All caps: "VINCE ", "COMME DES GARÇONS "
+							/^([A-Z][a-z\s&]+?)\s+/,  // Title case: "Gucci ", "Coach "
+							/^([A-Z\&][A-Za-z\s&\-\.]+?)\s+[A-Z]/  // Brand before another capital
 						];
 						
 						for (const pattern of brandPatterns) {
@@ -575,46 +618,43 @@ async function scrapeProductsFromPage(page) {
 							}
 						}
 						
-						// If still no brand, use first word if it's all caps or title case
+						// Fallback: first word if looks like a brand
 						if (!brand) {
 							const firstWord = name.split(/\s+/)[0];
-							if (firstWord && (/^[A-Z]{2,}$/.test(firstWord) || /^[A-Z][a-z]+$/.test(firstWord))) {
+							if (firstWord && firstWord.length > 2 && (/^[A-Z]{2,}$/.test(firstWord) || /^[A-Z][a-z]+$/.test(firstWord))) {
 								brand = firstWord;
 							}
 						}
 					}
 					
-					// Extract prices - try Holt Renfrew specific selectors first
+					// Extract prices
 					let currentPrice = '';
 					let originalPrice = '';
 					
-					// Look for Holt Renfrew price structure: <div class="PriceRange_price__Oo2kz">
+					// Try Holt Renfrew specific price structure
 					const priceContainer = element.querySelector('[class*="PriceRange_price"]');
 					if (priceContainer) {
-						if (index < 2) console.log(`Found price container:`, priceContainer.outerHTML);
-						
-						// Original price: <span class="PriceRange_price--original__PFbqY">$398</span>
+						// Original price
 						const originalPriceElement = priceContainer.querySelector('[class*="price--original"]');
 						if (originalPriceElement) {
 							originalPrice = originalPriceElement.textContent.trim();
-							if (index < 2) console.log(`Found original price: ${originalPrice}`);
 						}
 						
-						// Current price: <span>$159</span> (the span without a specific class)
+						// Current price - span without original class
 						const spans = priceContainer.querySelectorAll('span');
 						for (const span of spans) {
-							if (!span.className || !span.className.includes('original')) {
+							const className = span.className || '';
+							if (!className.includes('original')) {
 								const text = span.textContent.trim();
 								if (/\$\d+/.test(text)) {
 									currentPrice = text;
-									if (index < 2) console.log(`Found current price: ${currentPrice}`);
 									break;
 								}
 							}
 						}
 					}
 					
-					// Fallback to generic price selectors
+					// Fallback: generic price selectors
 					if (!currentPrice) {
 						const currentPriceSelectors = [
 							'.price-current', '.current-price', '.sale-price', '.price-sale',
@@ -629,17 +669,16 @@ async function scrapeProductsFromPage(page) {
 						}
 					}
 					
-					// If still no current price, look for price patterns in text
+					// Last resort: find all price patterns in element text
 					if (!currentPrice) {
 						const priceMatch = element.textContent.match(/\$\d+(?:,\d{3})*(?:\.\d{2})?/g);
 						if (priceMatch && priceMatch.length > 0) {
-							// If multiple prices, the last one is usually the current price
+							// Last price is usually current/sale price
 							currentPrice = priceMatch[priceMatch.length - 1];
-							if (index < 2) console.log(`Found price via regex: ${currentPrice}`);
 						}
 					}
 					
-					// Fallback for original price if not found above
+					// Extract original price from multiple prices if not found
 					if (!originalPrice) {
 						const originalPriceSelectors = [
 							'.price-original', '.original-price', '.was-price', '.price-was',
@@ -654,63 +693,75 @@ async function scrapeProductsFromPage(page) {
 						}
 					}
 					
-					// If no specific original price element, look for multiple prices
+					// If no original price found but we have current, extract from multiple prices
 					if (!originalPrice && currentPrice) {
 						const priceMatch = element.textContent.match(/\$\d+(?:,\d{3})*(?:\.\d{2})?/g);
 						if (priceMatch && priceMatch.length > 1) {
-							// First price is usually the original price
+							// First price is usually original
 							originalPrice = priceMatch[0];
-							// Make sure current price is different
+							// If first equals current, use second
 							if (originalPrice === currentPrice && priceMatch.length > 1) {
 								originalPrice = priceMatch[1];
 							}
 						}
 					}
 					
-					// Extract product URL
+					// Extract URLs
 					const linkElement = element.querySelector('a');
 					let productUrl = linkElement ? linkElement.href : '';
-					
-					// Make sure URL is absolute
 					if (productUrl && !productUrl.startsWith('http')) {
 						productUrl = new URL(productUrl, window.location.origin).href;
 					}
 					
-					// Extract image URL
 					const imageElement = element.querySelector('img');
 					let imageUrl = imageElement ? (imageElement.src || imageElement.dataset.src) : '';
-					
-					// Make sure image URL is absolute
 					if (imageUrl && !imageUrl.startsWith('http')) {
 						imageUrl = new URL(imageUrl, window.location.origin).href;
 					}
 					
-					if (index < 2) {
-						console.log(`Product ${index} extracted data:`, {
-							name: name || 'NO NAME',
-							brand: brand || 'NO BRAND',
-							currentPrice: currentPrice || 'NO CURRENT PRICE',
-							originalPrice: originalPrice || 'NO ORIGINAL PRICE',
-							productUrl: productUrl || 'NO URL',
-							imageUrl: imageUrl || 'NO IMAGE'
-						});
-					}
+					// LENIENT EXTRACTION: Accept if we have name AND (currentPrice OR originalPrice)
+					// Previously required: name && currentPrice (too strict)
+					const hasPrice = currentPrice || originalPrice;
 					
-					if (name && currentPrice) {
+					if (name && hasPrice) {
+						// If we only have one price, use it for both
+						if (!currentPrice) currentPrice = originalPrice;
+						if (!originalPrice) originalPrice = currentPrice;
+						
 						results.push({
 							name,
-							brand,
+							brand: brand || 'Unknown Brand',
 							currentPrice,
 							originalPrice,
 							productUrl,
 							imageUrl,
 							scrapedAt: new Date().toISOString()
 						});
+						extractionStats.extracted++;
+					} else {
+						extractionStats.failed++;
+						// Track failure reasons
+						if (!name) {
+							extractionStats.failureReasons['no_name'] = (extractionStats.failureReasons['no_name'] || 0) + 1;
+						}
+						if (!hasPrice) {
+							extractionStats.failureReasons['no_price'] = (extractionStats.failureReasons['no_price'] || 0) + 1;
+						}
 					}
 				} catch (error) {
-					console.error('Error extracting product data:', error);
+					extractionStats.failed++;
+					extractionStats.failureReasons['extraction_error'] = (extractionStats.failureReasons['extraction_error'] || 0) + 1;
 				}
 			});
+			
+			// Log extraction statistics
+			console.log(`\n📊 Extraction Statistics:`);
+			console.log(`Total elements found: ${extractionStats.total}`);
+			console.log(`Successfully extracted: ${extractionStats.extracted} (${Math.round((extractionStats.extracted/extractionStats.total)*100)}%)`);
+			console.log(`Failed: ${extractionStats.failed}`);
+			if (Object.keys(extractionStats.failureReasons).length > 0) {
+				console.log(`Failure reasons:`, extractionStats.failureReasons);
+			}
 			
 			return results;
 		}, productSelector);

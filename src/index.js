@@ -48,32 +48,42 @@ async function runPriceCheck() {
 			await discordNotifier.initialize(discordToken);
 		}
 		
-		// Scrape products from multiple categories (bags and shoes)
-		console.log(`Scraping products from: ${CONFIG.website.name}`);
+		// Define categories to scrape
+		const CATEGORY_URLS = [
+			{
+				name: 'Shoes',
+				url: 'https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale?sort=relevance&q=%3Adate-desc%3AstorefrontFacetCategories%3AWomensShoes',
+				maxProducts: 400
+			},
+			{
+				name: 'Bags',
+				url: 'https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale?sort=relevance&q=%3Adate-desc%3AstorefrontFacetCategories%3AWomensBags',
+				maxProducts: 400
+			},
+			{
+				name: 'Jewelry & Watches',
+				url: 'https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale?sort=relevance&q=%3Adate-desc%3AstorefrontFacetCategories%3AWomensJewellery',
+				maxProducts: 300
+			},
+			{
+				name: 'Accessories',
+				url: 'https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale?sort=relevance&q=%3Adate-desc%3AstorefrontFacetCategories%3AWomensAccessories',
+				maxProducts: 200
+			}
+		];
 		
+		// Scrape all categories
+		console.log(`\n📦 Scraping ${CATEGORY_URLS.length} product categories...`);
 		const allProducts = [];
 		
-		// Scrape shoes (300 results, ~2 pages)
-		console.log('\n=== Scraping Shoes ===');
-		const shoesUrl = 'https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale?sort=relevance&q=%3Adate-desc%3AstorefrontFacetCategories%3AWomensShoes';
-		const shoesOptions = {
-			maxPages: 3, // 300 results should be ~3 pages
-			maxProducts: 400 // Limit for shoes
-		};
-		const shoesProducts = await scrapeProducts(shoesUrl, shoesOptions);
-		console.log(`Found ${shoesProducts.length} shoes products`);
-		allProducts.push(...shoesProducts);
-		
-		// Scrape bags (150 results, ~2 pages)
-		console.log('\n=== Scraping Bags ===');
-		const bagsUrl = 'https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale?sort=relevance&q=%3Adate-desc%3AstorefrontFacetCategories%3AWomensBags';
-		const bagsOptions = {
-			maxPages: 3, // 150 results should be ~2 pages
-			maxProducts: 400 // Limit for bags
-		};
-		const bagsProducts = await scrapeProducts(bagsUrl, bagsOptions);
-		console.log(`Found ${bagsProducts.length} bags products`);
-		allProducts.push(...bagsProducts);
+		for (const category of CATEGORY_URLS) {
+			console.log(`\n=== Scraping ${category.name} ===`);
+			const categoryProducts = await scrapeProducts(category.url, {
+				maxProducts: category.maxProducts
+			});
+			console.log(`Found ${categoryProducts.length} ${category.name.toLowerCase()} products`);
+			allProducts.push(...categoryProducts);
+		}
 		
 		console.log(`\n=== Combined Results ===`);
 		console.log(`Total products from both categories: ${allProducts.length}`);
