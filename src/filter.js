@@ -1,0 +1,181 @@
+// Product filtering logic for identifying relevant items
+const { calculateDiscount } = require('./scraper');
+
+/**
+ * Filters products based on configuration criteria
+ * @param {Array} products - Array of product objects
+ * @param {Object} config - Configuration object with filtering criteria
+ * @returns {Array} Filtered array of products
+ */
+function filterProducts(products, config) {
+	console.log(`Filtering ${products.length} products...`);
+	
+	const filteredProducts = products.filter(product => {
+		// Check if product matches handbag categories
+		const matchesCategory = isHandbagCategory(product, config.monitoring.categories);
+		
+		// Check if product is from a designer brand
+		const isDesignerBrand = checkDesignerBrand(product, config.monitoring.designerBrands);
+		
+		// Calculate discount percentage
+		const discountPercent = calculateDiscount(product.originalPrice, product.currentPrice);
+		const meetsDiscountThreshold = discountPercent >= config.monitoring.minDiscountPercent;
+		
+		// Product qualifies if it meets ALL criteria:
+		// 1. Must meet the minimum discount threshold, AND
+		// 2. Must be either a handbag OR a designer item
+		const qualifies = meetsDiscountThreshold && (matchesCategory || isDesignerBrand);
+		
+		if (qualifies) {
+			// Add calculated discount to product object
+			product.discountPercent = discountPercent;
+			product.matchReason = getMatchReason(matchesCategory, isDesignerBrand, meetsDiscountThreshold);
+		}
+		
+		return qualifies;
+	});
+	
+	console.log(`Found ${filteredProducts.length} qualifying products`);
+	return filteredProducts;
+}
+
+/**
+ * Checks if product matches handbag categories
+ * @param {Object} product - Product object
+ * @param {Array} categories - Array of category keywords
+ * @returns {boolean} True if product matches handbag categories
+ */
+function isHandbagCategory(product, categories) {
+	const searchText = `${product.name} ${product.brand}`.toLowerCase();
+	
+	return categories.some(category => 
+		searchText.includes(category.toLowerCase())
+	);
+}
+
+/**
+ * Checks if product is from a designer brand
+ * @param {Object} product - Product object
+ * @param {Array} designerBrands - Array of designer brand names
+ * @returns {boolean} True if product is from a designer brand
+ */
+function checkDesignerBrand(product, designerBrands) {
+	const brandText = product.brand.toLowerCase();
+	const nameText = product.name.toLowerCase();
+	
+	return designerBrands.some(brand => 
+		brandText.includes(brand.toLowerCase()) || 
+		nameText.includes(brand.toLowerCase())
+	);
+}
+
+/**
+ * Determines the reason why a product matched the criteria
+ * @param {boolean} matchesCategory - Whether product matches handbag category
+ * @param {boolean} isDesignerBrand - Whether product is from designer brand
+ * @param {boolean} meetsDiscountThreshold - Whether product meets discount threshold
+ * @returns {string} Match reason description
+ */
+function getMatchReason(matchesCategory, isDesignerBrand, meetsDiscountThreshold) {
+	const reasons = [];
+	
+	if (matchesCategory) {
+		reasons.push('Handbag category');
+	}
+	
+	if (isDesignerBrand) {
+		reasons.push('Designer brand');
+	}
+	
+	if (meetsDiscountThreshold) {
+		reasons.push('High discount');
+	}
+	
+	return reasons.join(', ');
+}
+
+/**
+ * Sorts products by priority (discount percentage, then brand recognition)
+ * @param {Array} products - Array of filtered products
+ * @returns {Array} Sorted array of products
+ */
+function sortProductsByPriority(products) {
+	return products.sort((a, b) => {
+		// Sort by discount percentage (highest first)
+		if (b.discountPercent !== a.discountPercent) {
+			return b.discountPercent - a.discountPercent;
+		}
+		
+		// Then by brand name alphabetically
+		return a.brand.localeCompare(b.brand);
+	});
+}
+
+/**
+ * Separates products into high-value alerts and summary items
+ * @param {Array} products - Array of all scraped products
+ * @param {Object} config - Configuration object with filtering criteria
+ * @returns {Object} Object with highValueAlerts and summaryItems arrays
+ */
+function categorizeProducts(products, config) {
+	console.log(`Categorizing ${products.length} products...`);
+	
+	// First, remove duplicates from the input products
+	const uniqueProducts = [];
+	const seen = new Set();
+	
+	for (const product of products) {
+		// Create a unique key based on brand, name, and prices
+		const key = `${product.brand}-${product.name}-${product.currentPrice}-${product.originalPrice}`;
+		if (!seen.has(key)) {
+			seen.add(key);
+			uniqueProducts.push(product);
+		}
+	}
+	
+	console.log(`Removed ${products.length - uniqueProducts.length} duplicate products, processing ${uniqueProducts.length} unique items`);
+	
+	const highValueAlerts = [];
+	const summaryItems = [];
+	
+	uniqueProducts.forEach(product => {
+		// Check if product matches handbag categories
+		const matchesCategory = isHandbagCategory(product, config.monitoring.categories);
+		
+		// Check if product is from a designer brand
+		const isDesignerBrand = checkDesignerBrand(product, config.monitoring.designerBrands);
+		
+		// Calculate discount percentage
+		const discountPercent = calculateDiscount(product.originalPrice, product.currentPrice);
+		
+		// Add calculated discount to product object
+		product.discountPercent = discountPercent;
+		product.matchReason = getMatchReason(matchesCategory, isDesignerBrand, discountPercent >= config.monitoring.minDiscountPercent);
+		
+		// Check if product qualifies for high-value alerts (70%+ discount AND category/brand match)
+		const meetsHighValueThreshold = discountPercent >= config.monitoring.minDiscountPercent;
+		const qualifiesForHighValue = meetsHighValueThreshold && (matchesCategory || isDesignerBrand);
+		
+		if (qualifiesForHighValue) {
+			highValueAlerts.push(product);
+		} else if (discountPercent > 0 && (matchesCategory || isDesignerBrand)) {
+			// Add to summary if it has any discount and matches category/brand (but doesn't meet high threshold)
+			summaryItems.push(product);
+		}
+	});
+	
+	console.log(`Found ${highValueAlerts.length} high-value alerts and ${summaryItems.length} summary items`);
+	
+	return {
+		highValueAlerts: sortProductsByPriority(highValueAlerts),
+		summaryItems: sortProductsByPriority(summaryItems)
+	};
+}
+
+module.exports = {
+	filterProducts,
+	categorizeProducts,
+	isHandbagCategory,
+	checkDesignerBrand,
+	sortProductsByPriority
+};

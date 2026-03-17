@@ -1,65 +1,222 @@
-# Tech Context: Price Checker App
+# Technical Context - Price Checker Bot
 
-## 1. Core Technologies
+## Technology Stack
 
-*   **Runtime Environment:** Node.js (LTS version recommended, e.g., 18.x, 20.x). The specific version will be defined in the GitHub Actions workflow.
-*   **Package Manager:** npm (comes with Node.js).
-*   **Version Control:** Git.
-*   **Hosting/Scheduling:** GitHub Actions.
+### Runtime Environment
+- **Node.js**: Version 18+ (LTS recommended)
+- **Platform**: Cross-platform (Windows, macOS, Linux)
+- **Hosting**: GitHub Actions (serverless execution)
 
-## 2. Key Node.js Libraries (Initial Plan)
+### Core Dependencies
+- **puppeteer**: `^22.8.2` - Headless Chrome automation for web scraping
+- **discord.js**: `^14.14.1` - Discord API client for notifications
+- **dotenv**: `^16.3.1` - Environment variable management
 
-*   **`axios`:** For making HTTP requests to fetch the target URL's HTML content.
-    *   *Alternatives:* Node.js built-in `http`/`https` modules, `node-fetch`. `axios` is generally preferred for its ease of use and promise-based API.
-*   **`cheerio`:** For parsing HTML and extracting data using CSS selectors. It provides a fast, flexible, and lean implementation of core jQuery designed specifically for the server.
-    *   *Alternatives for dynamic sites:* `puppeteer`, `playwright`. These are full browser automation tools, more powerful but also heavier and more complex. We will start with `cheerio` assuming static content.
-*   **`discord.js`:** For interacting with the Discord API to send notifications.
-    *   This library will be used to log in as the bot and send messages to the specified channel.
+### Development Setup
+```bash
+# Clone repository
+git clone <repository-url>
+cd price-checker
 
-## 3. Development Setup
+# Install dependencies
+npm install
 
-*   **Local Development:**
-    *   Node.js and npm installed locally.
-    *   A code editor (e.g., VS Code).
-    *   Git for version control.
-    *   Developers will need to manage environment variables locally (e.g., using a `.env` file, which **must be gitignored**) for testing the script before committing.
-*   **GitHub Repository:**
-    *   The code will be hosted on GitHub.
-    *   GitHub Actions will be used for CI/CD (specifically, for the scheduled execution).
-    *   **Secrets Management:** Sensitive configuration (Target URL, Discount Percentage, Discord Bot Token, Discord Channel ID) will be stored as GitHub Secrets and accessed as environment variables in the workflow.
+# Setup environment
+cp .env.example .env
+# Edit .env with Discord token
 
-## 4. Configuration Variables (Environment Variables)
+# Run tests
+npm test
 
-The script will expect the following environment variables to be set:
+# Manual execution
+npm start
+```
 
-*   `TARGET_URL`: The full URL of the webpage to scrape.
-*   `DISCOUNT_PERCENTAGE`: The minimum percentage off (e.g., `30` for 30%) for a product to be included in the notification.
-*   `DISCORD_BOT_TOKEN`: The token for the Discord bot to authenticate.
-*   `DISCORD_CHANNEL_ID`: The ID of the Discord channel where notifications will be sent.
-*   `SCRAPE_INTERVAL_HOURS`: (This will be translated into a cron expression in the GitHub workflow, e.g., `0 */X * * *` for every X hours). While the script itself won't use this directly, it's a conceptual variable for the schedule.
+### Package Management
+- **Package Manager**: npm (with package-lock.json for version locking)
+- **Lock File**: package-lock.json committed to repository for reproducible builds
+- **Dependency Strategy**: Semver ranges in package.json, exact versions in lock file
+- **CI/CD**: Uses `npm ci` for faster, deterministic installs in GitHub Actions
 
-## 5. GitHub Actions Workflow (`.github/workflows/main.yml`)
+### Technical Constraints
 
-*   **Trigger:** Scheduled event (cron).
-    *   Example: `cron: '0 */6 * * *'` (runs every 6 hours). The interval `X` will be based on `SCRAPE_INTERVAL_HOURS`.
-*   **Jobs:**
-    *   A single job (e.g., `price_check`).
-    *   **Runner:** `ubuntu-latest` (or a specific version).
-    *   **Steps:**
-        1.  `actions/checkout@v3` (or latest): To checkout the repository code.
-        2.  `actions/setup-node@v3` (or latest): To set up the specified Node.js version.
-            *   `with: node-version: '18'` (or preferred LTS).
-        3.  `npm install`: To install project dependencies (`axios`, `cheerio`, `discord.js`).
-        4.  `Run price checker script`:
-            *   `node price-checker.js` (or the chosen script name).
-            *   `env:` section to map GitHub Secrets to environment variables for the script.
+#### GitHub Actions Limitations
+- **Execution Time**: 6 hours maximum per job (more than sufficient for this use case)
+- **Memory**: 7 GB available (Puppeteer requires ~100-200MB)
+- **Storage**: 14 GB available (minimal storage needs)
+- **Network**: Outbound connections allowed (required for web scraping and Discord)
 
-## 6. Potential Technical Constraints & Challenges
+#### Puppeteer Requirements
+- **Chromium**: Automatically downloaded and managed by Puppeteer
+- **Memory Usage**: ~100-200MB per browser instance
+- **Network**: Requires outbound HTTPS connections
+- **Headless Mode**: Runs in headless mode for CI/CD compatibility
 
-*   **Website Structure Changes:** The most significant challenge for any web scraper. If the target website's HTML structure or CSS class names change, the scraper's selectors will break, and it will fail to extract data correctly. This requires manual updates to the selectors.
-*   **Anti-Scraping Measures:**
-    *   **CAPTCHAs:** `cheerio` cannot handle CAPTCHAs. If encountered, a more advanced tool like Puppeteer with CAPTCHA solving services (often paid) would be needed, or the target site might become un-scrapable for this basic setup.
-    *   **IP Blocking/Rate Limiting:** Frequent requests from GitHub Actions' IP range might lead to blocking. Respecting `robots.txt` and keeping request frequency low is important.
-    *   **Dynamic Content Loading:** If product data is loaded via JavaScript after the initial page load, `cheerio` won't see it. Puppeteer/Playwright would be required.
-*   **Discord Bot Permissions/Rate Limits:** The Discord bot will need appropriate permissions on the server to send messages to the target channel. Discord API also has rate limits that the bot must respect, though for a simple notification bot running periodically, this is unlikely to be an issue.
-*   **Selector Specificity:** Crafting robust CSS selectors that are specific enough to get the right data but not so brittle that minor site changes break them is key.
+#### Discord API Constraints
+- **Rate Limiting**: 50 requests per second (we use 1-second delays)
+- **Message Size**: 2000 characters max (embeds have separate limits)
+- **Embed Limits**: 25 fields, 6000 characters total
+- **Bot Permissions**: Requires "Send Messages" and "Embed Links" permissions
+
+### Configuration Management
+
+#### Environment Variables
+```bash
+DISCORD_TOKEN=your_discord_bot_token_here
+```
+
+#### Configuration File (config.json)
+```json
+{
+  "website": {
+    "url": "https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale?sort=relevance&q=%3Adate-desc%3AstorefrontFacetCategories%3AWomensBags",
+    "name": "Holt Renfrew Sale - Women's Bags"
+  },
+  "monitoring": {
+    "frequency": "0 * * * *",
+    "minDiscountPercent": 50,
+    "categories": ["handbag", "bag", "purse", "clutch", "tote"],
+    "designerBrands": [
+      "Gucci", "Louis Vuitton", "Chanel", "Prada", "Hermès", "Dior", 
+      "Saint Laurent", "Bottega Veneta", "Celine", "Balenciaga", 
+      "Givenchy", "Valentino", "Fendi", "Burberry", "Coach"
+    ]
+  },
+  "discord": {
+    "enabled": true,
+    "channelName": "price-alerts"
+  }
+}
+```
+
+### Tool Usage Patterns
+
+#### Web Scraping Strategy
+- **Browser Automation**: Puppeteer with headless Chrome
+- **Dynamic Selector Detection**: Multiple fallback selectors for resilience to website changes
+- **Anti-Detection**: User agent spoofing, realistic timing
+- **Error Handling**: Timeout protection, graceful failures
+- **Resource Management**: Proper browser cleanup in finally blocks
+- **Adaptive Parsing**: Intelligent product container discovery when standard selectors fail
+
+#### Data Processing
+- **Price Parsing**: Regex-based extraction with fallback to zero
+- **Discount Calculation**: Percentage-based with validation
+- **Product Filtering**: Rule-based with configurable criteria
+- **Data Validation**: Input sanitization and type checking
+
+#### Notification System
+- **Discord Integration**: Rich embeds with images and links
+- **Rate Limiting**: 1-second delays between messages
+- **Error Recovery**: Isolated error handling per notification
+- **Graceful Degradation**: Max 10 alerts per run
+
+### Security Considerations
+
+#### Secret Management
+- **Development**: Local .env file (gitignored)
+- **Production**: GitHub Secrets for Discord token
+- **Access Control**: Bot token has minimal required permissions
+
+#### Input Validation
+- **Price Parsing**: Sanitized regex extraction
+- **URL Handling**: Validated against expected domains
+- **Error Messages**: Sanitized before sending to Discord
+
+#### Network Security
+- **HTTPS Only**: All external connections use HTTPS
+- **User Agent**: Realistic browser user agent string
+- **Request Headers**: Standard browser headers for anti-detection
+
+### Performance Optimization
+
+#### Execution Efficiency
+- **Parallel Processing**: Not implemented (single-threaded for simplicity)
+- **Caching**: No caching (stateless design)
+- **Resource Usage**: Minimal memory footprint
+- **Execution Time**: Typically completes in 30-60 seconds
+
+#### GitHub Actions Optimization
+- **Node.js Caching**: Dependencies cached between runs
+- **Artifact Management**: Logs uploaded on failure
+- **Scheduling**: Hourly execution to balance freshness and resource usage
+
+### Monitoring and Debugging
+
+#### Logging Strategy
+- **Console Output**: Comprehensive logging for all operations
+- **Error Reporting**: Detailed error messages with context
+- **Discord Notifications**: System status updates
+- **GitHub Actions**: Workflow logs and artifacts
+
+#### Testing Framework
+- **Unit Tests**: Configuration validation, price parsing
+- **Integration Tests**: Discord connection, web scraping (optional)
+- **CI/CD Tests**: Network tests skipped in automated environments
+- **Manual Testing**: Local execution for development
+
+### Deployment Pipeline
+
+#### GitHub Actions Workflow
+```yaml
+# Scheduled execution
+schedule:
+  - cron: '0 * * * *'  # Every hour
+
+# Manual trigger
+workflow_dispatch:
+
+# Environment setup
+- Node.js 18
+- npm ci (fast, deterministic install)
+- Environment variables from secrets
+```
+
+#### Version Control
+- **Git Strategy**: Main branch with direct commits
+- **Dependency Updates**: Both package.json and package-lock.json committed together
+- **Release Management**: No formal releases (continuous deployment)
+
+### Current Brand & Category Configuration
+
+**Total Brands**: 32 luxury designer brands
+- **High-End Luxury**: Gucci, Louis Vuitton, Chanel, Prada, Hermès, Dior
+- **Contemporary Luxury**: Saint Laurent, Bottega Veneta, Celine, Balenciaga
+- **Established Luxury**: Givenchy, Valentino, Fendi, Burberry, Coach
+- **Fashion Forward**: Chloe, Mach & Mach, Miu Miu, McQueen, Jacquemus, Acne
+- **Italian Craftsmanship**: Ferragamo, Maison Margiela, Tod's, **Marni**
+- **Footwear Specialists**: Jimmy Choo, Manolo Blahnik, Louboutin
+- **Luxury Accessories**: Loewe, Issey Miyake, Akris, Anzie
+
+**Total Categories**: 32 product type keywords
+- **Bags & Accessories**: handbag, bag, purse, clutch, tote, wallet
+- **Jewelry**: bracelet, necklace, earring, earrings, ring
+- **Footwear**: shoe, shoes, boot, boots, sandal, sandals, heel, heels, sneaker, sneakers, pump, pumps, flat, flats, loafer, loafers, mule, mules, slingback, runner, runners
+
+**Brand Filtering Logic**:
+- Products must match one of the designated brands exactly
+- Brand names are extracted from website and compared to the configured list
+- Case-sensitive matching ensures accuracy
+- Easy to modify by updating the `designerBrands` array in config.json
+
+**Category Filtering Logic**:
+- Products match categories by keyword matching against product name and brand
+- Case-insensitive matching allows flexibility for brand variations
+- Products can match multiple categories (e.g., designer bag)
+- Easy to add new categories by updating `categories` array in config.json
+
+### Future Technical Considerations
+
+#### Scalability
+- **Multi-Website**: Architecture supports easy extension
+- **Database Integration**: Optional persistence layer
+- **API Development**: REST endpoints for external integration
+- **Containerization**: Docker support for local development
+- **Brand Expansion**: Easy to add more brands or create brand categories
+
+#### Monitoring
+- **Health Checks**: System status monitoring
+- **Performance Metrics**: Execution time and success rates
+- **Error Tracking**: Centralized error reporting
+- **Alerting**: Enhanced notification system
+- **Brand Performance**: Track which brands generate most alerts
