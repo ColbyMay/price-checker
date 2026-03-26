@@ -36,8 +36,6 @@ class DiscordNotifier {
 		});
 
 		await this.client.login(token);
-		
-		// Wait for the bot to be ready
 		await this.waitForReady();
 	}
 
@@ -47,14 +45,46 @@ class DiscordNotifier {
 	 */
 	async waitForReady(timeout = 10000) {
 		const startTime = Date.now();
-		
+
 		while (!this.isReady && (Date.now() - startTime) < timeout) {
 			await new Promise(resolve => setTimeout(resolve, 100));
 		}
-		
+
 		if (!this.isReady) {
 			throw new Error('Discord bot failed to initialize within timeout');
 		}
+	}
+
+	/**
+	 * Finds a text channel by name across all guilds the bot is in
+	 * @param {string} channelName - Name of the channel to find
+	 * @returns {Object|null} Discord channel object or null
+	 */
+	findChannel(channelName) {
+		// Try exact match first
+		let channel = this.client.channels.cache.find(ch =>
+			ch.name === channelName && ch.type === 0
+		);
+
+		if (channel) return channel;
+
+		// Search through all guilds
+		for (const guild of this.client.guilds.cache.values()) {
+			channel = guild.channels.cache.find(ch =>
+				ch.name === channelName && ch.type === 0
+			);
+			if (channel) return channel;
+		}
+
+		// Case-insensitive fallback
+		for (const guild of this.client.guilds.cache.values()) {
+			channel = guild.channels.cache.find(ch =>
+				ch.name.toLowerCase() === channelName.toLowerCase() && ch.type === 0
+			);
+			if (channel) return channel;
+		}
+
+		return null;
 	}
 
 	/**
@@ -75,85 +105,38 @@ class DiscordNotifier {
 		}
 
 		try {
-			// Debug: Log all available channels
-			console.log('=== Discord Channel Debug Info ===');
-			console.log(`Looking for channel: "${channelName}"`);
-			console.log(`Bot is in ${this.client.guilds.cache.size} guild(s)`);
-			
-			// Log all guilds the bot is in
-			this.client.guilds.cache.forEach(guild => {
-				console.log(`Guild: ${guild.name} (ID: ${guild.id})`);
-				console.log(`  Bot has access to ${guild.channels.cache.size} channels`);
-				
-				// Log all channels in this guild
-				guild.channels.cache.forEach(channel => {
-					console.log(`  - Channel: "${channel.name}" (Type: ${channel.type}, ID: ${channel.id})`);
-				});
-			});
-			
-			// Try to find the channel using multiple methods
-			let channel = null;
-			
-			// Method 1: Search in client.channels.cache (original method)
-			channel = this.client.channels.cache.find(ch => 
-				ch.name === channelName && ch.type === 0 // Text channel
-			);
-			
-			if (!channel) {
-				console.log(`Method 1 failed: Channel '${channelName}' not found in client.channels.cache`);
-				
-				// Method 2: Search through all guilds
-				for (const guild of this.client.guilds.cache.values()) {
-					channel = guild.channels.cache.find(ch => 
-						ch.name === channelName && ch.type === 0
-					);
-					if (channel) {
-						console.log(`Method 2 success: Found channel '${channelName}' in guild '${guild.name}'`);
-						break;
-					}
-				}
-			} else {
-				console.log(`Method 1 success: Found channel '${channelName}' in client.channels.cache`);
-			}
-			
-			if (!channel) {
-				// Method 3: Try case-insensitive search
-				for (const guild of this.client.guilds.cache.values()) {
-					channel = guild.channels.cache.find(ch => 
-						ch.name.toLowerCase() === channelName.toLowerCase() && ch.type === 0
-					);
-					if (channel) {
-						console.log(`Method 3 success: Found channel '${ch.name}' (case-insensitive match) in guild '${guild.name}'`);
-						break;
-					}
-				}
-			}
+			const channel = this.findChannel(channelName);
 
 			if (!channel) {
-				// Provide detailed error message with available channels
 				let availableChannels = [];
 				this.client.guilds.cache.forEach(guild => {
 					guild.channels.cache.forEach(ch => {
-						if (ch.type === 0) { // Text channels only
+						if (ch.type === 0) {
 							availableChannels.push(`${ch.name} (in ${guild.name})`);
 						}
 					});
 				});
-				
-				const errorMsg = `Channel '${channelName}' not found. Available text channels: ${availableChannels.length > 0 ? availableChannels.join(', ') : 'None found'}`;
-				throw new Error(errorMsg);
+
+				throw new Error(`Channel '${channelName}' not found. Available: ${availableChannels.join(', ') || 'None'}`);
 			}
 
 			console.log(`Sending ${products.length} price alerts to #${channelName}${silent ? ' (silent)' : ''}`);
 
-			// Send summary message first
+			// Send summary embed
+			const newCount = products.filter(p => !p.isPriceDrop).length;
+			const dropCount = products.filter(p => p.isPriceDrop).length;
+
+			let description = `Found ${products.length} qualifying item${products.length > 1 ? 's' : ''} on sale!`;
+			if (dropCount > 0) {
+				description += `\n${newCount > 0 ? newCount + ' new, ' : ''}${dropCount} further reduced`;
+			}
+
 			const summaryEmbed = new EmbedBuilder()
-				.setTitle(`🛍️ ${websiteName} Price Alert`)
-				.setDescription(`Found ${products.length} qualifying item${products.length > 1 ? 's' : ''} on sale!`)
-				.setColor(silent ? 0x808080 : 0x00AE86) // Gray for silent, green for normal
+				.setTitle(`${websiteName} Price Alert`)
+				.setDescription(description)
+				.setColor(silent ? 0x808080 : 0x00AE86)
 				.setTimestamp();
 
-			// Send with or without @here mention based on silent flag
 			const messageOptions = { embeds: [summaryEmbed] };
 			if (!silent) {
 				messageOptions.content = '@here';
@@ -161,14 +144,13 @@ class DiscordNotifier {
 
 			await channel.send(messageOptions);
 
-			// Send individual product alerts (limit to prevent spam)
-			const maxAlerts = Math.min(products.length, 10);
-			
+			// Send individual product alerts (max 5 since duplicates are now eliminated)
+			const maxAlerts = Math.min(products.length, 5);
+
 			for (let i = 0; i < maxAlerts; i++) {
 				const product = products[i];
 				await this.sendProductAlert(channel, product);
-				
-				// Add small delay to prevent rate limiting
+
 				if (i < maxAlerts - 1) {
 					await new Promise(resolve => setTimeout(resolve, 1000));
 				}
@@ -178,7 +160,7 @@ class DiscordNotifier {
 				const remainingEmbed = new EmbedBuilder()
 					.setDescription(`... and ${products.length - maxAlerts} more items. Check the website for full details!`)
 					.setColor(0xFFAA00);
-				
+
 				await channel.send({ embeds: [remainingEmbed] });
 			}
 
@@ -189,39 +171,43 @@ class DiscordNotifier {
 	}
 
 	/**
-	 * Sends a notification for a single product
+	 * Sends a notification embed for a single product
+	 * Uses different styling for price-drop re-notifications vs new finds
 	 * @param {Object} channel - Discord channel object
 	 * @param {Object} product - Product object
 	 */
 	async sendProductAlert(channel, product) {
-		const embed = new EmbedBuilder()
-			.setTitle(product.name)
-			.setURL(product.productUrl || 'https://www.holtrenfrew.com')
-			.setColor(0xFF6B6B);
+		const isPriceDrop = !!product.isPriceDrop;
 
-		// Add brand if available
+		const embed = new EmbedBuilder()
+			.setTitle(isPriceDrop ? `Further Reduced: ${product.name}` : product.name)
+			.setURL(product.productUrl || 'https://www.holtrenfrew.com')
+			.setColor(isPriceDrop ? 0xFF4500 : 0xFF6B6B);
+
 		if (product.brand) {
 			embed.addFields({ name: 'Brand', value: product.brand, inline: true });
 		}
 
-		// Add pricing information
-		if (product.currentPrice) {
-			embed.addFields({ name: 'Current Price', value: product.currentPrice, inline: true });
-		}
+		// Price display
+		const priceDisplay = product.formattedCurrentPrice || `$${product.currentPrice}`;
+		embed.addFields({ name: 'Current Price', value: priceDisplay, inline: true });
 
-		if (product.originalPrice && product.discountPercent > 0) {
+		const originalDisplay = product.formattedOriginalPrice || `$${product.originalPrice}`;
+		if (product.discountPercent > 0) {
 			embed.addFields(
-				{ name: 'Original Price', value: product.originalPrice, inline: true },
+				{ name: 'Original Price', value: originalDisplay, inline: true },
 				{ name: 'Discount', value: `${product.discountPercent}% OFF`, inline: true }
 			);
 		}
 
-		// Add match reason
 		if (product.matchReason) {
 			embed.addFields({ name: 'Match Criteria', value: product.matchReason, inline: false });
 		}
 
-		// Add product image if available
+		if (isPriceDrop) {
+			embed.setFooter({ text: 'Price dropped since last notification' });
+		}
+
 		if (product.imageUrl) {
 			embed.setThumbnail(product.imageUrl);
 		}
@@ -235,43 +221,39 @@ class DiscordNotifier {
 	 * Sends a status message to the specified channel
 	 * @param {string} channelName - Name of the Discord channel
 	 * @param {string} message - Message to send
-	 * @param {boolean} mentionHere - Whether to add @here mention for alerts
+	 * @param {boolean} mentionHere - Whether to add @here mention
 	 */
 	async sendStatusMessage(channelName, message, mentionHere = false) {
 		try {
-			const channel = this.client.channels.cache.find(ch => 
-				ch.name === channelName && ch.type === 0
-			);
-			
+			const channel = this.findChannel(channelName);
+
 			if (!channel) {
 				console.error(`Channel #${channelName} not found`);
 				return;
 			}
-			
-			// Add @here mention for alert messages
+
 			const finalMessage = mentionHere ? `@here ${message}` : message;
-			
 			await channel.send(finalMessage);
 			console.log(`Status message sent to #${channelName}${mentionHere ? ' with @here mention' : ''}`);
-			
+
 		} catch (error) {
 			console.error('Error sending status message:', error);
 		}
 	}
 
 	/**
-	 * Sends a summary message to the hourly summaries channel
-	 * @param {string} channelName - Name of the Discord channel
-	 * @param {string} message - Summary message to send
+	 * Sends a summary message (no mention)
+	 * @param {string} channelName - Channel name
+	 * @param {string} message - Summary message
 	 */
 	async sendSummaryMessage(channelName, message) {
 		await this.sendStatusMessage(channelName, message, false);
 	}
 
 	/**
-	 * Sends an alert message to the alerts channel with @here mention
-	 * @param {string} channelName - Name of the Discord channel
-	 * @param {string} message - Alert message to send
+	 * Sends an alert message with @here mention
+	 * @param {string} channelName - Channel name
+	 * @param {string} message - Alert message
 	 */
 	async sendAlertMessage(channelName, message) {
 		await this.sendStatusMessage(channelName, message, true);

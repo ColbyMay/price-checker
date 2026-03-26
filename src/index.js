@@ -3,7 +3,8 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const { scrapeProducts } = require('./scraper');
-const { filterProducts, categorizeProducts, sortProductsByPriority } = require('./filter');
+const { categorizeProducts } = require('./filter');
+const { loadState, checkNotificationStatus, markNotified, updateLastSeen, pruneExpiredEntries, saveState } = require('./state');
 const DiscordNotifier = require('./discord');
 
 // Global configuration object
@@ -25,29 +26,61 @@ function loadConfig() {
 }
 
 /**
+ * Separates products into new alerts and price-drop re-alerts based on notification state
+ * @param {Array} products - Filtered products that meet criteria
+ * @param {Object} state - Current notification state
+ * @returns {{ newProducts: Array, priceDropProducts: Array, skippedCount: number }}
+ */
+function deduplicateAgainstState(products, state) {
+	const newProducts = [];
+	const priceDropProducts = [];
+	let skippedCount = 0;
+
+	for (const product of products) {
+		const { alreadyNotified, isPriceDrop } = checkNotificationStatus(product, state);
+
+		if (isPriceDrop) {
+			product.isPriceDrop = true;
+			priceDropProducts.push(product);
+		} else if (!alreadyNotified) {
+			newProducts.push(product);
+		} else {
+			skippedCount++;
+		}
+	}
+
+	return { newProducts, priceDropProducts, skippedCount };
+}
+
+/**
  * Main price checking function
  */
 async function runPriceCheck() {
 	console.log('=== Starting Price Check ===');
 	console.log(`Timestamp: ${new Date().toISOString()}`);
-	
+
 	let discordNotifier = null;
-	
+
 	try {
 		// Load configuration
 		loadConfig();
-		
+
+		// Load notification state for deduplication
+		const state = loadState();
+		const maxAgeDays = (CONFIG.state && CONFIG.state.maxAgeDays) || 14;
+		pruneExpiredEntries(state, maxAgeDays);
+
 		// Initialize Discord notifier if enabled
 		if (CONFIG.discord.enabled) {
 			const discordToken = process.env.DISCORD_BOT_TOKEN;
 			if (!discordToken) {
 				throw new Error('DISCORD_BOT_TOKEN environment variable is required');
 			}
-			
+
 			discordNotifier = new DiscordNotifier();
 			await discordNotifier.initialize(discordToken);
 		}
-		
+
 		// Define categories to scrape
 		const CATEGORY_URLS = [
 			{
@@ -71,11 +104,11 @@ async function runPriceCheck() {
 				maxProducts: 200
 			}
 		];
-		
+
 		// Scrape all categories
-		console.log(`\n📦 Scraping ${CATEGORY_URLS.length} product categories...`);
+		console.log(`\nScraping ${CATEGORY_URLS.length} product categories...`);
 		const allProducts = [];
-		
+
 		for (const category of CATEGORY_URLS) {
 			console.log(`\n=== Scraping ${category.name} ===`);
 			const categoryProducts = await scrapeProducts(category.url, {
@@ -84,118 +117,132 @@ async function runPriceCheck() {
 			console.log(`Found ${categoryProducts.length} ${category.name.toLowerCase()} products`);
 			allProducts.push(...categoryProducts);
 		}
-		
+
 		console.log(`\n=== Combined Results ===`);
-		console.log(`Total products from both categories: ${allProducts.length}`);
-		
+		console.log(`Total products scraped: ${allProducts.length}`);
+
 		if (allProducts.length === 0) {
 			console.log('No products found during scraping');
-			
+
 			if (discordNotifier) {
 				await discordNotifier.sendSummaryMessage(
 					CONFIG.discord.summaryChannelName,
-					'⚠️ **Hourly Summary** - No products found. The website might be down or the scraper needs updating.'
+					'Warning: No products found. The website might be down or the scraper needs updating.'
 				);
 			}
-			
+
+			saveState(state);
 			return;
 		}
-		
+
+		// Update lastSeen for all scraped products (even ones we won't notify about)
+		updateLastSeen(allProducts, state);
+
 		// Categorize products into high-value alerts and summary items
 		const { highValueAlerts, summaryItems } = categorizeProducts(allProducts, CONFIG);
-		
-		// Log results
+
 		console.log('=== Product Categorization Results ===');
 		console.log(`High-value alerts (${CONFIG.monitoring.minDiscountPercent}%+): ${highValueAlerts.length}`);
 		console.log(`Summary items (lower discounts): ${summaryItems.length}`);
-		
-		if (highValueAlerts.length > 0) {
-			console.log('\n=== High-Value Alerts ===');
-			highValueAlerts.forEach((product, index) => {
-				console.log(`${index + 1}. ${product.brand} - ${product.name}`);
-				console.log(`   Price: ${product.currentPrice} (${product.discountPercent}% off)`);
+
+		// Deduplicate high-value alerts against notification state
+		const renotifyOnPriceDrop = !CONFIG.state || CONFIG.state.renotifyOnPriceDrop !== false;
+		const {
+			newProducts,
+			priceDropProducts,
+			skippedCount
+		} = deduplicateAgainstState(highValueAlerts, state);
+
+		console.log(`\n=== Deduplication Results ===`);
+		console.log(`New products to notify: ${newProducts.length}`);
+		console.log(`Price drops to re-notify: ${renotifyOnPriceDrop ? priceDropProducts.length : 0}`);
+		console.log(`Already notified (skipped): ${skippedCount}`);
+
+		// Combine products to notify
+		const productsToNotify = [
+			...newProducts,
+			...(renotifyOnPriceDrop ? priceDropProducts : [])
+		];
+
+		if (productsToNotify.length > 0) {
+			console.log('\n=== Products to Notify ===');
+			productsToNotify.forEach((product, index) => {
+				const tag = product.isPriceDrop ? ' [PRICE DROP]' : ' [NEW]';
+				console.log(`${index + 1}. ${product.brand} - ${product.name}${tag}`);
+				console.log(`   Price: ${product.formattedCurrentPrice || '$' + product.currentPrice} (${product.discountPercent}% off)`);
 				console.log(`   Reason: ${product.matchReason}`);
 				console.log(`   URL: ${product.productUrl}`);
 				console.log('');
 			});
 		}
-		
+
 		// Send Discord notifications
 		if (discordNotifier) {
-			// Handle high-value alerts (70%+ discounts) - send to price-alerts with @here
-			if (highValueAlerts.length > 0) {
-				console.log(`Sending ${highValueAlerts.length} high-value alerts to #${CONFIG.discord.alertChannelName}`);
-				
-				// Send alert message with @here mention
-				const alertMessage = `🚨 **High-Value Deals Found!**\n` +
-					`Found **${highValueAlerts.length} item${highValueAlerts.length > 1 ? 's' : ''}** with ${CONFIG.monitoring.minDiscountPercent}%+ discounts!`;
-				
+			// Send high-value alerts (new + price drops)
+			if (productsToNotify.length > 0) {
+				console.log(`Sending ${productsToNotify.length} alerts to #${CONFIG.discord.alertChannelName}`);
+
+				const alertMessage = `**${productsToNotify.length === 1 ? 'New Deal Found!' : productsToNotify.length + ' New Deals Found!'}**\n` +
+					`${newProducts.length > 0 ? newProducts.length + ' new item' + (newProducts.length > 1 ? 's' : '') : ''}` +
+					`${newProducts.length > 0 && priceDropProducts.length > 0 ? ', ' : ''}` +
+					`${priceDropProducts.length > 0 ? priceDropProducts.length + ' further reduced' : ''}` +
+					` with ${CONFIG.monitoring.minDiscountPercent}%+ discounts!`;
+
 				await discordNotifier.sendAlertMessage(
 					CONFIG.discord.alertChannelName,
 					alertMessage
 				);
-				
-				// Send detailed product alerts to the alerts channel (with @here mentions)
+
 				await discordNotifier.sendPriceAlerts(
-					highValueAlerts,
+					productsToNotify,
 					CONFIG.discord.alertChannelName,
 					CONFIG.website.name,
-					false // Not silent - include @here mentions
+					false
 				);
+
+				// Mark all notified products in state
+				markNotified(productsToNotify, state);
 			}
-			
-			// Always send hourly summary to hourly-summaries channel (silent)
+
+			// Send hourly summary
 			const totalRelevantItems = highValueAlerts.length + summaryItems.length;
-			
+
 			if (totalRelevantItems === 0) {
-				// No relevant items found
-				const brandsSeen = [...new Set(allProducts.map(p => p.brand).filter(b => b && b.length < 50))];
-				const cleanBrands = brandsSeen
-					.map(brand => brand.replace(/\$\d+.*$/, '').trim())
-					.filter(brand => brand && brand.length > 1 && brand.length < 30)
-					.slice(0, 5);
-				
-				const remainingCount = Math.max(0, brandsSeen.length - 5);
-				let brandsText = cleanBrands.join(', ');
-				if (remainingCount > 0) {
-					brandsText += ` and ${remainingCount} others`;
-				}
-				
-				const summaryMessage = `📊 **Hourly Summary**\n` +
-					`📦 Found **${allProducts.length} products** from brands like: ${brandsText}\n` +
-					`🎯 None meet your criteria (${CONFIG.monitoring.minDiscountPercent}%+ discount + designer/handbag)\n` +
-					`⏰ Next check in 1 hour`;
-				
+				const summaryMessage = `**Hourly Summary**\n` +
+					`Scanned **${allProducts.length} products** across ${CATEGORY_URLS.length} categories\n` +
+					`None meet criteria (${CONFIG.monitoring.minDiscountPercent}%+ discount + designer/category match)\n` +
+					`Next check in 1 hour`;
+
 				await discordNotifier.sendSummaryMessage(
 					CONFIG.discord.summaryChannelName,
 					summaryMessage
 				);
 			} else {
-				// Create summary with both high-value and lower-discount items
-				let summaryMessage = `📊 **Hourly Summary**\n` +
-					`📦 Found **${allProducts.length} total products**\n`;
-				
-				if (highValueAlerts.length > 0) {
-					summaryMessage += `🚨 **${highValueAlerts.length} high-value alert${highValueAlerts.length > 1 ? 's' : ''}** (${CONFIG.monitoring.minDiscountPercent}%+) → sent to #${CONFIG.discord.alertChannelName}\n`;
+				let summaryMessage = `**Hourly Summary**\n` +
+					`Scanned **${allProducts.length} products** across ${CATEGORY_URLS.length} categories\n`;
+
+				if (productsToNotify.length > 0) {
+					summaryMessage += `**${productsToNotify.length} new alert${productsToNotify.length > 1 ? 's' : ''}** sent to #${CONFIG.discord.alertChannelName}\n`;
 				}
-				
+
+				if (skippedCount > 0) {
+					summaryMessage += `${skippedCount} already-notified item${skippedCount > 1 ? 's' : ''} skipped\n`;
+				}
+
 				if (summaryItems.length > 0) {
-					// Remove duplicates based on name and brand combination
+					// Deduplicate summary items
 					const uniqueSummaryItems = [];
 					const seen = new Set();
-					
 					for (const product of summaryItems) {
-						// Create a unique key based on brand, name, and discount percentage
 						const key = `${product.brand}-${product.name}-${product.discountPercent}`;
 						if (!seen.has(key)) {
 							seen.add(key);
 							uniqueSummaryItems.push(product);
 						}
 					}
-					
-					summaryMessage += `📋 **${uniqueSummaryItems.length} other deal${uniqueSummaryItems.length > 1 ? 's' : ''}** (lower discounts):\n`;
-					
-					// Show top 5 unique summary items
+
+					summaryMessage += `**${uniqueSummaryItems.length} other deal${uniqueSummaryItems.length > 1 ? 's' : ''}** (lower discounts):\n`;
+
 					const topSummaryItems = uniqueSummaryItems.slice(0, 5);
 					topSummaryItems.forEach((product, index) => {
 						let cleanName = product.name.replace(new RegExp(`^${product.brand}\\s*`, 'i'), '').trim();
@@ -205,43 +252,43 @@ async function runPriceCheck() {
 						const productLink = product.productUrl ? `[${cleanName}](${product.productUrl})` : cleanName;
 						summaryMessage += `${index + 1}. **${product.brand}** ${productLink} - ${product.discountPercent}% off\n`;
 					});
-					
+
 					if (uniqueSummaryItems.length > 5) {
 						summaryMessage += `... and ${uniqueSummaryItems.length - 5} more\n`;
 					}
 				}
-				
-				summaryMessage += `⏰ Next check in 1 hour`;
-				
+
+				summaryMessage += `Next check in 1 hour`;
+
 				await discordNotifier.sendSummaryMessage(
 					CONFIG.discord.summaryChannelName,
 					summaryMessage
 				);
 			}
 		}
-		
+
+		// Save state (even if no notifications were sent, to update lastSeen)
+		saveState(state);
+
 		console.log('=== Price Check Completed Successfully ===');
-		
+
 	} catch (error) {
 		console.error('Error during price check:', error);
-		
-		// Send error notification to Discord if possible
+
 		if (discordNotifier) {
 			try {
 				await discordNotifier.sendStatusMessage(
 					CONFIG.discord.summaryChannelName,
-					`❌ Price check failed: ${error.message}`
+					`Price check failed: ${error.message}`
 				);
 			} catch (discordError) {
 				console.error('Failed to send error notification to Discord:', discordError);
 			}
 		}
-		
-		// Re-throw error for GitHub Actions to detect failure
+
 		throw error;
-		
+
 	} finally {
-		// Clean up Discord connection
 		if (discordNotifier) {
 			try {
 				await discordNotifier.close();
@@ -260,27 +307,25 @@ function setupGracefulShutdown() {
 		console.log('Received SIGINT, shutting down gracefully...');
 		process.exit(0);
 	});
-	
+
 	process.on('SIGTERM', () => {
 		console.log('Received SIGTERM, shutting down gracefully...');
 		process.exit(0);
 	});
-	
+
 	process.on('unhandledRejection', (reason, promise) => {
 		console.error('Unhandled Rejection at:', promise, 'reason:', reason);
 		process.exit(1);
 	});
-	
+
 	process.on('uncaughtException', (error) => {
 		console.error('Uncaught Exception:', error);
 		process.exit(1);
 	});
 }
 
-// Set up graceful shutdown handlers
 setupGracefulShutdown();
 
-// Run the price check if this file is executed directly
 if (require.main === module) {
 	runPriceCheck()
 		.then(() => {

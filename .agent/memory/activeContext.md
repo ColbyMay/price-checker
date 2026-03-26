@@ -2,52 +2,42 @@
 
 ## 1. Current Work Focus
 
-*   **Phase:** Project Initialization and Planning.
-*   **Current Activity:** Defining the initial project structure, core requirements, and technical approach. Setting up the Memory Bank.
-*   **Immediate Goal:** Finalize the initial plan and gather any prerequisite information before starting implementation.
+*   **Phase:** Major overhaul completed (2026-03-26)
+*   **Current Activity:** All three core problems addressed — scraping, deduplication, and fragile selectors
+*   **Immediate Goal:** Deploy and verify in GitHub Actions
 
 ## 2. Recent Changes & Decisions
 
-*   **Memory Bank Setup:** Core documents created. Now updating to reflect switch to Discord notifications.
-*   **Core Technologies Confirmed:** Node.js, `axios`, `cheerio`, `discord.js`, GitHub Actions for scheduling.
-*   **Initial Scraping Assumption:** The target website's content is assumed to be static or server-rendered, making `cheerio` a suitable choice. If dynamic content loading is discovered, a re-evaluation (potentially to Puppeteer/Playwright) will be needed.
-*   **Notification Method Changed:** Switched from Email (Nodemailer) to Discord Bot (`discord.js`).
-    *   User provided Bot Token and Channel URL. Channel ID extracted: `1376958129576869928`.
-    *   **Action Required by User:** Secure the Bot Token as a GitHub Secret (`DISCORD_BOT_TOKEN`). The Channel ID will also be a secret (`DISCORD_CHANNEL_ID`).
+*   **Scraper Rewrite:** Replaced scroll-based DOM scraping with Puppeteer network interception
+    *   Captures Holt Renfrew's internal Hybris API responses (JSON)
+    *   API endpoint: `/en/c/WomensSale/results?sort=relevance&q=...&grid=2`
+    *   Gets structured data: code, name, brand, price, salePercentage, images, pagination
+    *   4-5 seconds per category (down from 40+ seconds)
+    *   100% product coverage (API returns exact totalResults count)
+*   **State Persistence:** Added `src/state.js` and `state/notified.json`
+    *   Products tracked by code (SKU) as primary key
+    *   Deduplicates across runs — same product at same price is not re-notified
+    *   Price drops trigger re-notification with distinct "Further Reduced" embed
+    *   State pruned after 14 days of not being seen
+    *   Git-committed state file for persistence between GitHub Actions runs
+*   **Filter Simplification:** Removed dependency on scraper's `calculateDiscount`
+    *   Uses `discountPercent` from API parser (which prefers API's own `salePercentage`)
+    *   Brand matching uses API's explicit `brand` field
+*   **Discord Updates:**
+    *   Price-drop products get orange embeds with "Further Reduced" prefix
+    *   Max alerts reduced from 10 to 5 (since duplicates eliminated)
+    *   Extracted `findChannel()` helper for cleaner channel lookup
+*   **GitHub Actions:** Added concurrency group, `permissions: contents: write`, and state commit step
 
-## 3. Next Steps (Planned)
+## 3. Next Steps
 
-1.  Create `progress.md` to complete the initial Memory Bank setup.
-2.  Present the overall plan to the user for approval/feedback.
-3.  **Configuration Status & Next Steps:**
-    *   **`TARGET_URL`**: `https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale` ✓ RECEIVED
-    *   **`DISCOUNT_PERCENTAGE`**: `75` (for 75% off) ✓ RECEIVED
-    *   **`SCRAPE_INTERVAL_HOURS`**: `6` ✓ RECEIVED (Cron: `0 */6 * * *`)
-    *   **`DISCORD_CHANNEL_ID`**: `1376958129576869928` ✓ RECEIVED (from URL)
-    *   **`DISCORD_BOT_TOKEN`**: Provided by user. ⚠️ **Action Required by User: Store this token as a GitHub Secret named `DISCORD_BOT_TOKEN`. Do not commit it directly.**
-    *   All other configuration details for scraping are now available.
-4.  Once the Discord Bot Token is secured as a GitHub Secret and the user approves the updated plan:
-    *   Initialize the Node.js project (`package.json`).
-    *   Install dependencies (`axios`, `cheerio`, `discord.js`, `dotenv`).
-    *   Develop the `price-checker.js` script, starting with fetching and basic parsing.
-    *   Iteratively develop product extraction logic (this will require inspecting the `TARGET_URL`'s HTML).
-    *   Implement discount calculation and filtering.
-    *   Implement Discord notification functionality using `discord.js`.
-    *   Create the GitHub Actions workflow file (`.github/workflows/main.yml`).
-    *   Test locally (with a `.env` file).
-    *   Test via GitHub Actions (manually triggering the workflow initially).
+1.  Test full end-to-end run with Discord connected
+2.  Monitor first few GitHub Actions runs to verify state persistence
+3.  Verify state file commit/push works correctly in CI
+4.  Consider adding more categories or sites in the future
 
-## 4. Active Considerations & Potential Blockers
+## 4. Active Considerations
 
-*   **Target URL Analysis:** The provided URL (`https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale`) needs to be analyzed to determine if `cheerio` is sufficient or if the content is dynamically loaded. This will also inform the CSS selector strategy.
-*   **CSS Selectors:** Identifying robust CSS selectors for the Holt Renfrew site will be an iterative process.
-*   **Anti-Scraping Measures:** The chosen `TARGET_URL` might have anti-scraping measures that could complicate development.
-*   **Discord Bot Token Security:** User must ensure the Bot Token is stored securely as a GitHub Secret and not exposed.
-*   **Discord Bot Permissions:** The bot will need correct permissions on the Discord server to send messages to the specified channel.
-
-## 5. Important Patterns & Preferences (Emerging)
-
-*   **Memory Bank Driven Development:** All significant decisions, context, and progress will be logged in the Memory Bank.
-*   **Configuration via Environment Variables/Secrets:** Prioritizing this for security and flexibility within GitHub Actions.
-*   **Iterative Development:** Especially for the scraper logic, which will likely require adjustments based on the target site.
-*   **Start Simple:** Begin with `cheerio` and basic functionality, only escalating to more complex tools (like Puppeteer) if proven necessary.
+*   **API stability:** The intercepted API pattern (`/results`) could change if Holt Renfrew updates their frontend. A fallback DOM scraper is in place.
+*   **Navigation frame detached warning:** Benign Puppeteer message during browser close, not a functional issue.
+*   **Bags category currently small:** Only 21 products in sale. Shoes has 28. These numbers will fluctuate with seasonal sales.

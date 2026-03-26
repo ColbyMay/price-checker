@@ -2,64 +2,57 @@
 
 ## 1. Core Technologies
 
-*   **Runtime Environment:** Node.js (LTS version recommended, e.g., 18.x, 20.x). The specific version will be defined in the GitHub Actions workflow.
-*   **Package Manager:** npm (comes with Node.js).
-*   **Version Control:** Git.
-*   **Hosting/Scheduling:** GitHub Actions.
+*   **Runtime:** Node.js 18 (LTS)
+*   **Package Manager:** npm
+*   **Hosting/Scheduling:** GitHub Actions (cron: every hour)
 
-## 2. Key Node.js Libraries (Initial Plan)
+## 2. Dependencies
 
-*   **`axios`:** For making HTTP requests to fetch the target URL's HTML content.
-    *   *Alternatives:* Node.js built-in `http`/`https` modules, `node-fetch`. `axios` is generally preferred for its ease of use and promise-based API.
-*   **`cheerio`:** For parsing HTML and extracting data using CSS selectors. It provides a fast, flexible, and lean implementation of core jQuery designed specifically for the server.
-    *   *Alternatives for dynamic sites:* `puppeteer`, `playwright`. These are full browser automation tools, more powerful but also heavier and more complex. We will start with `cheerio` assuming static content.
-*   **`discord.js`:** For interacting with the Discord API to send notifications.
-    *   This library will be used to log in as the bot and send messages to the specified channel.
+*   **`puppeteer` ^22.8.2** — Headless browser for navigating Holt Renfrew (required due to CloudFlare WAF blocking direct HTTP). Used for API interception, not DOM scraping.
+*   **`discord.js` ^14.14.1** — Discord API client for sending rich embed notifications
+*   **`dotenv` ^16.3.1** — Loads `.env` file for local development
 
-## 3. Development Setup
+## 3. Key Files
 
-*   **Local Development:**
-    *   Node.js and npm installed locally.
-    *   A code editor (e.g., VS Code).
-    *   Git for version control.
-    *   Developers will need to manage environment variables locally (e.g., using a `.env` file, which **must be gitignored**) for testing the script before committing.
-*   **GitHub Repository:**
-    *   The code will be hosted on GitHub.
-    *   GitHub Actions will be used for CI/CD (specifically, for the scheduled execution).
-    *   **Secrets Management:** Sensitive configuration (Target URL, Discount Percentage, Discord Bot Token, Discord Channel ID) will be stored as GitHub Secrets and accessed as environment variables in the workflow.
+| File | Purpose |
+|------|---------|
+| `src/index.js` | Orchestrator: config, scrape, filter, dedup, notify, save state |
+| `src/scraper.js` | Puppeteer network interception to capture Hybris API responses |
+| `src/apiParser.js` | Normalizes Hybris JSON into standard product objects |
+| `src/filter.js` | Categorizes products by discount threshold + brand/category |
+| `src/discord.js` | Discord notification service with price-drop styling |
+| `src/state.js` | State persistence: load, check, mark, prune, save |
+| `config.json` | All configuration (URLs, brands, thresholds, channel names) |
+| `state/notified.json` | Persisted notification state (git-committed by CI) |
 
-## 4. Configuration Variables (Environment Variables)
+## 4. Configuration
 
-The script will expect the following environment variables to be set:
+**Environment Variables (Secrets):**
+*   `DISCORD_BOT_TOKEN` — Bot authentication token
 
-*   `TARGET_URL`: The full URL of the webpage to scrape.
-*   `DISCOUNT_PERCENTAGE`: The minimum percentage off (e.g., `30` for 30%) for a product to be included in the notification.
-*   `DISCORD_BOT_TOKEN`: The token for the Discord bot to authenticate.
-*   `DISCORD_CHANNEL_ID`: The ID of the Discord channel where notifications will be sent.
-*   `SCRAPE_INTERVAL_HOURS`: (This will be translated into a cron expression in the GitHub workflow, e.g., `0 */X * * *` for every X hours). While the script itself won't use this directly, it's a conceptual variable for the schedule.
+**config.json fields:**
+*   `website.url` — Base Holt Renfrew sale URL
+*   `monitoring.minDiscountPercent` — Minimum discount for high-value alerts (70)
+*   `monitoring.categories` — Product category keywords to match
+*   `monitoring.designerBrands` — Designer brand names to match
+*   `discord.alertChannelName` — Channel for deal alerts ("price-alerts")
+*   `discord.summaryChannelName` — Channel for hourly summaries ("hourly-summaries")
+*   `state.maxAgeDays` — Days before pruning unseen products from state (14)
+*   `state.renotifyOnPriceDrop` — Whether to re-notify when price drops further (true)
 
-## 5. GitHub Actions Workflow (`.github/workflows/main.yml`)
+## 5. Holt Renfrew API Details
 
-*   **Trigger:** Scheduled event (cron).
-    *   Example: `cron: '0 */6 * * *'` (runs every 6 hours). The interval `X` will be based on `SCRAPE_INTERVAL_HOURS`.
-*   **Jobs:**
-    *   A single job (e.g., `price_check`).
-    *   **Runner:** `ubuntu-latest` (or a specific version).
-    *   **Steps:**
-        1.  `actions/checkout@v3` (or latest): To checkout the repository code.
-        2.  `actions/setup-node@v3` (or latest): To set up the specified Node.js version.
-            *   `with: node-version: '18'` (or preferred LTS).
-        3.  `npm install`: To install project dependencies (`axios`, `cheerio`, `discord.js`).
-        4.  `Run price checker script`:
-            *   `node price-checker.js` (or the chosen script name).
-            *   `env:` section to map GitHub Secrets to environment variables for the script.
+*   **Platform:** SAP Hybris (Spartacus/Accelerator frontend)
+*   **API endpoint pattern:** `/en/c/WomensSale/results?sort=relevance&q={filters}&grid=2&currentPage={n}`
+*   **Response structure:**
+    *   `results[]` — Product array with: code, name, brand, price, regularPriceRange, salePercentage, images, url
+    *   `pagination` — { pageSize: 21, currentPage: 0, numberOfPages: N, totalNumberOfResults: N }
+*   **Pagination:** 0-based page numbers, 21 items per page, accessed via `currentPage` query param
+*   **Protection:** CloudFlare WAF blocks non-browser requests; Puppeteer required for valid browser context
 
-## 6. Potential Technical Constraints & Challenges
+## 6. GitHub Actions Workflow
 
-*   **Website Structure Changes:** The most significant challenge for any web scraper. If the target website's HTML structure or CSS class names change, the scraper's selectors will break, and it will fail to extract data correctly. This requires manual updates to the selectors.
-*   **Anti-Scraping Measures:**
-    *   **CAPTCHAs:** `cheerio` cannot handle CAPTCHAs. If encountered, a more advanced tool like Puppeteer with CAPTCHA solving services (often paid) would be needed, or the target site might become un-scrapable for this basic setup.
-    *   **IP Blocking/Rate Limiting:** Frequent requests from GitHub Actions' IP range might lead to blocking. Respecting `robots.txt` and keeping request frequency low is important.
-    *   **Dynamic Content Loading:** If product data is loaded via JavaScript after the initial page load, `cheerio` won't see it. Puppeteer/Playwright would be required.
-*   **Discord Bot Permissions/Rate Limits:** The Discord bot will need appropriate permissions on the server to send messages to the target channel. Discord API also has rate limits that the bot must respect, though for a simple notification bot running periodically, this is unlikely to be an issue.
-*   **Selector Specificity:** Crafting robust CSS selectors that are specific enough to get the right data but not so brittle that minor site changes break them is key.
+*   Runs hourly (`0 * * * *`) with manual dispatch option
+*   Concurrency group prevents overlapping runs
+*   `permissions: contents: write` for state file commits
+*   Post-run step commits `state/notified.json` changes

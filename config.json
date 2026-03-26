@@ -8,8 +8,8 @@
 		"minDiscountPercent": 70,
 		"categories": ["handbag", "bag", "purse", "clutch", "tote", "wallet", "bracelet", "necklace", "earring", "earrings", "ring", "shoe", "shoes", "boot", "boots", "sandal", "sandals", "heel", "heels", "sneaker", "sneakers", "pump", "pumps", "flat", "flats", "loafer", "loafers", "mule", "mules", "slingback", "runner", "runners"],
 		"designerBrands": [
-			"Gucci", "Louis Vuitton", "Chanel", "Prada", "Hermès", "Dior", 
-			"Saint Laurent", "Bottega Veneta", "Celine", "Balenciaga", 
+			"Gucci", "Louis Vuitton", "Chanel", "Prada", "Hermès", "Dior",
+			"Saint Laurent", "Bottega Veneta", "Celine", "Balenciaga",
 			"Givenchy", "Valentino", "Fendi", "Burberry", "Coach",
 			"Chloe", "Mach & Mach", "Miu Miu", "McQueen", "Ferragamo",
 			"Maison Margiela", "Tod's", "Jacquemus", "Issey Miyake", "Acne",
@@ -21,5 +21,9 @@
 		"enabled": true,
 		"alertChannelName": "price-alerts",
 		"summaryChannelName": "hourly-summaries"
+	},
+	"state": {
+		"maxAgeDays": 14,
+		"renotifyOnPriceDrop": true
 	}
 }
