@@ -1,6 +1,6 @@
 {
 	"version": 1,
-	"lastUpdated": "2026-04-01T08:07:10.487Z",
+	"lastUpdated": "2026-04-01T10:45:41.180Z",
 	"products": {
 		"20447485001": {
 			"name": "Mostro Mesh Sneakers",
@@ -14,7 +14,7 @@
 			"brand": "ADIDAS",
 			"notifiedPrice": 57,
 			"notifiedAt": "2026-03-26T18:48:02.517Z",
-			"lastSeen": "2026-04-01T09:56:41.645Z"
+			"lastSeen": "2026-04-01T10:45:40.509Z"
 		},
 		"20452858001": {
 			"name": "Wally Snakeskin-Embossed Leather Knee-High Boots",
@@ -29,6 +29,13 @@
 			"notifiedPrice": 412,
 			"notifiedAt": "2026-04-01T08:07:10.487Z",
 			"lastSeen": "2026-04-01T09:56:41.645Z"
+		},
+		"20240285008": {
+			"name": "Saeda Glitter Pumps With Crystal Ankle Strap",
+			"brand": "JIMMY CHOO",
+			"notifiedPrice": 412,
+			"notifiedAt": "2026-04-01T10:45:41.180Z",
+			"lastSeen": "2026-04-01T10:45:41.180Z"
 		}
 	}
 }
