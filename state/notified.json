@@ -1,6 +1,6 @@
 {
 	"version": 1,
-	"lastUpdated": "2026-04-19T07:59:30.331Z",
+	"lastUpdated": "2026-04-25T07:57:56.917Z",
 	"products": {
 		"20416191001": {
 			"name": "Mini Fortune Croissant Leather Shoulder Bag",
@@ -8,6 +8,13 @@
 			"notifiedPrice": 417,
 			"notifiedAt": "2026-04-19T07:59:30.331Z",
 			"lastSeen": "2026-04-19T10:28:54.990Z"
+		},
+		"20394831008": {
+			"name": "Dayna Leather Platform Sandals",
+			"brand": "STUART WEITZMAN",
+			"notifiedPrice": 130,
+			"notifiedAt": "2026-04-25T07:57:56.917Z",
+			"lastSeen": "2026-04-25T07:57:56.917Z"
 		}
 	}
 }
