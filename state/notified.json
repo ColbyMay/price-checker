@@ -1,6 +1,6 @@
 {
 	"version": 1,
-	"lastUpdated": "2026-04-28T08:01:05.076Z",
+	"lastUpdated": "2026-04-28T10:51:04.333Z",
 	"products": {
 		"20416191001": {
 			"name": "Mini Fortune Croissant Leather Shoulder Bag",
@@ -29,6 +29,13 @@
 			"notifiedPrice": 150,
 			"notifiedAt": "2026-04-28T08:01:05.076Z",
 			"lastSeen": "2026-04-28T08:01:05.076Z"
+		},
+		"20439573004": {
+			"name": "Dorothy Leather Ankle Boots",
+			"brand": "AEYDE",
+			"notifiedPrice": 150,
+			"notifiedAt": "2026-04-28T10:51:04.333Z",
+			"lastSeen": "2026-04-28T10:51:04.333Z"
 		}
 	}
 }
