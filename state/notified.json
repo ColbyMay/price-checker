@@ -1,5 +1,20 @@
 {
 	"version": 1,
-	"lastUpdated": "2026-04-28T10:51:04.333Z",
-	"products": {}
+	"lastUpdated": "2026-05-28T05:58:21.558Z",
+	"products": {
+		"20492958001": {
+			"name": "Speedcat Metallic Leather Sneakers",
+			"brand": "PUMA",
+			"notifiedPrice": 39,
+			"notifiedAt": "2026-05-28T05:58:21.558Z",
+			"lastSeen": "2026-05-28T05:58:21.558Z"
+		},
+		"20492957001": {
+			"name": "Speedcat Suede Knee-High Sneaker Boots",
+			"brand": "PUMA",
+			"notifiedPrice": 79,
+			"notifiedAt": "2026-05-28T05:58:21.558Z",
+			"lastSeen": "2026-05-28T05:58:21.558Z"
+		}
+	}
 }
