@@ -1,13 +1,13 @@
 {
 	"version": 1,
-	"lastUpdated": "2026-06-04T16:14:44.313Z",
+	"lastUpdated": "2026-06-04T19:10:38.190Z",
 	"products": {
 		"20492958001": {
 			"name": "Speedcat Metallic Leather Sneakers",
 			"brand": "PUMA",
 			"notifiedPrice": 39,
 			"notifiedAt": "2026-05-28T05:58:21.558Z",
-			"lastSeen": "2026-06-04T16:14:39.172Z"
+			"lastSeen": "2026-06-04T19:10:37.510Z"
 		},
 		"20492957001": {
 			"name": "Speedcat Suede Knee-High Sneaker Boots",
@@ -35,7 +35,7 @@
 			"brand": "TOTEME",
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-05-29T20:04:29.613Z",
-			"lastSeen": "2026-06-04T16:14:39.172Z"
+			"lastSeen": "2026-06-04T19:10:37.510Z"
 		},
 		"20492957002": {
 			"name": "Speedcat Suede Knee-High Sneaker Boots",
@@ -49,35 +49,42 @@
 			"brand": "AEYDE",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-06-04T16:14:44.313Z",
-			"lastSeen": "2026-06-04T16:14:44.313Z"
+			"lastSeen": "2026-06-04T19:10:37.510Z"
 		},
 		"20481553001": {
 			"name": "Large Anchor Canvas Tote Bag",
 			"brand": "JW ANDERSON",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-06-04T16:14:44.313Z",
-			"lastSeen": "2026-06-04T16:14:44.313Z"
+			"lastSeen": "2026-06-04T19:10:37.510Z"
 		},
 		"20365739001": {
 			"name": "The Mini Leather Crossbody Bag",
 			"brand": "MARC JACOBS",
 			"notifiedPrice": 79,
 			"notifiedAt": "2026-06-04T16:14:44.313Z",
-			"lastSeen": "2026-06-04T16:14:44.313Z"
+			"lastSeen": "2026-06-04T19:10:37.510Z"
 		},
 		"20495016001": {
 			"name": "Striped Silk Scarf",
 			"brand": "TOTEME",
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-06-04T16:14:44.313Z",
-			"lastSeen": "2026-06-04T16:14:44.313Z"
+			"lastSeen": "2026-06-04T19:10:37.510Z"
 		},
 		"20487675001": {
 			"name": "Barbara Jelly Clog Mules",
 			"brand": "VINCE",
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-06-04T16:14:44.313Z",
-			"lastSeen": "2026-06-04T16:14:44.313Z"
+			"lastSeen": "2026-06-04T19:10:37.510Z"
+		},
+		"20469078003": {
+			"name": "Retauxlo Embossed Leather Slingback Sandals",
+			"brand": "MANOLO BLAHNIK",
+			"notifiedPrice": 399,
+			"notifiedAt": "2026-06-04T19:10:38.190Z",
+			"lastSeen": "2026-06-04T19:10:38.190Z"
 		}
 	}
 }
