@@ -1,6 +1,6 @@
 {
 	"version": 1,
-	"lastUpdated": "2026-06-12T12:46:36.814Z",
+	"lastUpdated": "2026-06-14T20:56:58.936Z",
 	"products": {
 		"20492958001": {
 			"name": "Speedcat Metallic Leather Sneakers",
@@ -84,7 +84,7 @@
 			"brand": "VINCE",
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-06-05T12:08:54.643Z",
-			"lastSeen": "2026-06-14T19:04:11.840Z"
+			"lastSeen": "2026-06-14T20:56:58.178Z"
 		},
 		"20454816002": {
 			"name": "Medium Olivia Leather Shoulder Bag",
@@ -98,7 +98,7 @@
 			"brand": "JACQUEMUS",
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-06-11T05:18:28.077Z",
-			"lastSeen": "2026-06-14T19:04:11.840Z"
+			"lastSeen": "2026-06-14T20:56:58.178Z"
 		},
 		"20488252001": {
 			"name": "Le Salon Leather Shoulder Bag",
@@ -120,6 +120,13 @@
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-06-12T12:46:36.814Z",
 			"lastSeen": "2026-06-14T15:02:43.267Z"
+		},
+		"20508350003": {
+			"name": "Natalie Mesh Pumps",
+			"brand": "SALONDEJU",
+			"notifiedPrice": 119,
+			"notifiedAt": "2026-06-14T20:56:58.936Z",
+			"lastSeen": "2026-06-14T20:56:58.936Z"
 		}
 	}
 }
