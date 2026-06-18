@@ -1,6 +1,6 @@
 {
 	"version": 1,
-	"lastUpdated": "2026-06-18T11:42:13.475Z",
+	"lastUpdated": "2026-06-18T22:49:21.749Z",
 	"products": {
 		"20492958001": {
 			"name": "Speedcat Metallic Leather Sneakers",
@@ -49,7 +49,7 @@
 			"brand": "VINCE",
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-06-04T16:14:44.313Z",
-			"lastSeen": "2026-06-17T10:23:26.763Z"
+			"lastSeen": "2026-06-18T22:49:20.955Z"
 		},
 		"20465917003": {
 			"name": "Paul Shearling-Trimmed Suede Boots",
@@ -112,7 +112,7 @@
 			"brand": "SALONDEJU",
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-06-14T20:56:58.936Z",
-			"lastSeen": "2026-06-17T10:23:26.763Z"
+			"lastSeen": "2026-06-18T22:49:20.955Z"
 		},
 		"20499440001": {
 			"name": "Denim Outfit For Bear Charm",
@@ -133,7 +133,14 @@
 			"brand": "GIANVITO ROSSI",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-06-18T11:42:13.475Z",
-			"lastSeen": "2026-06-18T20:04:56.872Z"
+			"lastSeen": "2026-06-18T22:49:20.955Z"
+		},
+		"20496083001": {
+			"name": "Boudoir Leather Thong Sandals",
+			"brand": "GIVENCHY",
+			"notifiedPrice": 499,
+			"notifiedAt": "2026-06-18T22:49:21.749Z",
+			"lastSeen": "2026-06-18T22:49:21.749Z"
 		}
 	}
 }
