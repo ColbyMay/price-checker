@@ -1,6 +1,6 @@
 {
 	"version": 1,
-	"lastUpdated": "2026-06-14T20:56:58.936Z",
+	"lastUpdated": "2026-06-18T11:42:13.475Z",
 	"products": {
 		"20492958001": {
 			"name": "Speedcat Metallic Leather Sneakers",
@@ -84,7 +84,7 @@
 			"brand": "VINCE",
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-06-05T12:08:54.643Z",
-			"lastSeen": "2026-06-18T07:23:09.134Z"
+			"lastSeen": "2026-06-18T11:42:10.423Z"
 		},
 		"20454816002": {
 			"name": "Medium Olivia Leather Shoulder Bag",
@@ -119,7 +119,7 @@
 			"brand": "SALONDEJU",
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-06-12T12:46:36.814Z",
-			"lastSeen": "2026-06-18T07:23:09.134Z"
+			"lastSeen": "2026-06-18T11:42:10.423Z"
 		},
 		"20508350003": {
 			"name": "Natalie Mesh Pumps",
@@ -127,6 +127,27 @@
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-06-14T20:56:58.936Z",
 			"lastSeen": "2026-06-17T10:23:26.763Z"
+		},
+		"20499440001": {
+			"name": "Denim Outfit For Bear Charm",
+			"brand": "ONE OF A KIND",
+			"notifiedPrice": 5,
+			"notifiedAt": "2026-06-18T11:42:13.475Z",
+			"lastSeen": "2026-06-18T11:42:13.475Z"
+		},
+		"20496083002": {
+			"name": "Boudoir Leather Thong Sandals",
+			"brand": "GIVENCHY",
+			"notifiedPrice": 499,
+			"notifiedAt": "2026-06-18T11:42:13.475Z",
+			"lastSeen": "2026-06-18T11:42:13.475Z"
+		},
+		"20488871002": {
+			"name": "Embellished Leather Espadrille Wedge Sandals",
+			"brand": "GIANVITO ROSSI",
+			"notifiedPrice": 499,
+			"notifiedAt": "2026-06-18T11:42:13.475Z",
+			"lastSeen": "2026-06-18T11:42:13.475Z"
 		}
 	}
 }
