@@ -1,6 +1,6 @@
 {
 	"version": 1,
-	"lastUpdated": "2026-06-19T22:01:19.915Z",
+	"lastUpdated": "2026-06-21T10:57:41.234Z",
 	"products": {
 		"20492958001": {
 			"name": "Speedcat Metallic Leather Sneakers",
@@ -42,7 +42,7 @@
 			"brand": "VINCE",
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-06-05T12:08:54.643Z",
-			"lastSeen": "2026-06-20T17:12:27.063Z"
+			"lastSeen": "2026-06-21T10:57:40.392Z"
 		},
 		"20454816002": {
 			"name": "Medium Olivia Leather Shoulder Bag",
@@ -77,7 +77,7 @@
 			"brand": "SALONDEJU",
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-06-12T12:46:36.814Z",
-			"lastSeen": "2026-06-20T17:12:27.063Z"
+			"lastSeen": "2026-06-21T10:57:40.392Z"
 		},
 		"20508350003": {
 			"name": "Natalie Mesh Pumps",
@@ -98,14 +98,14 @@
 			"brand": "GIVENCHY",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-06-18T11:42:13.475Z",
-			"lastSeen": "2026-06-20T21:00:50.696Z"
+			"lastSeen": "2026-06-21T10:57:40.392Z"
 		},
 		"20488871002": {
 			"name": "Embellished Leather Espadrille Wedge Sandals",
 			"brand": "GIANVITO ROSSI",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-06-18T11:42:13.475Z",
-			"lastSeen": "2026-06-21T07:28:24.987Z"
+			"lastSeen": "2026-06-21T10:57:40.392Z"
 		},
 		"20496083001": {
 			"name": "Boudoir Leather Thong Sandals",
@@ -120,6 +120,13 @@
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-06-19T22:01:19.915Z",
 			"lastSeen": "2026-06-21T07:28:24.987Z"
+		},
+		"20481375001": {
+			"name": "Mini Metallic Clutch",
+			"brand": "JIMMY CHOO",
+			"notifiedPrice": 299,
+			"notifiedAt": "2026-06-21T10:57:41.234Z",
+			"lastSeen": "2026-06-21T10:57:41.234Z"
 		}
 	}
 }
