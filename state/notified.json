@@ -2,13 +2,6 @@
 	"version": 1,
 	"lastUpdated": "2026-06-21T10:57:41.234Z",
 	"products": {
-		"20492958004": {
-			"name": "Speedcat Metallic Leather Sneakers",
-			"brand": "PUMA",
-			"notifiedPrice": 39,
-			"notifiedAt": "2026-05-28T12:59:34.486Z",
-			"lastSeen": "2026-06-08T07:19:55.191Z"
-		},
 		"20495015001": {
 			"name": "Striped Silk Scarf",
 			"brand": "TOTEME",
@@ -35,7 +28,7 @@
 			"brand": "VINCE",
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-06-05T12:08:54.643Z",
-			"lastSeen": "2026-06-21T15:43:09.741Z"
+			"lastSeen": "2026-06-22T12:39:43.151Z"
 		},
 		"20454816002": {
 			"name": "Medium Olivia Leather Shoulder Bag",
@@ -70,7 +63,7 @@
 			"brand": "SALONDEJU",
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-06-12T12:46:36.814Z",
-			"lastSeen": "2026-06-22T06:16:35.152Z"
+			"lastSeen": "2026-06-22T12:39:43.151Z"
 		},
 		"20508350003": {
 			"name": "Natalie Mesh Pumps",
@@ -91,14 +84,14 @@
 			"brand": "GIVENCHY",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-06-18T11:42:13.475Z",
-			"lastSeen": "2026-06-21T19:09:37.349Z"
+			"lastSeen": "2026-06-22T12:39:43.151Z"
 		},
 		"20488871002": {
 			"name": "Embellished Leather Espadrille Wedge Sandals",
 			"brand": "GIANVITO ROSSI",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-06-18T11:42:13.475Z",
-			"lastSeen": "2026-06-22T06:16:35.152Z"
+			"lastSeen": "2026-06-22T12:39:43.151Z"
 		},
 		"20496083001": {
 			"name": "Boudoir Leather Thong Sandals",
