@@ -1,6 +1,6 @@
 {
 	"version": 1,
-	"lastUpdated": "2026-06-21T10:57:41.234Z",
+	"lastUpdated": "2026-06-23T10:26:15.794Z",
 	"products": {
 		"20495015001": {
 			"name": "Striped Silk Scarf",
@@ -21,7 +21,7 @@
 			"brand": "VINCE",
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-06-04T16:14:44.313Z",
-			"lastSeen": "2026-06-23T06:37:05.381Z"
+			"lastSeen": "2026-06-23T10:26:15.181Z"
 		},
 		"20487675002": {
 			"name": "Barbara Jelly Clog Mules",
@@ -63,7 +63,7 @@
 			"brand": "SALONDEJU",
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-06-12T12:46:36.814Z",
-			"lastSeen": "2026-06-23T06:37:05.381Z"
+			"lastSeen": "2026-06-23T10:26:15.181Z"
 		},
 		"20508350003": {
 			"name": "Natalie Mesh Pumps",
@@ -84,14 +84,14 @@
 			"brand": "GIVENCHY",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-06-18T11:42:13.475Z",
-			"lastSeen": "2026-06-23T06:37:05.381Z"
+			"lastSeen": "2026-06-23T10:26:15.181Z"
 		},
 		"20488871002": {
 			"name": "Embellished Leather Espadrille Wedge Sandals",
 			"brand": "GIANVITO ROSSI",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-06-18T11:42:13.475Z",
-			"lastSeen": "2026-06-23T06:37:05.381Z"
+			"lastSeen": "2026-06-23T10:26:15.181Z"
 		},
 		"20496083001": {
 			"name": "Boudoir Leather Thong Sandals",
@@ -113,6 +113,13 @@
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-06-21T10:57:41.234Z",
 			"lastSeen": "2026-06-21T13:02:22.725Z"
+		},
+		"20481545002": {
+			"name": "Loafer Leather Zip Wallet",
+			"brand": "JW ANDERSON",
+			"notifiedPrice": 119,
+			"notifiedAt": "2026-06-23T10:26:15.794Z",
+			"lastSeen": "2026-06-23T10:26:15.794Z"
 		}
 	}
 }
