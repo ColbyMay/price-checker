@@ -1,6 +1,6 @@
 {
 	"version": 1,
-	"lastUpdated": "2026-06-25T15:35:11.835Z",
+	"lastUpdated": "2026-06-25T17:59:30.406Z",
 	"products": {
 		"20495015001": {
 			"name": "Striped Silk Scarf",
@@ -28,7 +28,7 @@
 			"brand": "VINCE",
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-06-05T12:08:54.643Z",
-			"lastSeen": "2026-06-25T15:35:10.988Z"
+			"lastSeen": "2026-06-25T17:59:28.427Z"
 		},
 		"20454816002": {
 			"name": "Medium Olivia Leather Shoulder Bag",
@@ -63,7 +63,7 @@
 			"brand": "SALONDEJU",
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-06-12T12:46:36.814Z",
-			"lastSeen": "2026-06-25T15:35:10.988Z"
+			"lastSeen": "2026-06-25T17:59:28.427Z"
 		},
 		"20508350003": {
 			"name": "Natalie Mesh Pumps",
@@ -84,14 +84,14 @@
 			"brand": "GIVENCHY",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-06-18T11:42:13.475Z",
-			"lastSeen": "2026-06-25T15:35:10.988Z"
+			"lastSeen": "2026-06-25T17:59:28.427Z"
 		},
 		"20488871002": {
 			"name": "Embellished Leather Espadrille Wedge Sandals",
 			"brand": "GIANVITO ROSSI",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-06-18T11:42:13.475Z",
-			"lastSeen": "2026-06-25T15:35:10.988Z"
+			"lastSeen": "2026-06-25T17:59:28.427Z"
 		},
 		"20496083001": {
 			"name": "Boudoir Leather Thong Sandals",
@@ -133,7 +133,7 @@
 			"brand": "AKRIS",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-06-25T06:07:37.555Z",
-			"lastSeen": "2026-06-25T15:35:10.988Z"
+			"lastSeen": "2026-06-25T17:59:28.427Z"
 		},
 		"20496084001": {
 			"name": "Boudoir Leather Thong Sandals",
@@ -147,7 +147,7 @@
 			"brand": "ONE OF A KIND",
 			"notifiedPrice": 10,
 			"notifiedAt": "2026-06-25T06:07:37.555Z",
-			"lastSeen": "2026-06-25T15:35:10.988Z"
+			"lastSeen": "2026-06-25T17:59:28.427Z"
 		},
 		"20496084004": {
 			"name": "Boudoir Leather Thong Sandals",
@@ -161,7 +161,21 @@
 			"brand": "GIVENCHY",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-06-25T15:35:11.835Z",
-			"lastSeen": "2026-06-25T15:35:11.835Z"
+			"lastSeen": "2026-06-25T17:59:28.427Z"
+		},
+		"20465919004": {
+			"name": "Jasper Shearling-Trimmed Suede Loafers",
+			"brand": "AEYDE",
+			"notifiedPrice": 199,
+			"notifiedAt": "2026-06-25T17:59:30.406Z",
+			"lastSeen": "2026-06-25T17:59:30.406Z"
+		},
+		"20501844001": {
+			"name": "Lori Squared Leather Shoulder Bag",
+			"brand": "KHAITE",
+			"notifiedPrice": 799,
+			"notifiedAt": "2026-06-25T17:59:30.406Z",
+			"lastSeen": "2026-06-25T17:59:30.406Z"
 		}
 	}
 }
