@@ -2,13 +2,6 @@
 	"version": 1,
 	"lastUpdated": "2026-06-25T17:59:30.406Z",
 	"products": {
-		"20495015001": {
-			"name": "Striped Silk Scarf",
-			"brand": "TOTEME",
-			"notifiedPrice": 119,
-			"notifiedAt": "2026-05-29T20:04:29.613Z",
-			"lastSeen": "2026-06-13T19:04:05.243Z"
-		},
 		"20487675001": {
 			"name": "Barbara Jelly Clog Mules",
 			"brand": "VINCE",
@@ -21,7 +14,7 @@
 			"brand": "VINCE",
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-06-05T12:08:54.643Z",
-			"lastSeen": "2026-06-27T18:03:52.990Z"
+			"lastSeen": "2026-06-27T20:02:09.894Z"
 		},
 		"20454816002": {
 			"name": "Medium Olivia Leather Shoulder Bag",
@@ -77,14 +70,14 @@
 			"brand": "GIVENCHY",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-06-18T11:42:13.475Z",
-			"lastSeen": "2026-06-27T18:03:52.990Z"
+			"lastSeen": "2026-06-27T20:02:09.894Z"
 		},
 		"20488871002": {
 			"name": "Embellished Leather Espadrille Wedge Sandals",
 			"brand": "GIANVITO ROSSI",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-06-18T11:42:13.475Z",
-			"lastSeen": "2026-06-27T18:03:52.990Z"
+			"lastSeen": "2026-06-27T20:02:09.894Z"
 		},
 		"20496083001": {
 			"name": "Boudoir Leather Thong Sandals",
@@ -126,7 +119,7 @@
 			"brand": "AKRIS",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-06-25T06:07:37.555Z",
-			"lastSeen": "2026-06-27T18:03:52.990Z"
+			"lastSeen": "2026-06-27T20:02:09.894Z"
 		},
 		"20496084001": {
 			"name": "Boudoir Leather Thong Sandals",
@@ -140,7 +133,7 @@
 			"brand": "ONE OF A KIND",
 			"notifiedPrice": 10,
 			"notifiedAt": "2026-06-25T06:07:37.555Z",
-			"lastSeen": "2026-06-27T18:03:52.990Z"
+			"lastSeen": "2026-06-27T20:02:09.894Z"
 		},
 		"20496084004": {
 			"name": "Boudoir Leather Thong Sandals",
@@ -161,7 +154,7 @@
 			"brand": "AEYDE",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-06-25T17:59:30.406Z",
-			"lastSeen": "2026-06-27T18:03:52.990Z"
+			"lastSeen": "2026-06-27T20:02:09.894Z"
 		},
 		"20501844001": {
 			"name": "Lori Squared Leather Shoulder Bag",
