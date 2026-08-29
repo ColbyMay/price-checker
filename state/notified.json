@@ -1,6 +1,6 @@
 {
 	"version": 1,
-	"lastUpdated": "2026-08-20T18:19:34.422Z",
+	"lastUpdated": "2026-08-29T17:57:58.386Z",
 	"products": {
 		"20487675001": {
 			"name": "Barbara Jelly Clog Mules",
@@ -21,7 +21,7 @@
 			"brand": "VINCE",
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-08-20T10:17:14.092Z",
-			"lastSeen": "2026-08-29T14:44:54.607Z"
+			"lastSeen": "2026-08-29T17:57:57.345Z"
 		},
 		"20487675005": {
 			"name": "Barbara Jelly Clog Mules",
@@ -29,6 +29,13 @@
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-08-20T18:19:34.422Z",
 			"lastSeen": "2026-08-21T10:17:17.776Z"
+		},
+		"20479457001": {
+			"name": "The Sienna Leather Saddle Bag",
+			"brand": "DEMELLIER",
+			"notifiedPrice": 199,
+			"notifiedAt": "2026-08-29T17:57:58.386Z",
+			"lastSeen": "2026-08-29T17:57:58.386Z"
 		}
 	}
 }
