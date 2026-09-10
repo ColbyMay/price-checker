@@ -1,6 +1,6 @@
 # Price Checker Bot
 
-Automated price monitoring system that tracks sales on Holt Renfrew and sends Discord notifications for qualifying items. Built to run on GitHub Actions for free, automated monitoring.
+Automated price monitoring system that tracks sales on Holt Renfrew and sends Discord notifications for qualifying items, plus a stock watcher for hard-to-get products at Canadian retailers. Built to run on GitHub Actions for free, automated monitoring.
 
 ## Features
 
@@ -127,6 +127,21 @@ To monitor different websites:
 1. Find the site's product-listing JSON request in the browser's network tab
 2. Adapt `src/scraper.js` (request URL and paging) and `src/apiParser.js` (field mapping) to it
 3. Adjust filtering criteria in `config.json` as needed
+
+## Stock Watcher
+
+A second workflow (`.github/workflows/stock-watcher.yml`) checks Canadian retailers every 10 minutes for products listed under `stockWatch` in `config.json`, and posts to `#stock-alerts`:
+
+- `@here` alert when a listing goes from not-in-stock to in stock (only when the retailer itself is the seller)
+- Quiet notes when it sells out again, first appears in a store, or only shows from a marketplace reseller
+- If a retailer blocks the bot, that retailer backs off (10, 20, 40... up to 120 minutes) and a quiet warning is posted after 3 failures in a row. CAPTCHAs and bot checks are never bypassed.
+- It only alerts. It never adds to cart or buys.
+
+Supported `retailer` ids: `nintendo-ca` (needs `sku`), `bestbuy-ca` (needs `sku`), `walmart-ca`, `ebgames` (best effort: EB Games usually blocks automated browsers).
+
+Setup: create a `#stock-alerts` channel the bot can post in. State is kept in the GitHub Actions cache (`state/stock.json`, not committed).
+
+Run once locally without Discord or state: `npm run stock -- --dry-run`
 
 ## Testing
 

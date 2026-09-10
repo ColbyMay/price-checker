@@ -93,3 +93,6 @@ secrets.json
 
 # GitHub Actions artifacts
 .github/workflows/*.log
+
+# Stock watcher state lives in the GitHub Actions cache, not git
+state/stock.json

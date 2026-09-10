@@ -1,4 +1,4 @@
-// Offline checks for config, URL building, filtering, variant grouping, state dedupe and summaries; network tests behind flags
+// Offline checks for the Holt Renfrew pipeline and the stock watcher's parsers/alert rules; network tests behind flags
 require('dotenv').config();
 const assert = require('assert');
 const fs = require('fs');
@@ -8,6 +8,9 @@ const { isMatchingCategory, checkDesignerBrand, groupVariants, categorizeProduct
 const { createEmptyState, checkNotificationStatus, markNotified } = require('./state');
 const { buildSummaryMessage, getCoverageWarnings, loadConfig } = require('./index');
 const DiscordNotifier = require('./discord');
+const { STATUS, detectBlock, parseNintendoNextData, parseBestBuyAvailability, parseWalmartNextData, parseJsonLdAvailability } = require('./stock/parsers');
+const { applyResult, isDue } = require('./stock/stockState');
+const { formatNote, getListings } = require('./stock/index');
 
 // Count of failed checks in this run (0 means everything passed)
 let failures = 0;
@@ -154,6 +157,101 @@ function runOfflineTests() {
 }
 
 /**
+ * Offline checks for the stock watcher's parsers and alert rules, using data shaped like the live retailer responses
+ */
+function runStockTests() {
+	console.log('\n=== Stock Watcher Checks ===');
+	const config = readConfig();
+
+	check('every configured listing has a known retailer and URL', () => {
+		const listings = getListings(config.stockWatch);
+		assert.ok(listings.length > 0);
+		listings.forEach(item => {
+			assert.ok(item.listing.url.startsWith('https://'), item.key);
+			assert.notStrictEqual(item.retailerName, item.listing.retailer, `unknown retailer ${item.listing.retailer}`);
+		});
+	});
+
+	check('block pages are detected, product pages are not', () => {
+		assert.ok(detectBlock({ status: 403, title: '', bodyText: '' }));
+		assert.ok(detectBlock({ status: 200, title: 'Access denied | www.ebgames.ca used Cloudflare to restrict access', bodyText: '' }));
+		assert.ok(detectBlock({ status: 200, title: 'Walmart.ca', bodyText: 'Press & Hold to confirm you are a human' }));
+		assert.ok(!detectBlock({ status: 200, title: 'Nintendo Switch 2 Pro Controller | Best Buy Canada', bodyText: 'Sold out online' }));
+	});
+
+	check('Nintendo: isSalableQty drives the status; missing SKU means not listed', () => {
+		const page = (isSalableQty, prePurchase) => ({ props: { pageProps: { initialApolloState: { 'Product:{"sku":"127074"}': { isSalableQty, prePurchase } } } } });
+		assert.strictEqual(parseNintendoNextData(page(false, true), '127074').status, STATUS.OUT_OF_STOCK);
+		const inStock = parseNintendoNextData(page(true, true), '127074');
+		assert.strictEqual(inStock.status, STATUS.IN_STOCK);
+		assert.strictEqual(inStock.detail, 'Pre-order available');
+		assert.strictEqual(parseNintendoNextData(page(true, false), '999').status, STATUS.NOT_LISTED);
+	});
+
+	check('Best Buy: purchasable from bbyca is in stock, other sellers are third-party', () => {
+		const response = (purchasable, sellerId, status) => ({ availabilities: [{ sku: '20149830', sellerId, pickup: { purchasable: false, status: 'NotAvailable' }, shipping: { purchasable, status } }] });
+		assert.strictEqual(parseBestBuyAvailability(response(false, 'bbyca', 'SoldOutOnline'), '20149830').status, STATUS.OUT_OF_STOCK);
+		assert.strictEqual(parseBestBuyAvailability(response(true, 'bbyca', 'Preorder'), '20149830').status, STATUS.IN_STOCK);
+		assert.strictEqual(parseBestBuyAvailability(response(true, 'reseller42', 'InStock'), '20149830').status, STATUS.THIRD_PARTY);
+		assert.strictEqual(parseBestBuyAvailability({ availabilities: [] }, '20149830').status, STATUS.ERROR);
+	});
+
+	check('Walmart: IN_STOCK from Walmart alerts, marketplace sellers do not', () => {
+		const page = (availabilityStatus, sellerName) => ({ props: { pageProps: { initialData: { data: { product: { availabilityStatus, sellerName, preOrder: { isPreOrder: true }, priceInfo: { currentPrice: { priceString: '$139.99' } } } } } } } });
+		assert.strictEqual(parseWalmartNextData(page('OUT_OF_STOCK', 'Walmart')).status, STATUS.OUT_OF_STOCK);
+		const inStock = parseWalmartNextData(page('IN_STOCK', 'Walmart'));
+		assert.strictEqual(inStock.status, STATUS.IN_STOCK);
+		assert.strictEqual(inStock.price, '$139.99');
+		assert.strictEqual(parseWalmartNextData(page('IN_STOCK', 'Scalper Games Inc')).status, STATUS.THIRD_PARTY);
+		assert.strictEqual(parseWalmartNextData({}).status, STATUS.ERROR);
+	});
+
+	check('JSON-LD: schema.org offer availability is read; pages without it return null', () => {
+		const ld = availability => [JSON.stringify({ '@context': 'https://schema.org', '@type': 'Product', offers: { '@type': 'Offer', availability, price: '139.99', priceCurrency: 'CAD' } })];
+		const inStock = parseJsonLdAvailability(ld('https://schema.org/InStock'));
+		assert.strictEqual(inStock.status, STATUS.IN_STOCK);
+		assert.strictEqual(inStock.price, '$139.99');
+		assert.strictEqual(parseJsonLdAvailability(ld('https://schema.org/OutOfStock')).status, STATUS.OUT_OF_STOCK);
+		assert.strictEqual(parseJsonLdAvailability(['{"@type":"Organization"}']), null);
+	});
+
+	check('alert rules: in-stock once, sold-out note, warning on 3rd block, backoff, recovery, new listing', () => {
+		const opts = { blockedWarningAfter: 3 };
+		const t0 = new Date('2026-10-29T12:00:00Z');
+		const at = minutes => new Date(t0.getTime() + minutes * 60000);
+		let entry;
+		let event;
+
+		({ entry, event } = applyResult(undefined, { status: STATUS.OUT_OF_STOCK, detail: 'Sold out' }, at(0), opts));
+		assert.strictEqual(event, null, 'first sighting out of stock is silent');
+		({ entry, event } = applyResult(entry, { status: STATUS.IN_STOCK, detail: 'Pre-order available' }, at(10), opts));
+		assert.strictEqual(event, 'in_stock');
+		({ entry, event } = applyResult(entry, { status: STATUS.IN_STOCK, detail: 'Pre-order available' }, at(20), opts));
+		assert.strictEqual(event, null, 'no repeat while still in stock');
+		({ entry, event } = applyResult(entry, { status: STATUS.OUT_OF_STOCK, detail: 'Sold out' }, at(30), opts));
+		assert.strictEqual(event, 'sold_out');
+
+		const blocked = { status: STATUS.BLOCKED, detail: 'Access denied' };
+		({ entry, event } = applyResult(entry, blocked, at(40), opts));
+		assert.strictEqual(event, null);
+		assert.ok(!isDue(entry, at(45)), 'backing off after a block');
+		assert.ok(isDue(entry, at(50)));
+		({ entry, event } = applyResult(entry, blocked, at(50), opts));
+		({ entry, event } = applyResult(entry, blocked, at(70), opts));
+		assert.strictEqual(event, 'blocked_warning');
+		assert.strictEqual(entry.status, STATUS.OUT_OF_STOCK, 'last known status kept while blocked');
+		({ entry, event } = applyResult(entry, { status: STATUS.OUT_OF_STOCK, detail: 'Sold out' }, at(120), opts));
+		assert.strictEqual(event, 'unblocked');
+		assert.ok(isDue(entry, at(120)));
+
+		({ entry, event } = applyResult(undefined, { status: STATUS.NOT_LISTED, detail: 'Not listed' }, at(0), opts));
+		({ entry, event } = applyResult(entry, { status: STATUS.OUT_OF_STOCK, detail: 'Sold out' }, at(10), opts));
+		assert.strictEqual(event, 'listed');
+		assert.ok(formatNote({ event, item: { retailerName: 'Nintendo Store Canada', productName: 'Zelda Pro Controller', listing: { url: 'https://example.com' } }, result: {}, entry }).includes('Now listed'));
+	});
+}
+
+/**
  * Tests the Discord connection (without sending messages)
  */
 async function testDiscord() {
@@ -203,6 +301,7 @@ async function testScraping() {
 async function runTests() {
 	console.log('Price Checker Bot - Test Suite\n');
 	runOfflineTests();
+	runStockTests();
 
 	if (process.argv.includes('--test-discord')) {
 		await testDiscord();

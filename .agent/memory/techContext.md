@@ -22,7 +22,11 @@
 | `src/filter.js` | Whole-word matching, colour-variant grouping, alert/summary bucketing |
 | `src/discord.js` | Discord notification service with price-drop styling and colour list |
 | `src/state.js` | State v2: `products` (alerts) and `summarized` buckets; load, check, mark, prune, save |
-| `src/test.js` | Offline checks; `--test-scraping` and `--test-discord` flags for live checks |
+| `src/test.js` | Offline checks (Holt Renfrew + stock watcher); `--test-scraping` and `--test-discord` flags for live checks |
+| `src/stock/index.js` | Stock watcher entry (`npm run stock`, `--dry-run`) |
+| `src/stock/retailers.js` | Per-retailer page loading and block detection (`RETAILERS` map) |
+| `src/stock/parsers.js` | Pure parsers for Nintendo, Best Buy, Walmart, JSON-LD; `STATUS` values |
+| `src/stock/stockState.js` | `state/stock.json` load/save, backoff, transition -> event rules |
 | `config.json` | All configuration (site, category facets, brands, thresholds, channel names) |
 | `state/notified.json` | Persisted notification state (git-committed by CI) |
 
@@ -64,3 +68,15 @@
 *   Concurrency group prevents overlapping runs
 *   `permissions: contents: write` for state file commits
 *   Post-run step commits `state/notified.json` changes
+*   `stock-watcher.yml`: every 10 minutes, `permissions: contents: read`, caches `~/.cache/puppeteer`, restores/saves `state/stock.json` via `actions/cache/restore` + `actions/cache/save` keyed `stock-state-<run_id>` with `stock-state-` restore prefix
+
+## 7. Stock Watcher Retailer Details (verified live 2026-09-10)
+
+| Retailer id | How stock is read | Notes |
+|------|---------|---------|
+| `nintendo-ca` | Page `__NEXT_DATA__` -> `props.pageProps.initialApolloState['Product:{"sku":"<sku>"}'].isSalableQty` (+ `prePurchase`) | SKUs are shared between the US and CA stores. Unlisted CA product returns a "Whoops!" page -> `not_listed`. |
+| `bestbuy-ca` | `GET /ecomm-api/availability/products?accept=application%2Fvnd.bestbuy.standardproduct.v1%2Bjson&accept-language=en-CA&skus=<sku>` from the product page | Response has a BOM (use `trim()` before `JSON.parse`). `shipping.status` e.g. `SoldOutOnline`, `shipping.purchasable`, `pickup.purchasable`, `sellerId` (`bbyca`). Works without `postalCode`. No JSON-LD price on the page. |
+| `walmart-ca` | Page `__NEXT_DATA__` -> `props.pageProps.initialData.data.product.availabilityStatus` (`IN_STOCK` / `OUT_OF_STOCK`), `sellerName`, `preOrder.isPreOrder`, `priceInfo.currentPrice` | Heaviest bot protection (PerimeterX "Press & Hold"). |
+| `ebgames` | Generic schema.org JSON-LD `offers.availability` | Cloudflare "Access denied" even for a home-connection automated browser; format untested. |
+
+Zelda 40th Anniversary Switch 2 Pro Controller: $99.99 USD, release 2026-10-29; the version with a display stand is Nintendo Store exclusive.

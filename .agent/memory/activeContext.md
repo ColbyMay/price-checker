@@ -26,14 +26,23 @@
 *   Hosting: stay on GitHub Actions (user chose this over a Toronto VPS or a home machine, accepting slower and more-blocked stock checks).
 *   Stock watcher: Canadian retailers only (Nintendo Store CA, Best Buy CA, EB Games, Walmart.ca); alerts to Discord; notify only, never auto-buy; back off when blocked, never bypass CAPTCHAs.
 
-## 4. Next Steps
+## 4. Stock Watcher (built 2026-09-10)
 
-1.  Run `npm test` and `npm test -- --test-scraping`; confirm every category reports collected == expected
-2.  Commit the Holt Renfrew fix on a feature branch
-3.  Research how each Canadian retailer exposes stock for the Zelda Pro Controller, then build `src/stock/` as a separate workflow
-4.  Watch the first CI runs for summary volume (the first run lists up to 8 of all current lower-discount deals once)
+*   `src/stock/` + `.github/workflows/stock-watcher.yml`, every 10 minutes (repo is public, so Actions minutes are free), `npm run stock` (`-- --dry-run` for local checks)
+*   Watches the Zelda 40th Anniversary Switch 2 Pro Controller at Nintendo CA (SKU 127074, not listed in Canada on 2026-09-10), Best Buy CA (20149830, SoldOutOnline), Walmart.ca (3CVEAW67GHIT, OUT_OF_STOCK pre-order), EB Games (220623, Cloudflare "Access denied" even from a home connection, kept as best effort)
+*   Posts to a new `#stock-alerts` channel (user must create it and give the bot access)
+*   State in the GitHub Actions cache, not git (`state/stock.json` is gitignored)
+*   Holt Renfrew fix committed as `442e3d1` on `fix/holt-renfrew-coverage` (not pushed yet)
 
-## 5. Active Considerations
+## 5. Next Steps
+
+1.  Run `npm test` and `npm run stock -- --dry-run`, then commit the stock watcher
+2.  User: create `#stock-alerts`, push the branch, merge to `master`
+3.  Watch the first stock-watcher runs: which retailers get blocked from GitHub's US data-centre IPs (Walmart.ca and EB Games most likely)
+4.  Watch the first Holt Renfrew runs for summary volume (the first run lists up to 8 of all current lower-discount deals once)
+5.  Separate small task: `npm audit` reports 14 vulnerabilities in existing dependencies
+
+## 6. Active Considerations
 
 *   Accessories without a keyword (sunglasses, hats, scarves, belts) still only qualify via a designer brand, same as before.
 *   GitHub-hosted runners are US data-centre IPs; Holt Renfrew has not blocked them so far.

@@ -12,10 +12,13 @@
 *   **Whole-word, accent-insensitive filtering**
 *   **GitHub Actions:** hourly, Node 22, concurrency-safe, state committed back to the repo
 
+*   **Stock watcher (written 2026-09-10, not yet run in CI):** Nintendo CA, Best Buy CA, Walmart.ca, EB Games (best effort); @here on in-stock transitions only; seller checks for Walmart/Best Buy; per-retailer backoff on blocks
+
 ## 2. What's Left
 
-*   Run `npm test` and a live `--test-scraping` pass, then commit
-*   Canadian stock watcher for the Zelda 40th Anniversary Switch 2 Pro Controller (Nintendo CA, Best Buy CA, EB Games, Walmart.ca)
+*   Commit the stock watcher; push and merge both branches; create `#stock-alerts`
+*   Confirm from CI logs which retailers block GitHub-hosted runners
+*   `npm audit`: 14 vulnerabilities (1 critical) in existing dependencies
 *   Older duplicate memory folder `memory-bank/` could be removed in favour of `.agent/memory/`
 
 ## 3. Known Issues
@@ -25,6 +28,7 @@
 
 ## 4. Evolution of Decisions
 
+*   **2026-09-10:** Added Canadian stock watcher as a separate 10-minute workflow. Considered Vercel (rejected: data-centre IPs, no disk, Chromium size, cron limits) and a Toronto VPS/home machine (better for blocking); user chose to stay on GitHub Actions.
 *   **2026-09-10:** Live API investigation found `currentPage` ignored (only page 0 ever scraped), wrong jewellery facet, and colour-variant duplicates. Rewrote scraper/filter/state; summary made new-only; DOM fallback removed; Node 22.
 *   **2026-03-26:** Major overhaul: replaced scroll+DOM scraping with API interception, added state persistence for dedup, simplified all modules
 *   **Earlier:** Switched from Cheerio to Puppeteer (site requires JS rendering)

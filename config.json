@@ -34,5 +34,34 @@
 	"state": {
 		"maxAgeDays": 14,
 		"renotifyOnPriceDrop": true
+	},
+	"stockWatch": {
+		"alertChannelName": "stock-alerts",
+		"blockedWarningAfter": 3,
+		"products": [
+			{
+				"name": "Switch 2 Pro Controller – Zelda 40th Anniversary Edition",
+				"listings": [
+					{
+						"retailer": "nintendo-ca",
+						"sku": "127074",
+						"url": "https://www.nintendo.com/en-ca/store/products/nintendo-switch-2-pro-controller-the-legend-of-zelda-40th-anniversary-edition-127074/"
+					},
+					{
+						"retailer": "bestbuy-ca",
+						"sku": "20149830",
+						"url": "https://www.bestbuy.ca/en-ca/product/nintendo-switch-2-pro-controller-the-legend-of-zelda-40th-anniversary-edition/20149830"
+					},
+					{
+						"retailer": "walmart-ca",
+						"url": "https://www.walmart.ca/en/ip/Nintendo-Switch-2-Pro-Controller-The-Legend-of-Zelda-40th-Anniversary-Edition/3CVEAW67GHIT"
+					},
+					{
+						"retailer": "ebgames",
+						"url": "https://www.ebgames.ca/shop/904030-nintendo-switch-2-pro-controller-the-legend-of-zelda-40th-anniversary-edition-220623"
+					}
+				]
+			}
+		]
 	}
 }

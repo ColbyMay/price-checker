@@ -223,6 +223,41 @@ class DiscordNotifier {
 	}
 
 	/**
+	 * Sends an @here in-stock alert embed for one retailer listing
+	 * @param {string} channelName - Discord channel name
+	 * @param {Object} alert - Alert details
+	 * @param {string} alert.productName - Product display name
+	 * @param {string} alert.retailerName - Retailer display name
+	 * @param {string} alert.url - Product page URL
+	 * @param {string} alert.detail - Retailer's stock detail text
+	 * @param {string} [alert.price] - Price text, if the retailer exposes it
+	 */
+	async sendStockAlert(channelName, { productName, retailerName, url, detail, price }) {
+		const channel = this.findChannel(channelName);
+		if (!channel) {
+			throw new Error(`Channel '${channelName}' not found`);
+		}
+
+		const embed = new EmbedBuilder()
+			.setTitle(`In stock: ${productName}`.substring(0, 256))
+			.setURL(url)
+			.setColor(0x2ECC71)
+			.addFields(
+				{ name: 'Store', value: retailerName, inline: true },
+				{ name: 'Status', value: (detail || 'In stock').substring(0, 1024), inline: true }
+			)
+			.setFooter({ text: 'Alert only. Nothing was purchased.' })
+			.setTimestamp();
+
+		if (price) {
+			embed.addFields({ name: 'Price', value: price, inline: true });
+		}
+
+		await channel.send({ content: `@here ${productName} is in stock at ${retailerName}`, embeds: [embed] });
+		console.log(`Stock alert sent to #${channelName}: ${retailerName}`);
+	}
+
+	/**
 	 * Sends a status message to the specified channel
 	 * @param {string} channelName - Name of the Discord channel
 	 * @param {string} message - Message to send

@@ -68,3 +68,25 @@ npm start -> src/index.js (orchestrator)
 *   **API-First Scraping:** Structured JSON from intercepted API calls, DOM fallback only as degraded mode
 *   **State-Based Deduplication:** Persistent tracking prevents repeat notifications
 *   **Scheduled Atomic Execution:** Each run is self-contained: load state -> scrape -> filter -> dedup -> notify -> save state
+
+## 5. Stock Watcher (separate pipeline)
+
+```
+GitHub Actions stock-watcher.yml (cron */10, restore state/stock.json from Actions cache)
+    |
+npm run stock -> src/stock/index.js
+    +--> config.stockWatch.products[].listings[] -> one entry per retailer listing
+    +--> Skip listings still in block backoff (stockState.isDue)
+    +--> One Puppeteer browser; for each due listing: RETAILERS[retailer].check(page, listing)
+    |      src/stock/retailers.js loads the page, detects block pages, reads data
+    |      src/stock/parsers.js (pure) turns data into { status, detail, price }
+    +--> stockState.applyResult: status transition -> event
+    |      in_stock (@here embed) | sold_out | listed | third_party | blocked_warning | unblocked (quiet notes)
+    +--> Discord login only if there are events; announce BEFORE saving state
+    +--> Save state/stock.json -> Actions cache
+```
+
+*   **Statuses:** in_stock, out_of_stock, not_listed, third_party, blocked, error. Blocked/error keep the last known status and back off 10 -> 20 -> 40 -> 80 -> 120 min; quiet warning on the 3rd consecutive failure.
+*   **Seller guard:** Best Buy (`sellerId` must be `bbyca`) and Walmart (`sellerName` must start with Walmart); marketplace listings are `third_party`, never @here.
+*   **Why Actions cache, not git:** a 10-minute cadence would create constant commits and push races with the Holt Renfrew state commit.
+*   **Alert only:** no cart or checkout automation, no CAPTCHA/bot-check bypass.
