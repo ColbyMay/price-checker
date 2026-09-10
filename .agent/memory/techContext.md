@@ -2,7 +2,7 @@
 
 ## 1. Core Technologies
 
-*   **Runtime:** Node.js 18 (LTS)
+*   **Runtime:** Node.js 22 (LTS) in CI (moved from end-of-life Node 18 on 2026-09-10)
 *   **Package Manager:** npm
 *   **Hosting/Scheduling:** GitHub Actions (cron: every hour)
 
@@ -16,13 +16,14 @@
 
 | File | Purpose |
 |------|---------|
-| `src/index.js` | Orchestrator: config, scrape, filter, dedup, notify, save state |
-| `src/scraper.js` | Puppeteer network interception to capture Hybris API responses |
+| `src/index.js` | Orchestrator: config, scrape, filter, dedup, notify, new-only summary, save state |
+| `src/scraper.js` | One Puppeteer session; pages the Hybris `/results` API with in-page fetch; coverage report |
 | `src/apiParser.js` | Normalizes Hybris JSON into standard product objects |
-| `src/filter.js` | Categorizes products by discount threshold + brand/category |
-| `src/discord.js` | Discord notification service with price-drop styling |
-| `src/state.js` | State persistence: load, check, mark, prune, save |
-| `config.json` | All configuration (URLs, brands, thresholds, channel names) |
+| `src/filter.js` | Whole-word matching, colour-variant grouping, alert/summary bucketing |
+| `src/discord.js` | Discord notification service with price-drop styling and colour list |
+| `src/state.js` | State v2: `products` (alerts) and `summarized` buckets; load, check, mark, prune, save |
+| `src/test.js` | Offline checks; `--test-scraping` and `--test-discord` flags for live checks |
+| `config.json` | All configuration (site, category facets, brands, thresholds, channel names) |
 | `state/notified.json` | Persisted notification state (git-committed by CI) |
 
 ## 4. Configuration
@@ -31,7 +32,10 @@
 *   `DISCORD_BOT_TOKEN` — Bot authentication token
 
 **config.json fields:**
-*   `website.url` — Base Holt Renfrew sale URL
+*   `website.baseUrl`, `website.landingPath` — Sale page opened once for cookies
+*   `website.saleCategory` — API category (`WomensSale`)
+*   `website.sort` — API sort code (`date-desc`)
+*   `website.categories` — `[{ name, facet }]` sections to scrape (`womensshoes`, `womensbags`, `jewellerywatches`, `womensaccessories`)
 *   `monitoring.minDiscountPercent` — Minimum discount for high-value alerts (70)
 *   `monitoring.categories` — Product category keywords to match
 *   `monitoring.designerBrands` — Designer brand names to match
@@ -43,11 +47,15 @@
 ## 5. Holt Renfrew API Details
 
 *   **Platform:** SAP Hybris (Spartacus/Accelerator frontend)
-*   **API endpoint pattern:** `/en/c/WomensSale/results?sort=relevance&q={filters}&grid=2&currentPage={n}`
+*   **API endpoint pattern:** `/en/c/WomensSale/results?sort=date-desc&q=:date-desc:storefrontFacetCategories:{facet}&grid=2&page={n}`
 *   **Response structure:**
-    *   `results[]` — Product array with: code, name, brand, price, regularPriceRange, salePercentage, images, url
-    *   `pagination` — { pageSize: 21, currentPage: 0, numberOfPages: N, totalNumberOfResults: N }
-*   **Pagination:** 0-based page numbers, 21 items per page, accessed via `currentPage` query param
+    *   `results[]` — Product array with: code, name, brand, color, price, regularPriceRange, salePercentage, availabilityOnline, variantsProductCode, secondid, images, url
+    *   `pagination` — { pageSize: 84, currentPage, numberOfPages, totalNumberOfResults, sort }
+    *   `facets[]` — includes `storefrontfacetcategories` (category codes and counts) and `currentpercentageoff` (`n_6` = >70%)
+*   **Pagination:** 0-based, 84 items per page, **`page=` param only**. `currentPage=` is ignored (returns page 0); `pageSize=` is ignored.
+*   **Sort:** the `sort=` param wins over the sort inside `q`; send both as `date-desc` for a stable order
+*   **Colour variants:** each colour is its own product code with identical brand + name (`secondid` like `20528445_mist_suede`)
+*   **Sizes (2026-09-10):** WomensSale 1,135 items (791 clothing); MensSale 603 items
 *   **Protection:** CloudFlare WAF blocks non-browser requests; Puppeteer required for valid browser context
 
 ## 6. GitHub Actions Workflow

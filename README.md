@@ -43,18 +43,25 @@ Edit `config.json` to customize:
 ```json
 {
 	"website": {
-		"url": "https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale",
-		"name": "Holt Renfrew Sale"
+		"name": "Holt Renfrew Sale",
+		"baseUrl": "https://www.holtrenfrew.com",
+		"landingPath": "/en/Products/Womens/Collections/Sale/c/WomensSale",
+		"saleCategory": "WomensSale",
+		"sort": "date-desc",
+		"categories": [
+			{ "name": "Shoes", "facet": "womensshoes" },
+			{ "name": "Jewellery & Watches", "facet": "jewellerywatches" }
+		]
 	},
 	"monitoring": {
-		"frequency": "0 * * * *",
-		"minDiscountPercent": 50,
-		"categories": ["handbag", "bag", "purse", "clutch", "tote"],
-		"designerBrands": ["Gucci", "Louis Vuitton", "Chanel", "Prada", ...]
+		"minDiscountPercent": 70,
+		"categories": ["bag", "shoe", "ring", "..."],
+		"designerBrands": ["Gucci", "Chloe", "..."]
 	},
 	"discord": {
 		"enabled": true,
-		"channelName": "price-alerts"
+		"alertChannelName": "price-alerts",
+		"summaryChannelName": "hourly-summaries"
 	}
 }
 ```
@@ -85,18 +92,26 @@ graph TD
 ## Configuration Options
 
 ### Website Settings
-- `url`: Target website URL to monitor
-- `name`: Display name for the website
+- `name`: Display name used in Discord alerts
+- `baseUrl` / `landingPath`: The sale page the headless browser opens first (sets the site's cookies)
+- `saleCategory`: Sale category code used by the `/en/c/{saleCategory}/results` JSON API
+- `sort`: API sort code (`date-desc` keeps paging stable)
+- `categories`: Sale sections to scrape; `facet` is the site's `storefrontFacetCategories` code (see the facet list in any `/results` response)
 
 ### Monitoring Criteria
-- `frequency`: Cron expression for GitHub Actions schedule
-- `minDiscountPercent`: Minimum discount percentage to qualify
-- `categories`: Product categories to monitor (handbags, etc.)
-- `designerBrands`: List of designer brands to prioritize
+- `minDiscountPercent`: Discount needed for an `@here` alert; lower discounts go to the hourly summary
+- `categories`: Whole-word keywords (plurals allowed) matched against name, category and URL
+- `designerBrands`: Designer brands (accent-insensitive, whole words); a match qualifies any product
 
 ### Discord Settings
 - `enabled`: Enable/disable Discord notifications
-- `channelName`: Discord channel name for alerts
+- `alertChannelName`: Channel for 70%+ alerts
+- `summaryChannelName`: Channel for hourly summaries (only posted when there is something new) and warnings
+
+### Behaviour
+- Colour variants of the same style are merged into one alert that lists the colours
+- Alerts and summary items are remembered in `state/notified.json`, so each deal is posted once (again only if its price drops)
+- If a category comes back incomplete, the summary lists which one and how many products were missed
 
 ## Local Development
 
@@ -109,9 +124,15 @@ graph TD
 
 To monitor different websites:
 
-1. Update the `url` in `config.json`
-2. Modify the CSS selectors in `src/scraper.js` to match the new website's structure
+1. Find the site's product-listing JSON request in the browser's network tab
+2. Adapt `src/scraper.js` (request URL and paging) and `src/apiParser.js` (field mapping) to it
 3. Adjust filtering criteria in `config.json` as needed
+
+## Testing
+
+- `npm test`: offline checks (no network)
+- `npm test -- --test-scraping`: also runs a live scrape and reports per-category coverage
+- `npm test -- --test-discord`: also checks the bot can log in and see both channels
 
 ## Troubleshooting
 
@@ -121,9 +142,9 @@ To monitor different websites:
 - Ensure the channel name matches your configuration
 
 ### No Products Found
-- The website might have changed its structure
+- The website might have changed its API or category codes
 - Check GitHub Actions logs for specific error messages
-- CSS selectors in `scraper.js` may need updating
+- Run `npm test -- --test-scraping` and compare each category's collected/expected counts
 
 ### GitHub Actions Not Running
 - Verify the workflow file is in `.github/workflows/`

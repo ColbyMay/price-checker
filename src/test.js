@@ -1,215 +1,199 @@
-// Test script for local development and debugging
+// Offline checks for config, URL building, filtering, variant grouping, state dedupe and summaries; network tests behind flags
 require('dotenv').config();
-const { scrapeProducts, parsePrice, calculateDiscount } = require('./scraper');
-const { filterProducts, isHandbagCategory, checkDesignerBrand } = require('./filter');
-const DiscordNotifier = require('./discord');
+const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
+const { buildResultsUrl, scrapeSaleCategories } = require('./scraper');
+const { isMatchingCategory, checkDesignerBrand, groupVariants, categorizeProducts } = require('./filter');
+const { createEmptyState, checkNotificationStatus, markNotified } = require('./state');
+const { buildSummaryMessage, getCoverageWarnings, loadConfig } = require('./index');
+const DiscordNotifier = require('./discord');
+
+// Count of failed checks in this run (0 means everything passed)
+let failures = 0;
 
 /**
- * Test configuration loading
+ * Runs one named check and records a failure instead of stopping the suite
+ * @param {string} name - Check description
+ * @param {Function} fn - Check body; throws on failure
  */
-function testConfig() {
-	console.log('=== Testing Configuration ===');
+function check(name, fn) {
 	try {
-		const configPath = path.join(__dirname, '..', 'config.json');
-		const configData = fs.readFileSync(configPath, 'utf8');
-		const config = JSON.parse(configData);
-		
-		console.log('✅ Configuration loaded successfully');
-		console.log(`Website: ${config.website.name}`);
-		console.log(`URL: ${config.website.url}`);
-		console.log(`Min Discount: ${config.monitoring.minDiscountPercent}%`);
-		console.log(`Categories: ${config.monitoring.categories.join(', ')}`);
-		console.log(`Designer Brands: ${config.monitoring.designerBrands.length} brands`);
-		
-		return config;
+		fn();
+		console.log(`PASS ${name}`);
 	} catch (error) {
-		console.error('❌ Configuration test failed:', error.message);
-		return null;
+		failures++;
+		console.error(`FAIL ${name}: ${error.message}`);
 	}
 }
 
 /**
- * Test price parsing functions
+ * Loads config.json from the repo root
+ * @returns {Object} Parsed config
  */
-function testPriceParsing() {
-	console.log('\n=== Testing Price Parsing ===');
-	
-	const testPrices = [
-		'$299.99',
-		'CAD $150.00',
-		'$1,299.50',
-		'€450.75',
-		'£199.99',
-		'Invalid price'
-	];
-	
-	testPrices.forEach(price => {
-		const parsed = parsePrice(price);
-		console.log(`"${price}" -> ${parsed}`);
+function readConfig() {
+	return JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'config.json'), 'utf8'));
+}
+
+/**
+ * Builds a mock product with sensible defaults
+ * @param {Object} overrides - Fields to override
+ * @returns {Object} Product
+ */
+function mockProduct(overrides) {
+	return {
+		code: '100',
+		name: 'Test Item',
+		brand: 'TEST',
+		color: '',
+		currentPrice: 100,
+		originalPrice: 400,
+		discountPercent: 75,
+		productUrl: 'https://www.holtrenfrew.com/Products/Womens/Womens-Shoes/Test/p/100',
+		category: 'Shoes',
+		...overrides
+	};
+}
+
+/**
+ * Offline checks that need no network access
+ */
+function runOfflineTests() {
+	console.log('=== Offline Checks ===');
+	const config = readConfig();
+
+	check('config has website categories with facet codes', () => {
+		assert.ok(Array.isArray(config.website.categories) && config.website.categories.length > 0);
+		config.website.categories.forEach(c => assert.ok(c.name && c.facet));
 	});
-	
-	// Test discount calculation
-	console.log('\nDiscount Calculations:');
-	const discountTests = [
-		{ original: '$500.00', current: '$250.00' },
-		{ original: '$1000.00', current: '$400.00' },
-		{ original: '$299.99', current: '$149.99' }
-	];
-	
-	discountTests.forEach(test => {
-		const discount = calculateDiscount(test.original, test.current);
-		console.log(`${test.original} -> ${test.current} = ${discount}% off`);
+
+	check('results URL pages with page= (API ignores currentPage)', () => {
+		const url = new URL(buildResultsUrl(config.website, 'womensshoes', 3));
+		assert.strictEqual(url.searchParams.get('page'), '3');
+		assert.strictEqual(url.searchParams.get('currentPage'), null);
+		assert.strictEqual(url.searchParams.get('q'), ':date-desc:storefrontFacetCategories:womensshoes');
+		assert.strictEqual(url.pathname, '/en/c/WomensSale/results');
+	});
+
+	check('category keywords match whole words only', () => {
+		const keywords = ['ring', 'bag'];
+		assert.ok(isMatchingCategory(mockProduct({ name: 'Gold Ring', category: '', productUrl: '' }), keywords));
+		assert.ok(isMatchingCategory(mockProduct({ name: 'Diamond Rings', category: '', productUrl: '' }), keywords));
+		assert.ok(!isMatchingCategory(mockProduct({ name: 'Spring String Top', category: '', productUrl: '' }), keywords));
+		assert.ok(isMatchingCategory(mockProduct({ name: 'Charm', category: '', productUrl: '/Womens-Bags/Bag-Accessories/p/1' }), keywords));
+	});
+
+	check('designer brands ignore accents and need whole words', () => {
+		assert.ok(checkDesignerBrand(mockProduct({ brand: 'CHLOÉ' }), ['Chloe']));
+		assert.ok(checkDesignerBrand(mockProduct({ brand: 'ALEXANDER MCQUEEN' }), ['McQueen']));
+		assert.ok(!checkDesignerBrand(mockProduct({ brand: 'DIORAMA STUDIO', name: 'Tote' }), ['Dior']));
+	});
+
+	check('colour variants merge into one style with all codes and colours', () => {
+		const grouped = groupVariants([
+			mockProduct({ code: 'A', name: 'Olive Suede Western Boots', brand: 'REFORMATION', color: 'Mist Suede', discountPercent: 44 }),
+			mockProduct({ code: 'B', name: 'Olive Suede Western Boots', brand: 'REFORMATION', color: 'Toasted Coconut Suede', discountPercent: 50 }),
+			mockProduct({ code: 'C', name: 'Other Boots', brand: 'REFORMATION' })
+		]);
+		assert.strictEqual(grouped.length, 2);
+		const boots = grouped.find(p => p.name === 'Olive Suede Western Boots');
+		assert.deepStrictEqual(boots.codes.sort(), ['A', 'B']);
+		assert.strictEqual(boots.discountPercent, 50);
+		assert.strictEqual(boots.colors.length, 2);
+	});
+
+	check('categorizeProducts splits alerts from summary items', () => {
+		const { highValueAlerts, summaryItems } = categorizeProducts([
+			mockProduct({ code: '1', name: 'Heels', discountPercent: 80 }),
+			mockProduct({ code: '2', name: 'Heels Two', discountPercent: 40 }),
+			mockProduct({ code: '3', name: 'Scarf', category: 'Accessories', productUrl: '', discountPercent: 90 })
+		], config);
+		assert.strictEqual(highValueAlerts.length, 1);
+		assert.strictEqual(summaryItems.length, 1);
+	});
+
+	check('state dedupes across variant codes and re-sends on a price drop', () => {
+		const state = createEmptyState();
+		const product = mockProduct({ codes: ['A', 'B'], currentPrice: 200 });
+		markNotified([product], state);
+		assert.ok(state.products.A && state.products.B);
+		assert.ok(checkNotificationStatus(mockProduct({ code: 'B', currentPrice: 200 }), state).alreadyNotified);
+		assert.ok(checkNotificationStatus(mockProduct({ code: 'B', currentPrice: 150 }), state).isPriceDrop);
+	});
+
+	check('summary history is tracked separately from alerts', () => {
+		const state = createEmptyState();
+		const product = mockProduct({ code: 'S1', discountPercent: 40 });
+		assert.ok(!checkNotificationStatus(product, state, 'summarized').alreadyNotified);
+		markNotified([product], state, 'summarized');
+		assert.ok(checkNotificationStatus(product, state, 'summarized').alreadyNotified);
+		assert.ok(!checkNotificationStatus(product, state).alreadyNotified);
+	});
+
+	check('summary message stays under the Discord length limit', () => {
+		loadConfig();
+		const deals = Array.from({ length: 50 }, (_, i) => mockProduct({
+			code: String(i),
+			name: `Very Long Product Name Number ${i}`,
+			discountPercent: 40,
+			productUrl: `https://www.holtrenfrew.com/Products/Womens/Womens-Shoes/Sneakers/Low-Top-Sneakers/A-Very-Long-Product-Url-Slug-${i}/p/2048619${i}`
+		}));
+		const message = buildSummaryMessage({ scannedCount: 312, categoryCount: 4, alertCount: 2, deals, warnings: ['Shoes: got 100/122 products'] });
+		assert.ok(message.length <= 1900, `length ${message.length}`);
+		assert.ok(message.includes('more'));
+	});
+
+	check('coverage warnings flag short or failed categories only', () => {
+		const warnings = getCoverageWarnings([
+			{ name: 'Shoes', expected: 122, collected: 122, failedPages: 0 },
+			{ name: 'Bags', expected: 43, collected: 40, failedPages: 0 },
+			{ name: 'Jewellery & Watches', expected: null, collected: 0, failedPages: 1, error: 'boom' }
+		]);
+		assert.strictEqual(warnings.length, 2);
 	});
 }
 
 /**
- * Test product filtering logic
- */
-function testFiltering() {
-	console.log('\n=== Testing Product Filtering ===');
-	
-	const mockProducts = [
-		{
-			name: 'Gucci Marmont Leather Handbag',
-			brand: 'Gucci',
-			currentPrice: '$1,200.00',
-			originalPrice: '$2,400.00'
-		},
-		{
-			name: 'Coach Leather Tote Bag',
-			brand: 'Coach',
-			currentPrice: '$180.00',
-			originalPrice: '$300.00'
-		},
-		{
-			name: 'Regular Cotton T-Shirt',
-			brand: 'Generic Brand',
-			currentPrice: '$25.00',
-			originalPrice: '$50.00'
-		},
-		{
-			name: 'Louis Vuitton Neverfull MM',
-			brand: 'Louis Vuitton',
-			currentPrice: '$800.00',
-			originalPrice: '$1,600.00'
-		}
-	];
-	
-	const config = testConfig();
-	if (!config) return;
-	
-	console.log('Mock Products:');
-	mockProducts.forEach((product, index) => {
-		const isHandbag = isHandbagCategory(product, config.monitoring.categories);
-		const isDesigner = checkDesignerBrand(product, config.monitoring.designerBrands);
-		const discount = calculateDiscount(product.originalPrice, product.currentPrice);
-		
-		console.log(`${index + 1}. ${product.name}`);
-		console.log(`   Handbag: ${isHandbag ? '✅' : '❌'}`);
-		console.log(`   Designer: ${isDesigner ? '✅' : '❌'}`);
-		console.log(`   Discount: ${discount}%`);
-		console.log('');
-	});
-	
-	const filtered = filterProducts(mockProducts, config);
-	console.log(`Filtered Results: ${filtered.length}/${mockProducts.length} products qualify`);
-}
-
-/**
- * Test Discord connection (without sending messages)
+ * Tests the Discord connection (without sending messages)
  */
 async function testDiscord() {
 	console.log('\n=== Testing Discord Connection ===');
-	
+
 	const token = process.env.DISCORD_BOT_TOKEN;
 	if (!token) {
-		console.log('❌ DISCORD_BOT_TOKEN not found in environment variables');
-		console.log('Create a .env file with your Discord bot token to test');
+		console.warn('DISCORD_BOT_TOKEN not found in environment variables; skipping Discord test');
 		return;
 	}
-	
+
+	const config = readConfig();
+	const notifier = new DiscordNotifier();
 	try {
-		const notifier = new DiscordNotifier();
-		console.log('Initializing Discord bot...');
-		
 		await notifier.initialize(token);
-		console.log('✅ Discord bot connected successfully');
-		
-		// Test channel finding (without sending messages)
-		const channelName = 'price-alerts';
-		const channel = notifier.client.channels.cache.find(ch => 
-			ch.name === channelName && ch.type === 0
-		);
-		
-		if (channel) {
-			console.log(`✅ Found channel: #${channelName}`);
-		} else {
-			console.log(`❌ Channel #${channelName} not found`);
-			console.log('Available channels:');
-			notifier.client.channels.cache
-				.filter(ch => ch.type === 0)
-				.forEach(ch => console.log(`  - #${ch.name}`));
+		console.log('Discord bot connected successfully');
+		for (const channelName of [config.discord.alertChannelName, config.discord.summaryChannelName]) {
+			console.log(`#${channelName}: ${notifier.findChannel(channelName) ? 'found' : 'NOT FOUND'}`);
 		}
-		
-		await notifier.close();
-		console.log('Discord connection closed');
-		
 	} catch (error) {
-		console.error('❌ Discord test failed:', error.message);
+		failures++;
+		console.error('Discord test failed:', error.message);
+	} finally {
+		await notifier.close();
 	}
 }
 
 /**
- * Test web scraping (limited to avoid overloading the website)
+ * Runs a real scrape of the configured categories and prints coverage (makes live requests)
  */
 async function testScraping() {
-	console.log('\n=== Testing Web Scraping ===');
-	console.log('⚠️  This test will make a real request to the website');
-	console.log('Use sparingly to avoid being blocked');
-	
-	const config = testConfig();
-	if (!config) return;
-	
-	try {
-		console.log('Starting scraping test...');
-		
-		const allProducts = [];
-		
-		// Test scraping shoes (limited for testing)
-		console.log('Testing shoes scraping...');
-		const shoesUrl = 'https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale?sort=relevance&q=%3Adate-desc%3AstorefrontFacetCategories%3AWomensShoes';
-		const shoesOptions = { maxPages: 2, maxProducts: 100 };
-		const shoesProducts = await scrapeProducts(shoesUrl, shoesOptions);
-		console.log(`Found ${shoesProducts.length} shoes products`);
-		allProducts.push(...shoesProducts);
-		
-		// Test scraping bags (limited for testing)
-		console.log('Testing bags scraping...');
-		const bagsUrl = 'https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale?sort=relevance&q=%3Adate-desc%3AstorefrontFacetCategories%3AWomensBags';
-		const bagsOptions = { maxPages: 2, maxProducts: 100 };
-		const bagsProducts = await scrapeProducts(bagsUrl, bagsOptions);
-		console.log(`Found ${bagsProducts.length} bags products`);
-		allProducts.push(...bagsProducts);
-		
-		const products = allProducts;
-		
-		console.log(`✅ Scraped ${products.length} products`);
-		
-		if (products.length > 0) {
-			console.log('\nFirst 3 products:');
-			products.slice(0, 3).forEach((product, index) => {
-				console.log(`${index + 1}. ${product.name}`);
-				console.log(`   Brand: ${product.brand}`);
-				console.log(`   Price: ${product.currentPrice}`);
-				console.log(`   Original: ${product.originalPrice}`);
-				console.log('');
-			});
-		}
-		
-	} catch (error) {
-		console.error('❌ Scraping test failed:', error.message);
+	console.log('\n=== Testing Live Scraping ===');
+	const config = readConfig();
+	const { products, coverage } = await scrapeSaleCategories(config.website);
+	coverage.forEach(c => console.log(`${c.name}: ${c.collected}/${c.expected}${c.failedPages ? ` (${c.failedPages} failed pages)` : ''}${c.error ? ` ERROR ${c.error}` : ''}`));
+	console.log(`Unique products: ${products.length}`);
+	const warnings = getCoverageWarnings(coverage);
+	if (warnings.length > 0) {
+		failures++;
+		console.error(`Incomplete scrape: ${warnings.join('; ')}`);
 	}
 }
 
@@ -217,50 +201,23 @@ async function testScraping() {
  * Main test runner
  */
 async function runTests() {
-	console.log('🧪 Price Checker Bot - Test Suite\n');
-	
-	// Run tests in sequence
-	testConfig();
-	testPriceParsing();
-	testFiltering();
-	
-	// Ask user before running network tests
-	console.log('\n=== Network Tests ===');
-	console.log('The following tests will make network requests:');
-	console.log('- Discord connection test');
-	console.log('- Web scraping test (use sparingly)');
-	
-	// For automated testing, skip network tests
-	if (process.env.CI || process.argv.includes('--skip-network')) {
-		console.log('Skipping network tests (CI environment or --skip-network flag)');
-		return;
+	console.log('Price Checker Bot - Test Suite\n');
+	runOfflineTests();
+
+	if (process.argv.includes('--test-discord')) {
+		await testDiscord();
 	}
-	
-	// Run network tests
-	await testDiscord();
-	
-	// Only run scraping test if explicitly requested
 	if (process.argv.includes('--test-scraping')) {
 		await testScraping();
-	} else {
-		console.log('\nSkipping scraping test (add --test-scraping flag to run)');
 	}
-	
-	console.log('\n✅ Test suite completed');
+
+	console.log(failures === 0 ? '\nAll checks passed' : `\n${failures} check(s) failed`);
+	process.exit(failures === 0 ? 0 : 1);
 }
 
-// Run tests if this file is executed directly
 if (require.main === module) {
 	runTests().catch(error => {
 		console.error('Test suite failed:', error);
 		process.exit(1);
 	});
 }
-
-module.exports = {
-	testConfig,
-	testPriceParsing,
-	testFiltering,
-	testDiscord,
-	testScraping
-};

@@ -1,4 +1,4 @@
-// Discord bot integration for sending price alerts
+// Discord bot integration for sending price alerts, summaries, and status messages
 const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
 
 /**
@@ -186,6 +186,11 @@ class DiscordNotifier {
 
 		if (product.brand) {
 			embed.addFields({ name: 'Brand', value: product.brand, inline: true });
+		}
+
+		// Colour variants of the same style are merged into one alert by the filter
+		if (Array.isArray(product.colors) && product.colors.length > 1) {
+			embed.addFields({ name: 'Colours', value: product.colors.join(', ').substring(0, 1024), inline: false });
 		}
 
 		// Price display

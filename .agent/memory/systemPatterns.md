@@ -13,29 +13,29 @@ npm start -> src/index.js (orchestrator)
     +--> Prune expired state entries (>14 days)
     +--> Initialize Discord bot
     |
-    +--> For each category (Shoes, Bags, Jewelry, Accessories):
-    |      |
-    |      v
-    |    src/scraper.js (Puppeteer API interception)
-    |      |
-    |      +--> Launch headless browser
-    |      +--> Navigate to category page
-    |      +--> Intercept Hybris API JSON response
-    |      +--> Parse pagination, fetch remaining pages via fetch() in browser context
-    |      +--> src/apiParser.js normalizes JSON into product objects
+    +--> src/scraper.js scrapeSaleCategories(config.website):
+    |      +--> Launch one headless browser, open the sale landing page once (cookies)
+    |      +--> For each config.website.categories entry (name + facet code):
+    |      |      +--> fetch() /en/c/WomensSale/results?sort=date-desc&q=:date-desc:storefrontFacetCategories:{facet}&grid=2&page=N
+    |      |      +--> Walk page=0..numberOfPages-1 (84 per page), 500 ms apart, retry once
+    |      |      +--> src/apiParser.js normalizes JSON into product objects
+    |      +--> Dedupe by code across categories; return products + coverage report
     |
     +--> src/filter.js categorizes products:
-    |      +--> High-value alerts: 70%+ discount AND (category match OR designer brand)
-    |      +--> Summary items: <70% discount AND (category match OR designer brand)
+    |      +--> Merge colour variants (same brand + name) into one style with codes[] and colors[]
+    |      +--> High-value alerts: 70%+ discount AND (category keyword OR designer brand), whole-word matching
+    |      +--> Summary items: <70% discount AND (category keyword OR designer brand)
     |
     +--> Deduplicate high-value alerts against state:
     |      +--> New products -> notify
     |      +--> Price drops -> re-notify with "Further Reduced" styling
     |      +--> Already notified at same/lower price -> skip
     |
+    +--> Deduplicate summary items against state.summarized (new-only summary)
+    |
     +--> src/discord.js sends notifications:
     |      +--> #price-alerts: new finds + price drops (with @here)
-    |      +--> #hourly-summaries: scan summary (silent)
+    |      +--> #hourly-summaries: only when there are alerts, new summary deals, or coverage warnings (silent)
     |
     +--> Save updated state to state/notified.json
     +--> GitHub Actions commits state file back to repo
@@ -43,7 +43,8 @@ npm start -> src/index.js (orchestrator)
 
 ## 2. Key Technical Decisions
 
-*   **API interception over DOM scraping:** Holt Renfrew uses SAP Hybris with a JSON API at `/en/c/{category}/results`. Puppeteer intercepts this response to get structured product data. No CSS selector guessing needed.
+*   **Direct API paging over DOM scraping:** Holt Renfrew uses SAP Hybris with a JSON API at `/en/c/{category}/results`. The scraper calls it with in-page `fetch()` after one landing-page load. Paging uses `page=`; `currentPage=` is ignored by the API (this bug limited every category to 84 products until 2026-09-10). No DOM fallback: a failed category is reported, not guessed.
+*   **Colour variants are one style:** each colour is a separate product code with the same brand + name; the filter merges them so one deal produces one alert.
 *   **Puppeteer retained:** Site blocks direct HTTP requests (CloudFlare WAF). Need real browser context for cookies/headers.
 *   **Git-based state persistence:** `state/notified.json` is committed by GitHub Actions after each run. Ensures dedup state survives across ephemeral CI runs.
 *   **Product identity by code:** Products keyed by Hybris product code (SKU), the most stable identifier.
@@ -51,14 +52,14 @@ npm start -> src/index.js (orchestrator)
 
 ## 3. Data Flow
 
-1.  Puppeteer navigates to category page URL
-2.  Browser makes XHR to `/en/c/WomensSale/results?...&grid=2`
-3.  Response intercepted: JSON with `results[]` array and `pagination` object
-4.  `apiParser.js` normalizes each product: code, name, brand, prices, discountPercent, imageUrl, productUrl
-5.  For multi-page results: `page.evaluate(fetch(...))` calls subsequent pages using browser cookies
-6.  `filter.js` categorizes by discount threshold + brand/category matching
-7.  `state.js` deduplicates against previously notified products
-8.  `discord.js` sends embeds for new/price-drop products only
+1.  Puppeteer opens the sale landing page once
+2.  For each category facet, `page.evaluate(fetch(...))` requests `/en/c/WomensSale/results?...&page=N` using browser cookies
+3.  JSON has `results[]` (84 per page) and `pagination` (`numberOfPages`, `totalNumberOfResults`)
+4.  `apiParser.js` normalizes each product: code, name, brand, color, prices, discountPercent, imageUrl, productUrl
+5.  Coverage compares unique codes collected with `totalNumberOfResults`
+6.  `filter.js` merges colour variants, then categorizes by discount threshold + brand/category matching
+7.  `state.js` deduplicates alerts (`products`) and summary items (`summarized`)
+8.  `discord.js` sends embeds for new/price-drop products; summary only when something is new
 9.  State saved to disk, committed by CI
 
 ## 4. Key Patterns
