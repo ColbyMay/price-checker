@@ -32,7 +32,8 @@
 *   Watches the Zelda 40th Anniversary Switch 2 Pro Controller at Nintendo CA (SKU 127074, not listed in Canada on 2026-09-10), Best Buy CA (20149830, SoldOutOnline), Walmart.ca (3CVEAW67GHIT, OUT_OF_STOCK pre-order), EB Games (220623, Cloudflare "Access denied" even from a home connection, kept as best effort)
 *   Posts to a new `#stock-alerts` channel (user must create it and give the bot access)
 *   State in the GitHub Actions cache, not git (`state/stock.json` is gitignored)
-*   Holt Renfrew fix committed as `442e3d1` on `fix/holt-renfrew-coverage` (not pushed yet)
+*   Holt Renfrew fix committed as `442e3d1` on `fix/holt-renfrew-coverage`; stock watcher committed as `ec1af49` on `feature/stock-watcher` (stacked on it). Neither pushed yet.
+*   First dry run: Nintendo CA not_listed, Best Buy CA blocked (403 on headless page load), Walmart.ca out_of_stock, EB Games out_of_stock (works). Fix (user chose option A): Best Buy checker calls the availability API with plain `fetch`, no page load.
 
 ## 5. Next Steps
 

@@ -8,8 +8,11 @@ const {
 	parseJsonLdAvailability
 } = require('./parsers');
 
-// Timeout for loading one product page, in milliseconds
+// Timeout for loading one product page or API response, in milliseconds
 const PAGE_TIMEOUT_MS = 45000;
+
+// Desktop Chrome user agent for plain HTTPS requests (matches the headless browser's)
+const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36';
 
 // Extra wait after the HTML loads so late scripts and bot checks can render, in milliseconds
 const SETTLE_DELAY_MS = 1500;
@@ -94,27 +97,31 @@ async function checkNintendo(page, listing) {
 }
 
 /**
- * Checks Best Buy Canada through its availability API, called from the product page so cookies apply
- * @param {Object} page - Puppeteer page
+ * Checks Best Buy Canada through its public availability API with a plain HTTPS request
+ * Best Buy's product pages return 403 to headless Chromium, but this JSON endpoint answers normal requests
+ * @param {Object} page - Puppeteer page (unused; kept so every checker has the same signature)
  * @param {{url: string, sku: string}} listing - Listing config
  * @returns {Promise<Object>} Stock result
  */
 async function checkBestBuy(page, listing) {
-	const loaded = await loadPage(page, listing.url);
-	if (detectBlock(loaded)) return blockedResult(loaded);
-
 	const apiUrl = 'https://www.bestbuy.ca/ecomm-api/availability/products' +
 		'?accept=application%2Fvnd.bestbuy.standardproduct.v1%2Bjson&accept-language=en-CA' +
 		`&skus=${encodeURIComponent(listing.sku)}`;
 
-	const response = await page.evaluate(async (url) => {
-		try {
-			const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
-			return { status: res.status, text: await res.text() };
-		} catch (e) {
-			return { status: 0, text: '', error: e.message };
-		}
-	}, apiUrl);
+	let response;
+	try {
+		const res = await fetch(apiUrl, {
+			headers: {
+				'Accept': 'application/json',
+				'Accept-Language': 'en-CA',
+				'User-Agent': USER_AGENT
+			},
+			signal: AbortSignal.timeout(PAGE_TIMEOUT_MS)
+		});
+		response = { status: res.status, text: await res.text() };
+	} catch (e) {
+		response = { status: 0, text: '', error: e.message };
+	}
 
 	if (response.status === 403 || response.status === 429) {
 		return { status: STATUS.BLOCKED, detail: `Availability API returned HTTP ${response.status}` };

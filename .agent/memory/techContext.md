@@ -75,8 +75,10 @@
 | Retailer id | How stock is read | Notes |
 |------|---------|---------|
 | `nintendo-ca` | Page `__NEXT_DATA__` -> `props.pageProps.initialApolloState['Product:{"sku":"<sku>"}'].isSalableQty` (+ `prePurchase`) | SKUs are shared between the US and CA stores. Unlisted CA product returns a "Whoops!" page -> `not_listed`. |
-| `bestbuy-ca` | `GET /ecomm-api/availability/products?accept=application%2Fvnd.bestbuy.standardproduct.v1%2Bjson&accept-language=en-CA&skus=<sku>` from the product page | Response has a BOM (use `trim()` before `JSON.parse`). `shipping.status` e.g. `SoldOutOnline`, `shipping.purchasable`, `pickup.purchasable`, `sellerId` (`bbyca`). Works without `postalCode`. No JSON-LD price on the page. |
+| `bestbuy-ca` | Plain Node `fetch` (no browser) of `GET https://www.bestbuy.ca/ecomm-api/availability/products?accept=application%2Fvnd.bestbuy.standardproduct.v1%2Bjson&accept-language=en-CA&skus=<sku>` | Response has a BOM (use `trim()` before `JSON.parse`). `shipping.status` e.g. `SoldOutOnline`, `shipping.purchasable`, `pickup.purchasable`, `sellerId` (`bbyca`). Works without `postalCode`. No JSON-LD price on the page. |
 | `walmart-ca` | Page `__NEXT_DATA__` -> `props.pageProps.initialData.data.product.availabilityStatus` (`IN_STOCK` / `OUT_OF_STOCK`), `sellerName`, `preOrder.isPreOrder`, `priceInfo.currentPrice` | Heaviest bot protection (PerimeterX "Press & Hold"). |
-| `ebgames` | Generic schema.org JSON-LD `offers.availability` | Cloudflare "Access denied" even for a home-connection automated browser; format untested. |
+| `ebgames` | Generic schema.org JSON-LD `offers.availability` | Blocked the in-app browser (Cloudflare "Access denied"), but Puppeteer headless Chromium got through on 2026-09-10 and read `OutOfStock`, $124.99. |
+
+**First dry run (2026-09-10, home connection, headless Puppeteer):** Nintendo CA `not_listed`; **Best Buy CA `blocked` (HTTP 403 "Access Denied" on the product page)**; Walmart.ca `out_of_stock` $124.96; EB Games `out_of_stock` $124.99. Best Buy's page blocks headless Chromium, but a plain HTTPS request to the availability API returned 200 JSON, so the checker now calls the API directly and never loads the page. Do not add stealth plugins or fingerprint spoofing to get around blocks.
 
 Zelda 40th Anniversary Switch 2 Pro Controller: $99.99 USD, release 2026-10-29; the version with a display stand is Nintendo Store exclusive.
