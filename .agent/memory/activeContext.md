@@ -32,16 +32,18 @@
 *   Watches the Zelda 40th Anniversary Switch 2 Pro Controller at Nintendo CA (SKU 127074, not listed in Canada on 2026-09-10), Best Buy CA (20149830, SoldOutOnline), Walmart.ca (3CVEAW67GHIT, OUT_OF_STOCK pre-order), EB Games (220623, Cloudflare "Access denied" even from a home connection, kept as best effort)
 *   Posts to a new `#stock-alerts` channel (user must create it and give the bot access)
 *   State in the GitHub Actions cache, not git (`state/stock.json` is gitignored)
-*   Holt Renfrew fix committed as `442e3d1` on `fix/holt-renfrew-coverage`; stock watcher committed as `ec1af49` on `feature/stock-watcher` (stacked on it). Neither pushed yet.
+*   Holt Renfrew fix + stock watcher merged to `master` via PR #1 (merge commit `f3b8164`, 2026-09-10).
+*   **First CI runs (2026-09-10):** Stock Watcher succeeded: Nintendo CA not_listed, Best Buy CA out_of_stock (direct API works from GitHub runners), Walmart.ca blocked, EB Games blocked (Cloudflare "Just a moment..."). Expect Walmart/EB Games to stay mostly blocked from Actions.
+*   **Security incident (2026-09-10):** a real Discord bot token had been committed in `.env.example` since commit `0d84afa` (2025-06-12). Making the repo public exposed it; Discord invalidated it (`TokenInvalid` in CI). User resets the token and updates the `DISCORD_BOT_TOKEN` Actions secret. `.env.example` now holds a placeholder. Full-history scan found no other real secrets (the SECRET_KEY/DISCORD_TOKEN hits are committed node_modules/dotenv README samples in `f965952`/`b5860b6`). No history rewrite needed once the token is reset. Never put real values in `.env.example`.
+*   **CI state-commit failure (2026-09-10):** `npm install` on the runner rewrote `package-lock.json` (local npm 11 vs runner npm), leaving an unstaged change that made `git pull --rebase` fail, so Holt Renfrew state would never be saved (duplicate alerts). Fixed: both workflows use `npm ci`; state commit uses `git pull --rebase --autostash`.
 *   First dry run: Nintendo CA not_listed, Best Buy CA blocked (403 on headless page load), Walmart.ca out_of_stock, EB Games out_of_stock (works). Fix (user chose option A): Best Buy checker calls the availability API with plain `fetch`, no page load.
 
 ## 5. Next Steps
 
-1.  Run `npm test` and `npm run stock -- --dry-run`, then commit the stock watcher
-2.  User: create `#stock-alerts`, push the branch, merge to `master`
-3.  Watch the first stock-watcher runs: which retailers get blocked from GitHub's US data-centre IPs (Walmart.ca and EB Games most likely)
-4.  Watch the first Holt Renfrew runs for summary volume (the first run lists up to 8 of all current lower-discount deals once)
-5.  Separate small task: `npm audit` reports 14 vulnerabilities in existing dependencies
+1.  User: reset the Discord bot token and update the `DISCORD_BOT_TOKEN` Actions secret (and local `.env`)
+2.  Merge `fix/secret-and-ci`, then re-run both workflows and confirm Holt Renfrew logs in and commits state
+3.  Watch the first Holt Renfrew runs for summary volume (the first run lists up to 8 of all current lower-discount deals once)
+4.  Separate small task: `npm audit` reports 14 vulnerabilities in existing dependencies; GitHub warns actions using Node 20 (cache/checkout/setup-node v4) are deprecated
 
 ## 6. Active Considerations
 

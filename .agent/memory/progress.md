@@ -28,6 +28,7 @@
 
 ## 4. Evolution of Decisions
 
+*   **2026-09-10:** Repo made public, which exposed a Discord token committed in `.env.example` (Discord revoked it). Replaced with a placeholder; workflows switched to `npm ci` after a rewritten lockfile broke the state commit step.
 *   **2026-09-10:** Added Canadian stock watcher as a separate 10-minute workflow. Considered Vercel (rejected: data-centre IPs, no disk, Chromium size, cron limits) and a Toronto VPS/home machine (better for blocking); user chose to stay on GitHub Actions.
 *   **2026-09-10:** Live API investigation found `currentPage` ignored (only page 0 ever scraped), wrong jewellery facet, and colour-variant duplicates. Rewrote scraper/filter/state; summary made new-only; DOM fallback removed; Node 22.
 *   **2026-03-26:** Major overhaul: replaced scroll+DOM scraping with API interception, added state persistence for dedup, simplified all modules
