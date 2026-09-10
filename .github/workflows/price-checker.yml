@@ -27,8 +27,10 @@ jobs:
         node-version: '22'
         cache: 'npm'
 
+    # npm ci installs exactly from package-lock.json and never rewrites it; a rewritten lockfile
+    # leaves an unstaged change that makes the "git pull --rebase" in the state commit step fail
     - name: Install dependencies
-      run: npm install
+      run: npm ci
 
     - name: Run price checker
       env:
@@ -42,7 +44,7 @@ jobs:
         git config user.email "github-actions[bot]@users.noreply.github.com"
         git add state/notified.json
         git diff --staged --quiet || git commit -m "Update notified state"
-        git pull --rebase
+        git pull --rebase --autostash
         git push
 
     - name: Upload logs on failure

@@ -36,7 +36,7 @@ jobs:
         key: puppeteer-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
     - name: Install dependencies
-      run: npm install
+      run: npm ci
 
     # Stock state lives in the Actions cache (not git) so runs every 10 minutes don't create commits
     - name: Restore stock state
