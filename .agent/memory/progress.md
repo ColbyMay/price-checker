@@ -1,6 +1,6 @@
 # Progress: Price Checker App
 
-## Current Status: Holt Renfrew coverage fix written, awaiting test run and commit (2026-09-10)
+## Current Status: Holt Renfrew fix and stock watcher live on `master`, verified in CI (2026-09-10)
 
 ## 1. What Works
 
@@ -12,16 +12,17 @@
 *   **Whole-word, accent-insensitive filtering**
 *   **GitHub Actions:** hourly, Node 22, concurrency-safe, state committed back to the repo
 
-*   **Stock watcher (written 2026-09-10, not yet run in CI):** Nintendo CA, Best Buy CA, Walmart.ca, EB Games (best effort); @here on in-stock transitions only; seller checks for Walmart/Best Buy; per-retailer backoff on blocks
+*   **Stock watcher (live since 2026-09-10):** Nintendo CA, Best Buy CA, Walmart.ca, EB Games (best effort); @here on in-stock transitions only; seller checks for Walmart/Best Buy; per-retailer backoff on blocks. From GitHub runners: Nintendo CA and Best Buy CA work; Walmart.ca and EB Games are blocked most of the time.
+*   **CI verified 2026-09-10:** Holt Renfrew run logged in, full coverage (314), alerts + summary sent, state committed; stock watcher cache restore/save works
 
 ## 2. What's Left
 
-*   Commit the stock watcher; push and merge both branches; create `#stock-alerts`
-*   Confirm from CI logs which retailers block GitHub-hosted runners
 *   `npm audit`: 14 vulnerabilities (1 critical) in existing dependencies
 *   Older duplicate memory folder `memory-bank/` could be removed in favour of `.agent/memory/`
 
 ## 3. Known Issues
+
+*   **EB Games DOM has a hidden Preorder anchor:** `a.js_check_product` exists in the page even when the item is out of stock (hidden by the storefront). JSON-LD `availability` matches what shoppers see (confirmed by the user 2026-09-10), so the checker reads JSON-LD, not the button.
 
 *   If Holt Renfrew renames facet codes, that category reports 0/0 rather than an error; coverage warnings only catch partial pages. Facet list is available in any `/results` response under `facets[code=storefrontfacetcategories]`.
 *   `monitoring.frequency` in config is informational only; the schedule lives in the workflow file.

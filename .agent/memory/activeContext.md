@@ -2,9 +2,9 @@
 
 ## 1. Current Work Focus
 
-*   **Phase:** Holt Renfrew coverage + duplicate fix (2026-09-10), then Canadian stock watcher
-*   **Current Activity:** Scraper rewritten after live API investigation; stock watcher for the Zelda 40th Anniversary Switch 2 Pro Controller is next
-*   **Immediate Goal:** Verify the fix with `npm test` and `npm test -- --test-scraping`, then commit on a branch
+*   **Phase:** Both pipelines live on `master` and verified in CI (2026-09-10)
+*   **Current Activity:** Monitoring scheduled runs
+*   **Immediate Goal:** None pending; wait for the Zelda Pro Controller to come into stock
 
 ## 2. Recent Changes & Decisions (2026-09-10)
 
@@ -35,15 +35,17 @@
 *   Holt Renfrew fix + stock watcher merged to `master` via PR #1 (merge commit `f3b8164`, 2026-09-10).
 *   **First CI runs (2026-09-10):** Stock Watcher succeeded: Nintendo CA not_listed, Best Buy CA out_of_stock (direct API works from GitHub runners), Walmart.ca blocked, EB Games blocked (Cloudflare "Just a moment..."). Expect Walmart/EB Games to stay mostly blocked from Actions.
 *   **Security incident (2026-09-10):** a real Discord bot token had been committed in `.env.example` since commit `0d84afa` (2025-06-12). Making the repo public exposed it; Discord invalidated it (`TokenInvalid` in CI). User resets the token and updates the `DISCORD_BOT_TOKEN` Actions secret. `.env.example` now holds a placeholder. Full-history scan found no other real secrets (the SECRET_KEY/DISCORD_TOKEN hits are committed node_modules/dotenv README samples in `f965952`/`b5860b6`). No history rewrite needed once the token is reset. Never put real values in `.env.example`.
+*   **Resolved and verified (2026-09-10):** PR #2 merged (`694a396`); user reset the token and updated the `DISCORD_BOT_TOKEN` secret. Manual runs then passed: Holt Renfrew logged in as `Price checker#8926`, scraped 314/314, merged 37 colour variants (277 styles), sent 2 new 70%+ alerts (1 already alerted), posted the one-time catch-up summary (231 deals), and the state commit pushed (`1b26476`). Stock watcher restored its cache, skipped Walmart.ca and EB Games (backing off after blocks), read Nintendo CA not_listed and Best Buy CA SoldOutOnline.
+*   **EB Games checked (2026-09-10):** JSON-LD `availability: OutOfStock` ($124.99 CAD) matches what the user sees in a real browser ("Out of stock", no Preorder button). The headless DOM contains a `Preorder` anchor (`a.btn.btn-primary.js_check_product.a-submit`), but it is template markup that the Odoo storefront hides when the item is unavailable; do not read stock from it. Keep the JSON-LD checker; EB Games stays on the watch list until it is available. EB Games is usually blocked from GitHub runners ("Just a moment..."), so it only reports when a run gets through. Their page lists the release date as 2025-10-29 (their typo).
 *   **CI state-commit failure (2026-09-10):** `npm install` on the runner rewrote `package-lock.json` (local npm 11 vs runner npm), leaving an unstaged change that made `git pull --rebase` fail, so Holt Renfrew state would never be saved (duplicate alerts). Fixed: both workflows use `npm ci`; state commit uses `git pull --rebase --autostash`.
 *   First dry run: Nintendo CA not_listed, Best Buy CA blocked (403 on headless page load), Walmart.ca out_of_stock, EB Games out_of_stock (works). Fix (user chose option A): Best Buy checker calls the availability API with plain `fetch`, no page load.
 
 ## 5. Next Steps
 
-1.  User: reset the Discord bot token and update the `DISCORD_BOT_TOKEN` Actions secret (and local `.env`)
-2.  Merge `fix/secret-and-ci`, then re-run both workflows and confirm Holt Renfrew logs in and commits state
-3.  Watch the first Holt Renfrew runs for summary volume (the first run lists up to 8 of all current lower-discount deals once)
-4.  Separate small task: `npm audit` reports 14 vulnerabilities in existing dependencies; GitHub warns actions using Node 20 (cache/checkout/setup-node v4) are deprecated
+1.  Watch the next hourly Holt Renfrew runs: summaries should now be new-only (silent when nothing new)
+2.  Watch for the quiet "check keeps failing" warnings for Walmart.ca and EB Games in `#stock-alerts`
+3.  Separate small task: `npm audit` reports 14 vulnerabilities in existing dependencies; GitHub warns actions using Node 20 (cache/checkout/setup-node v4) are deprecated
+4.  Optional cleanup: delete merged remote branches `feature/stock-watcher` and `fix/secret-and-ci`; remove legacy `memory-bank/`
 
 ## 6. Active Considerations
 
