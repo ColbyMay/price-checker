@@ -1,4 +1,4 @@
-// State persistence for tracking notified products across runs
+// State persistence for tracking alerted and summarized products across runs
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
@@ -6,21 +6,25 @@ const crypto = require('crypto');
 const STATE_FILE = path.join(__dirname, '..', 'state', 'notified.json');
 const DEFAULT_MAX_AGE_DAYS = 14;
 
+// State buckets: 'products' holds 70%+ alerts already sent, 'summarized' holds items already listed in an hourly summary
+const BUCKETS = ['products', 'summarized'];
+
 /**
  * Creates an empty state object
  * @returns {Object} Empty state
  */
 function createEmptyState() {
 	return {
-		version: 1,
+		version: 2,
 		lastUpdated: '',
-		products: {}
+		products: {},
+		summarized: {}
 	};
 }
 
 /**
- * Loads notification state from disk
- * @returns {Object} State object with products map
+ * Loads notification state from disk, upgrading version 1 files in place
+ * @returns {Object} State object with products and summarized maps
  */
 function loadState() {
 	try {
@@ -38,8 +42,13 @@ function loadState() {
 			return createEmptyState();
 		}
 
-		const productCount = Object.keys(state.products).length;
-		console.log(`Loaded state: ${productCount} previously notified products`);
+		// Version 1 files have no summary history
+		if (!state.summarized || typeof state.summarized !== 'object') {
+			state.summarized = {};
+		}
+		state.version = 2;
+
+		console.log(`Loaded state: ${Object.keys(state.products).length} alerted, ${Object.keys(state.summarized).length} summarized products`);
 		return state;
 
 	} catch (error) {
@@ -68,61 +77,83 @@ function getProductKey(product) {
 }
 
 /**
- * Checks whether a product has already been notified at its current price or higher
- * Returns false (should notify) if the product is new or has dropped in price
+ * Returns every state key for a product: all colour-variant codes when grouped, else its single key
+ * @param {Object} product - Product object, optionally with a `codes` array
+ * @returns {Array<string>} State keys
+ */
+function getProductKeys(product) {
+	if (Array.isArray(product.codes) && product.codes.length > 0) {
+		return product.codes;
+	}
+	return [getProductKey(product)];
+}
+
+/**
+ * Reads a product's current price as a number
+ * @param {Object} product - Product object
+ * @returns {number} Current price (0 if unknown)
+ */
+function getCurrentPrice(product) {
+	return typeof product.currentPrice === 'number'
+		? product.currentPrice
+		: parseFloat(product.currentPrice) || 0;
+}
+
+/**
+ * Checks whether a product was already sent at its current price or lower
+ * Returns alreadyNotified false if the product is new or has dropped in price
  * @param {Object} product - Product object with currentPrice
  * @param {Object} state - Current state object
+ * @param {string} bucket - 'products' (alerts, default) or 'summarized' (hourly summaries)
  * @returns {{ alreadyNotified: boolean, isPriceDrop: boolean }}
  */
-function checkNotificationStatus(product, state) {
-	const key = getProductKey(product);
-	const existing = state.products[key];
+function checkNotificationStatus(product, state, bucket = 'products') {
+	const entries = getProductKeys(product)
+		.map(key => state[bucket][key])
+		.filter(Boolean);
 
-	if (!existing) {
+	if (entries.length === 0) {
 		return { alreadyNotified: false, isPriceDrop: false };
 	}
 
-	const currentPrice = typeof product.currentPrice === 'number'
-		? product.currentPrice
-		: parseFloat(product.currentPrice) || 0;
+	const currentPrice = getCurrentPrice(product);
+	const lowestSentPrice = Math.min(...entries.map(entry => entry.notifiedPrice));
 
-	// If the price has dropped since last notification, treat as new deal
-	if (currentPrice > 0 && currentPrice < existing.notifiedPrice) {
+	// If the price has dropped since it was last sent, treat as new
+	if (currentPrice > 0 && currentPrice < lowestSentPrice) {
 		return { alreadyNotified: false, isPriceDrop: true };
 	}
 
-	// Already notified at this price or lower
+	// Already sent at this price or lower
 	return { alreadyNotified: true, isPriceDrop: false };
 }
 
 /**
- * Marks products as notified in the state
- * @param {Array} products - Array of product objects that were notified
+ * Records products as sent, one entry per product code
+ * @param {Array} products - Products that were sent
  * @param {Object} state - Current state object (mutated in place)
+ * @param {string} bucket - 'products' (alerts, default) or 'summarized' (hourly summaries)
  */
-function markNotified(products, state) {
+function markNotified(products, state, bucket = 'products') {
 	const now = new Date().toISOString();
 
 	for (const product of products) {
-		const key = getProductKey(product);
-		const currentPrice = typeof product.currentPrice === 'number'
-			? product.currentPrice
-			: parseFloat(product.currentPrice) || 0;
-
-		state.products[key] = {
-			name: product.name,
-			brand: product.brand || 'Unknown Brand',
-			notifiedPrice: currentPrice,
-			notifiedAt: now,
-			lastSeen: now
-		};
+		for (const key of getProductKeys(product)) {
+			state[bucket][key] = {
+				name: product.name,
+				brand: product.brand || 'Unknown Brand',
+				notifiedPrice: getCurrentPrice(product),
+				notifiedAt: now,
+				lastSeen: now
+			};
+		}
 	}
 
 	state.lastUpdated = now;
 }
 
 /**
- * Updates lastSeen timestamp for products that are still on sale (even if not re-notified)
+ * Updates lastSeen for tracked products that are still on sale (even if not re-sent)
  * @param {Array} products - All scraped products (before filtering)
  * @param {Object} state - Current state object (mutated in place)
  */
@@ -131,14 +162,16 @@ function updateLastSeen(products, state) {
 
 	for (const product of products) {
 		const key = getProductKey(product);
-		if (state.products[key]) {
-			state.products[key].lastSeen = now;
+		for (const bucket of BUCKETS) {
+			if (state[bucket][key]) {
+				state[bucket][key].lastSeen = now;
+			}
 		}
 	}
 }
 
 /**
- * Removes products from state that have not been seen for maxAgeDays
+ * Removes entries that have not been seen for maxAgeDays, in every bucket
  * @param {Object} state - Current state object (mutated in place)
  * @param {number} maxAgeDays - Maximum age in days before pruning (default: 14)
  * @returns {number} Number of entries pruned
@@ -150,11 +183,13 @@ function pruneExpiredEntries(state, maxAgeDays = DEFAULT_MAX_AGE_DAYS) {
 
 	let pruned = 0;
 
-	for (const [key, entry] of Object.entries(state.products)) {
-		const lastSeen = entry.lastSeen || entry.notifiedAt || '';
-		if (lastSeen && lastSeen < cutoffIso) {
-			delete state.products[key];
-			pruned++;
+	for (const bucket of BUCKETS) {
+		for (const [key, entry] of Object.entries(state[bucket])) {
+			const lastSeen = entry.lastSeen || entry.notifiedAt || '';
+			if (lastSeen && lastSeen < cutoffIso) {
+				delete state[bucket][key];
+				pruned++;
+			}
 		}
 	}
 
@@ -180,8 +215,7 @@ function saveState(state) {
 		const data = JSON.stringify(state, null, '\t');
 		fs.writeFileSync(STATE_FILE, data, 'utf8');
 
-		const productCount = Object.keys(state.products).length;
-		console.log(`State saved: ${productCount} products tracked`);
+		console.log(`State saved: ${Object.keys(state.products).length} alerted, ${Object.keys(state.summarized).length} summarized products`);
 
 	} catch (error) {
 		console.error('Error saving state file:', error.message);
@@ -190,10 +224,12 @@ function saveState(state) {
 
 module.exports = {
 	loadState,
+	createEmptyState,
 	checkNotificationStatus,
 	markNotified,
 	updateLastSeen,
 	pruneExpiredEntries,
 	saveState,
-	getProductKey
+	getProductKey,
+	getProductKeys
 };

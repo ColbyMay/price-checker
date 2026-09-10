@@ -1,12 +1,21 @@
 {
 	"website": {
-		"url": "https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale?sort=relevance&q=%3Adate-desc%3AstorefrontFacetCategories%3AWomensBags%3AstorefrontFacetCategories%3AWomensShoes",
-		"name": "Holt Renfrew Sale - Women's Bags & Shoes"
+		"name": "Holt Renfrew Sale",
+		"baseUrl": "https://www.holtrenfrew.com",
+		"landingPath": "/en/Products/Womens/Collections/Sale/c/WomensSale",
+		"saleCategory": "WomensSale",
+		"sort": "date-desc",
+		"categories": [
+			{ "name": "Shoes", "facet": "womensshoes" },
+			{ "name": "Bags", "facet": "womensbags" },
+			{ "name": "Jewellery & Watches", "facet": "jewellerywatches" },
+			{ "name": "Accessories", "facet": "womensaccessories" }
+		]
 	},
 	"monitoring": {
 		"frequency": "0 * * * *",
 		"minDiscountPercent": 70,
-		"categories": ["handbag", "bag", "purse", "clutch", "tote", "wallet", "bracelet", "necklace", "earring", "earrings", "ring", "shoe", "shoes", "boot", "boots", "sandal", "sandals", "heel", "heels", "sneaker", "sneakers", "pump", "pumps", "flat", "flats", "loafer", "loafers", "mule", "mules", "slingback", "runner", "runners"],
+		"categories": ["handbag", "bag", "bags", "purse", "clutch", "tote", "wallet", "bracelet", "necklace", "earring", "earrings", "ring", "watch", "watches", "shoe", "shoes", "boot", "boots", "sandal", "sandals", "heel", "heels", "sneaker", "sneakers", "pump", "pumps", "flat", "flats", "loafer", "loafers", "mule", "mules", "slingback", "runner", "runners"],
 		"designerBrands": [
 			"Gucci", "Louis Vuitton", "Chanel", "Prada", "Hermès", "Dior",
 			"Saint Laurent", "Bottega Veneta", "Celine", "Balenciaga",
@@ -25,5 +34,34 @@
 	"state": {
 		"maxAgeDays": 14,
 		"renotifyOnPriceDrop": true
+	},
+	"stockWatch": {
+		"alertChannelName": "stock-alerts",
+		"blockedWarningAfter": 3,
+		"products": [
+			{
+				"name": "Switch 2 Pro Controller – Zelda 40th Anniversary Edition",
+				"listings": [
+					{
+						"retailer": "nintendo-ca",
+						"sku": "127074",
+						"url": "https://www.nintendo.com/en-ca/store/products/nintendo-switch-2-pro-controller-the-legend-of-zelda-40th-anniversary-edition-127074/"
+					},
+					{
+						"retailer": "bestbuy-ca",
+						"sku": "20149830",
+						"url": "https://www.bestbuy.ca/en-ca/product/nintendo-switch-2-pro-controller-the-legend-of-zelda-40th-anniversary-edition/20149830"
+					},
+					{
+						"retailer": "walmart-ca",
+						"url": "https://www.walmart.ca/en/ip/Nintendo-Switch-2-Pro-Controller-The-Legend-of-Zelda-40th-Anniversary-Edition/3CVEAW67GHIT"
+					},
+					{
+						"retailer": "ebgames",
+						"url": "https://www.ebgames.ca/shop/904030-nintendo-switch-2-pro-controller-the-legend-of-zelda-40th-anniversary-edition-220623"
+					}
+				]
+			}
+		]
 	}
 }

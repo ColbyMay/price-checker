@@ -1,14 +1,20 @@
-// Main entry point for the price checker bot
+// Main entry point for the Holt Renfrew sale checker: scrape, filter, dedupe against state, notify Discord
 require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
-const { scrapeProducts } = require('./scraper');
+const { scrapeSaleCategories } = require('./scraper');
 const { categorizeProducts } = require('./filter');
 const { loadState, checkNotificationStatus, markNotified, updateLastSeen, pruneExpiredEntries, saveState } = require('./state');
 const DiscordNotifier = require('./discord');
 
 // Global configuration object
 let CONFIG = {};
+
+// Most lower-discount deals listed in one hourly summary (1+)
+const SUMMARY_MAX_ITEMS = 8;
+
+// Discord rejects messages over 2000 characters; stay under it with some headroom
+const DISCORD_MESSAGE_LIMIT = 1900;
 
 /**
  * Loads configuration from config.json file
@@ -26,18 +32,19 @@ function loadConfig() {
 }
 
 /**
- * Separates products into new alerts and price-drop re-alerts based on notification state
+ * Separates products into new items and price-drop re-sends based on state
  * @param {Array} products - Filtered products that meet criteria
  * @param {Object} state - Current notification state
+ * @param {string} bucket - State bucket to check: 'products' (alerts) or 'summarized' (hourly summaries)
  * @returns {{ newProducts: Array, priceDropProducts: Array, skippedCount: number }}
  */
-function deduplicateAgainstState(products, state) {
+function deduplicateAgainstState(products, state, bucket = 'products') {
 	const newProducts = [];
 	const priceDropProducts = [];
 	let skippedCount = 0;
 
 	for (const product of products) {
-		const { alreadyNotified, isPriceDrop } = checkNotificationStatus(product, state);
+		const { alreadyNotified, isPriceDrop } = checkNotificationStatus(product, state, bucket);
 
 		if (isPriceDrop) {
 			product.isPriceDrop = true;
@@ -50,6 +57,75 @@ function deduplicateAgainstState(products, state) {
 	}
 
 	return { newProducts, priceDropProducts, skippedCount };
+}
+
+/**
+ * Turns scraper coverage reports into human-readable warnings for categories that came back incomplete
+ * @param {Array} coverage - Per-category coverage from the scraper
+ * @returns {Array<string>} Warning lines (empty when every category was fully collected)
+ */
+function getCoverageWarnings(coverage) {
+	return coverage
+		.filter(c => c.error || c.failedPages > 0 || (c.expected != null && c.collected < c.expected))
+		.map(c => c.error
+			? `${c.name}: failed (${c.error})`
+			: `${c.name}: got ${c.collected}/${c.expected} products${c.failedPages ? `, ${c.failedPages} page(s) failed` : ''}`
+		);
+}
+
+/**
+ * Formats one lower-discount deal as a summary line
+ * @param {Object} product - Product object
+ * @param {number} index - 0-based position in the list
+ * @returns {string} Markdown line
+ */
+function formatSummaryLine(product, index) {
+	const escapedBrand = (product.brand || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	const brandPattern = new RegExp('^' + escapedBrand + '\\s*', 'i');
+	let cleanName = product.name.replace(brandPattern, '').trim();
+	if (cleanName.length > 25) {
+		cleanName = cleanName.substring(0, 22) + '...';
+	}
+	const productLink = product.productUrl ? `[${cleanName}](${product.productUrl})` : cleanName;
+	const price = product.formattedCurrentPrice || `$${product.currentPrice}`;
+	const drop = product.isPriceDrop ? ' (lower price)' : '';
+	return `${index + 1}. **${product.brand}** ${productLink} - ${product.discountPercent}% off, ${price}${drop}`;
+}
+
+/**
+ * Builds the hourly summary message, trimming the deal list so it fits in one Discord message
+ * @param {Object} parts - Message parts
+ * @param {number} parts.scannedCount - Unique products scraped
+ * @param {number} parts.categoryCount - Categories scraped
+ * @param {number} parts.alertCount - Alerts sent this run
+ * @param {Array} parts.deals - New lower-discount deals to list
+ * @param {Array<string>} parts.warnings - Coverage warnings
+ * @returns {string} Summary message
+ */
+function buildSummaryMessage({ scannedCount, categoryCount, alertCount, deals, warnings }) {
+	const header = `**Hourly Summary**\nScanned **${scannedCount} products** across ${categoryCount} categories\n` +
+		(alertCount > 0 ? `**${alertCount} new alert${alertCount > 1 ? 's' : ''}** sent to #${CONFIG.discord.alertChannelName}\n` : '');
+	const footer = (warnings.length > 0 ? `Incomplete scrape:\n${warnings.map(w => `- ${w}`).join('\n')}\n` : '') +
+		'Next check in 1 hour';
+
+	let shown = Math.min(deals.length, SUMMARY_MAX_ITEMS);
+
+	while (true) {
+		let body = '';
+		if (deals.length > 0) {
+			body += `**${deals.length} new deal${deals.length > 1 ? 's' : ''}** (lower discounts):\n`;
+			body += deals.slice(0, shown).map(formatSummaryLine).join('\n') + '\n';
+			if (deals.length > shown) {
+				body += `... and ${deals.length - shown} more\n`;
+			}
+		}
+
+		const message = header + body + footer;
+		if (message.length <= DISCORD_MESSAGE_LIMIT || shown === 0) {
+			return message;
+		}
+		shown--;
+	}
 }
 
 /**
@@ -81,48 +157,18 @@ async function runPriceCheck() {
 			await discordNotifier.initialize(discordToken);
 		}
 
-		// Define categories to scrape
-		const CATEGORY_URLS = [
-			{
-				name: 'Shoes',
-				url: 'https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale?sort=relevance&q=%3Adate-desc%3AstorefrontFacetCategories%3AWomensShoes',
-				maxProducts: 400
-			},
-			{
-				name: 'Bags',
-				url: 'https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale?sort=relevance&q=%3Adate-desc%3AstorefrontFacetCategories%3AWomensBags',
-				maxProducts: 400
-			},
-			{
-				name: 'Jewelry & Watches',
-				url: 'https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale?sort=relevance&q=%3Adate-desc%3AstorefrontFacetCategories%3AWomensJewellery',
-				maxProducts: 300
-			},
-			{
-				name: 'Accessories',
-				url: 'https://www.holtrenfrew.com/en/Products/Womens/Collections/Sale/c/WomensSale?sort=relevance&q=%3Adate-desc%3AstorefrontFacetCategories%3AWomensAccessories',
-				maxProducts: 200
-			}
-		];
-
-		// Scrape all categories
-		console.log(`\nScraping ${CATEGORY_URLS.length} product categories...`);
-		const allProducts = [];
-
-		for (const category of CATEGORY_URLS) {
-			console.log(`\n=== Scraping ${category.name} ===`);
-			const categoryProducts = await scrapeProducts(category.url, {
-				maxProducts: category.maxProducts
-			});
-			console.log(`Found ${categoryProducts.length} ${category.name.toLowerCase()} products`);
-			allProducts.push(...categoryProducts);
-		}
+		// Scrape every configured sale category in one browser session
+		const categoryCount = CONFIG.website.categories.length;
+		console.log(`\nScraping ${categoryCount} product categories...`);
+		const { products: allProducts, coverage } = await scrapeSaleCategories(CONFIG.website);
+		const coverageWarnings = getCoverageWarnings(coverage);
 
 		console.log(`\n=== Combined Results ===`);
-		console.log(`Total products scraped: ${allProducts.length}`);
+		console.log(`Unique products scraped: ${allProducts.length}`);
+		coverageWarnings.forEach(warning => console.warn(`Incomplete scrape: ${warning}`));
 
 		if (allProducts.length === 0) {
-			console.log('No products found during scraping');
+			console.warn('No products found during scraping');
 
 			if (discordNotifier) {
 				await discordNotifier.sendSummaryMessage(
@@ -153,10 +199,18 @@ async function runPriceCheck() {
 			skippedCount
 		} = deduplicateAgainstState(highValueAlerts, state);
 
+		// Only list lower-discount deals the summary has not shown before (or that got cheaper)
+		const summaryDedup = deduplicateAgainstState(summaryItems, state, 'summarized');
+		const summaryToPost = [
+			...summaryDedup.newProducts,
+			...(renotifyOnPriceDrop ? summaryDedup.priceDropProducts : [])
+		].sort((a, b) => b.discountPercent - a.discountPercent);
+
 		console.log(`\n=== Deduplication Results ===`);
 		console.log(`New products to notify: ${newProducts.length}`);
 		console.log(`Price drops to re-notify: ${renotifyOnPriceDrop ? priceDropProducts.length : 0}`);
 		console.log(`Already notified (skipped): ${skippedCount}`);
+		console.log(`New summary deals: ${summaryToPost.length} (${summaryDedup.skippedCount} already summarized)`);
 
 		// Combine products to notify
 		const productsToNotify = [
@@ -204,66 +258,24 @@ async function runPriceCheck() {
 				markNotified(productsToNotify, state);
 			}
 
-			// Send hourly summary
-			const totalRelevantItems = highValueAlerts.length + summaryItems.length;
-
-			if (totalRelevantItems === 0) {
-				const summaryMessage = `**Hourly Summary**\n` +
-					`Scanned **${allProducts.length} products** across ${CATEGORY_URLS.length} categories\n` +
-					`None meet criteria (${CONFIG.monitoring.minDiscountPercent}%+ discount + designer/category match)\n` +
-					`Next check in 1 hour`;
+			// Hourly summary: only post when there is something new to say
+			if (productsToNotify.length > 0 || summaryToPost.length > 0 || coverageWarnings.length > 0) {
+				const summaryMessage = buildSummaryMessage({
+					scannedCount: allProducts.length,
+					categoryCount,
+					alertCount: productsToNotify.length,
+					deals: summaryToPost,
+					warnings: coverageWarnings
+				});
 
 				await discordNotifier.sendSummaryMessage(
 					CONFIG.discord.summaryChannelName,
 					summaryMessage
 				);
+
+				markNotified(summaryToPost, state, 'summarized');
 			} else {
-				let summaryMessage = `**Hourly Summary**\n` +
-					`Scanned **${allProducts.length} products** across ${CATEGORY_URLS.length} categories\n`;
-
-				if (productsToNotify.length > 0) {
-					summaryMessage += `**${productsToNotify.length} new alert${productsToNotify.length > 1 ? 's' : ''}** sent to #${CONFIG.discord.alertChannelName}\n`;
-				}
-
-				if (skippedCount > 0) {
-					summaryMessage += `${skippedCount} already-notified item${skippedCount > 1 ? 's' : ''} skipped\n`;
-				}
-
-				if (summaryItems.length > 0) {
-					// Deduplicate summary items
-					const uniqueSummaryItems = [];
-					const seen = new Set();
-					for (const product of summaryItems) {
-						const key = `${product.brand}-${product.name}-${product.discountPercent}`;
-						if (!seen.has(key)) {
-							seen.add(key);
-							uniqueSummaryItems.push(product);
-						}
-					}
-
-					summaryMessage += `**${uniqueSummaryItems.length} other deal${uniqueSummaryItems.length > 1 ? 's' : ''}** (lower discounts):\n`;
-
-					const topSummaryItems = uniqueSummaryItems.slice(0, 5);
-					topSummaryItems.forEach((product, index) => {
-						let cleanName = product.name.replace(new RegExp(`^${product.brand}\\s*`, 'i'), '').trim();
-						if (cleanName.length > 25) {
-							cleanName = cleanName.substring(0, 22) + '...';
-						}
-						const productLink = product.productUrl ? `[${cleanName}](${product.productUrl})` : cleanName;
-						summaryMessage += `${index + 1}. **${product.brand}** ${productLink} - ${product.discountPercent}% off\n`;
-					});
-
-					if (uniqueSummaryItems.length > 5) {
-						summaryMessage += `... and ${uniqueSummaryItems.length - 5} more\n`;
-					}
-				}
-
-				summaryMessage += `Next check in 1 hour`;
-
-				await discordNotifier.sendSummaryMessage(
-					CONFIG.discord.summaryChannelName,
-					summaryMessage
-				);
+				console.log('Nothing new since the last summary, skipping hourly summary');
 			}
 		}
 
@@ -340,5 +352,7 @@ if (require.main === module) {
 
 module.exports = {
 	runPriceCheck,
-	loadConfig
+	loadConfig,
+	buildSummaryMessage,
+	getCoverageWarnings
 };

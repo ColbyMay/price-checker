@@ -48,6 +48,7 @@ function parseProduct(item) {
 		code: item.code || '',
 		name: item.name,
 		brand: extractBrand(item),
+		color: typeof item.color === 'string' ? item.color : '',
 		currentPrice: currentPrice,
 		originalPrice: originalPrice || currentPrice,
 		formattedCurrentPrice: item.price ? item.price.formattedValue || `$${currentPrice}` : `$${currentPrice}`,

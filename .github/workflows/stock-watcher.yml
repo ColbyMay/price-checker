@@ -1,0 +1,60 @@
+# Checks Canadian retailers for watched products every 10 minutes and alerts #stock-alerts when one comes into stock
+name: Stock Watcher
+
+on:
+  schedule:
+    # Every 10 minutes; GitHub may start scheduled runs a few minutes late
+    - cron: '*/10 * * * *'
+  workflow_dispatch: # Allow manual triggering
+
+concurrency:
+  group: stock-watcher
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  stock-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: 'npm'
+
+    - name: Cache Puppeteer browser
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/puppeteer
+        key: puppeteer-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+    - name: Install dependencies
+      run: npm install
+
+    # Stock state lives in the Actions cache (not git) so runs every 10 minutes don't create commits
+    - name: Restore stock state
+      uses: actions/cache/restore@v4
+      with:
+        path: state/stock.json
+        key: stock-state-${{ github.run_id }}
+        restore-keys: |
+          stock-state-
+
+    - name: Check stock
+      env:
+        DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+      run: npm run stock
+
+    - name: Save stock state
+      if: always() && hashFiles('state/stock.json') != ''
+      uses: actions/cache/save@v4
+      with:
+        path: state/stock.json
+        key: stock-state-${{ github.run_id }}
