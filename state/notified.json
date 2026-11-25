@@ -1,6 +1,6 @@
 {
 	"version": 2,
-	"lastUpdated": "2026-11-25T10:36:10.736Z",
+	"lastUpdated": "2026-11-25T20:15:48.939Z",
 	"products": {
 		"20213157050": {
 			"name": "Classic Ultra Mini Sheepskin Boots",
@@ -21,21 +21,21 @@
 			"brand": "HEAVENLY JELLY",
 			"notifiedPrice": 99,
 			"notifiedAt": "2026-11-19T08:04:48.699Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20512943002": {
 			"name": "Glam Embellished Jelly Ballet Flats",
 			"brand": "HEAVENLY JELLY",
 			"notifiedPrice": 99,
 			"notifiedAt": "2026-11-19T08:04:48.699Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20512942001": {
 			"name": "Glam Embellished Jelly Ballet Flats",
 			"brand": "HEAVENLY JELLY",
 			"notifiedPrice": 99,
 			"notifiedAt": "2026-11-19T08:04:48.699Z",
-			"lastSeen": "2026-11-23T09:54:50.598Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20512945003": {
 			"name": "Glam Embellished Jelly Ballet Flats",
@@ -49,7 +49,7 @@
 			"brand": "VINCE",
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-11-19T08:04:48.699Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20487675007": {
 			"name": "Barbara Jelly Clog Mules",
@@ -70,14 +70,14 @@
 			"brand": "ADIDAS",
 			"notifiedPrice": 29,
 			"notifiedAt": "2026-11-25T01:09:19.130Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20508923004": {
 			"name": "Taekwondo Mei Leather Ballet Sneakers",
 			"brand": "ADIDAS",
 			"notifiedPrice": 28,
 			"notifiedAt": "2026-11-25T01:09:19.130Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20457498001": {
 			"name": "Taekwondo Mei Leather Ballet Sneakers",
@@ -98,14 +98,14 @@
 			"brand": "DRIES VAN NOTEN",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-25T01:09:19.130Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20482802006": {
 			"name": "Cube Satin Wedge Slingback Pumps",
 			"brand": "ALAÏA",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-11-25T01:09:19.130Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20503225003": {
 			"name": "Plexi Leather Wedge Mules",
@@ -120,6 +120,20 @@
 			"notifiedPrice": 29,
 			"notifiedAt": "2026-11-25T10:36:10.576Z",
 			"lastSeen": "2026-11-25T10:36:10.576Z"
+		},
+		"20440621010": {
+			"name": "Fiddlesy Leather Platform Wedge Clogs",
+			"brand": "JEFFREY CAMPBELL",
+			"notifiedPrice": 23,
+			"notifiedAt": "2026-11-25T20:15:48.628Z",
+			"lastSeen": "2026-11-25T20:15:48.628Z"
+		},
+		"20503225001": {
+			"name": "Plexi Leather Wedge Mules",
+			"brand": "DRIES VAN NOTEN",
+			"notifiedPrice": 499,
+			"notifiedAt": "2026-11-25T20:15:48.628Z",
+			"lastSeen": "2026-11-25T20:15:48.628Z"
 		}
 	},
 	"summarized": {
@@ -128,7 +142,7 @@
 			"brand": "GANNI",
 			"notifiedPrice": 59,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20492955012": {
 			"name": "Mostro Metallic Sneakers",
@@ -142,7 +156,7 @@
 			"brand": "CHLOÉ",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20469072001": {
 			"name": "Haribalmu Metallic Leather Mules",
@@ -156,42 +170,42 @@
 			"brand": "AEYDE",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20382510001": {
 			"name": "Set Of Two The Mama Link Bracelets",
 			"brand": "ROXANNE ASSOULIN",
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20496720001": {
 			"name": "Carroty Shearling Bag Charm",
 			"brand": "COACH",
 			"notifiedPrice": 99,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20508351010": {
 			"name": "New Knot Leather Ballet Flats",
 			"brand": "SALONDEJU",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20474549002": {
 			"name": "Elise Metallic Leather Slingback Sandals",
 			"brand": "AEYDE",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20506997003": {
 			"name": "Junie Leather Slingback Thong Sandals",
 			"brand": "CHLOÉ",
 			"notifiedPrice": 599,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20492956008": {
 			"name": "Mostro Prime Sneakers",
@@ -205,70 +219,70 @@
 			"brand": "HEAVENLY JELLY",
 			"notifiedPrice": 129,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20489829007": {
 			"name": "Leather Mules",
 			"brand": "JW ANDERSON",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20490459008": {
 			"name": "Sabrina Suede Platform Sandals",
 			"brand": "STUART WEITZMAN",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20481543002": {
 			"name": "House Cardigan Knit Bag Charm",
 			"brand": "JW ANDERSON",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20508352007": {
 			"name": "X Strap Mine Suede Sandals",
 			"brand": "SALONDEJU",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20490181001": {
 			"name": "Fifi Suede Mules",
 			"brand": "LA CANADIENNE",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20491821002": {
 			"name": "Clea Leather Thong Sandals",
 			"brand": "VERONICA BEARD",
 			"notifiedPrice": 139,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20512571001": {
 			"name": "14K Gold Zoe Huggie Earrings",
 			"brand": "EF COLLECTION",
 			"notifiedPrice": 1199,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20378486001": {
 			"name": "Mini Lola 14K Gold Chain Necklace",
 			"brand": "EF COLLECTION",
 			"notifiedPrice": 1199,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20526815003": {
 			"name": "Lina Leather Wedge Sandals",
 			"brand": "REFORMATION",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20510527003": {
 			"name": "Jessica Beaded Leather Thong Sandals",
@@ -289,42 +303,42 @@
 			"brand": "GIANVITO ROSSI",
 			"notifiedPrice": 799,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20506994002": {
 			"name": "Chloé Jelly Thong Sandal In Leopard Print",
 			"brand": "CHLOÉ",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20526813004": {
 			"name": "Jordyn Suede Clogs",
 			"brand": "REFORMATION",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20513793010": {
 			"name": "Alyssa Suede Espadrille Wedge Sandals",
 			"brand": "STUART WEITZMAN",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20488864002": {
 			"name": "Leather Laser-Cut Sandals",
 			"brand": "GIANVITO ROSSI",
 			"notifiedPrice": 799,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20510526007": {
 			"name": "Jessica Beaded Leather Sandals",
 			"brand": "REFORMATION",
 			"notifiedPrice": 129,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-24T05:38:36.026Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20483864006": {
 			"name": "Tape Leather Mules",
@@ -338,35 +352,35 @@
 			"brand": "HEAVENLY JELLY",
 			"notifiedPrice": 59,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-23T09:54:50.598Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20512940007": {
 			"name": "Allure Jelly Ballet Flats",
 			"brand": "HEAVENLY JELLY",
 			"notifiedPrice": 59,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20512939003": {
 			"name": "Allure Jelly Ballet Flats",
 			"brand": "HEAVENLY JELLY",
 			"notifiedPrice": 59,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20512937003": {
 			"name": "Allure Jelly Ballet Flats",
 			"brand": "HEAVENLY JELLY",
 			"notifiedPrice": 59,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20512938003": {
 			"name": "Allure Jelly Ballet Flats",
 			"brand": "HEAVENLY JELLY",
 			"notifiedPrice": 59,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20496198005": {
 			"name": "Spark Satin Thong Sandals",
@@ -380,70 +394,70 @@
 			"brand": "SPINELLI KILCOLLIN",
 			"notifiedPrice": 1499,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20441117001": {
 			"name": "The Puffy Initial Necklace",
 			"brand": "ROXANNE ASSOULIN",
 			"notifiedPrice": 79,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20441123001": {
 			"name": "The Puffy Initial Necklace",
 			"brand": "ROXANNE ASSOULIN",
 			"notifiedPrice": 79,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20506341002": {
 			"name": "Talita Snakeskin-Embossed Leather Mules",
 			"brand": "STAUD",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20449032001": {
 			"name": "Romeo Cobra Bracelet",
 			"brand": "BEN AMUN",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20528445010": {
 			"name": "Olive Suede Western Boots",
 			"brand": "REFORMATION",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20528444004": {
 			"name": "Olive Suede Western Boots",
 			"brand": "REFORMATION",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20474550003": {
 			"name": "Edith Patent Sandals",
 			"brand": "AEYDE",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20513789007": {
 			"name": "Marley Leather Thong Sandals",
 			"brand": "STUART WEITZMAN",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20502050003": {
 			"name": "Oasis Raffia And Suede Sneakers",
 			"brand": "VINCE",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20510524003": {
 			"name": "Serenity Bare Satin Slingback Sandals",
@@ -464,14 +478,14 @@
 			"brand": "EF COLLECTION",
 			"notifiedPrice": 999,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20512572001": {
 			"name": "14K Gold Jumbo Fluted Stud Earrings",
 			"brand": "EF COLLECTION",
 			"notifiedPrice": 999,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20500984001": {
 			"name": "Ryder Woven Wallet-On-Strap",
@@ -485,28 +499,28 @@
 			"brand": "ANYA HINDMARCH",
 			"notifiedPrice": 144,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20462584001": {
 			"name": "Pan Am First Class Leather Bag Charm",
 			"brand": "ANYA HINDMARCH",
 			"notifiedPrice": 171,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20412246001": {
 			"name": "Cat Eye Sunglasses",
 			"brand": "BALENCIAGA",
 			"notifiedPrice": 594,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20374791001": {
 			"name": "Square Sunglasses",
 			"brand": "BOTTEGA VENETA",
 			"notifiedPrice": 309,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90495570001": {
 			"name": "Rider Card Case",
@@ -527,252 +541,252 @@
 			"brand": "BURBERRY",
 			"notifiedPrice": 2090,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20396365003": {
 			"name": "Rectangular Sunglasses",
 			"brand": "GUCCI",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20396365002": {
 			"name": "Rectangular Sunglasses",
 			"brand": "GUCCI",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20396365001": {
 			"name": "Rectangular Sunglasses",
 			"brand": "GUCCI",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20374480002": {
 			"name": "Square Sunglasses",
 			"brand": "GUCCI",
 			"notifiedPrice": 357,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20374480001": {
 			"name": "Square Sunglasses",
 			"brand": "GUCCI",
 			"notifiedPrice": 357,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20345951001": {
 			"name": "14K Gold Ball Chain Starburst Medallion Pendant Necklace With Pearl And Diamond",
 			"brand": "MIZUKI",
 			"notifiedPrice": 1863,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20448250001": {
 			"name": "Pink Puff Heart Charm",
 			"brand": "SUGAR BLOSSOM",
 			"notifiedPrice": 15,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20519247003": {
 			"name": "Aqua Jelly Flip-Flops",
 			"brand": "TKEES",
 			"notifiedPrice": 39,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20519248003": {
 			"name": "Aqua Jelly Flip-Flops",
 			"brand": "TKEES",
 			"notifiedPrice": 39,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20236942002": {
 			"name": "14K Gold Diamond Dome Ring",
 			"brand": "EF COLLECTION",
 			"notifiedPrice": 1999,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20492236001": {
 			"name": "Dextera Interlinked Crystal Hoop Earrings",
 			"brand": "SWAROVSKI",
 			"notifiedPrice": 139,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20491822003": {
 			"name": "Clea Leather Thong Wedge Sandals",
 			"brand": "VERONICA BEARD",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20486211007": {
 			"name": "BW Army Shoes",
 			"brand": "ADIDAS",
 			"notifiedPrice": 99,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20486191017": {
 			"name": "BW Army Shoes",
 			"brand": "ADIDAS",
 			"notifiedPrice": 99,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20415321001": {
 			"name": "Love Letter Silver Star Of David Charm",
 			"brand": "ANZIE",
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20447626055": {
 			"name": "Cher Embellished Satin Pumps",
 			"brand": "BADGLEY MISCHKA",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20438475001": {
 			"name": "Jumbo 14K Gold Sasha Hoop Earrings",
 			"brand": "EF COLLECTION",
 			"notifiedPrice": 1199,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20490414001": {
 			"name": "Horse Bag Charm",
 			"brand": "THOM BROWNE",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20496065001": {
 			"name": "Dew Drop Méditerranée Cuff Bracelet",
 			"brand": "ANZIE",
 			"notifiedPrice": 799,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20515829001": {
 			"name": "The Medium Camp Patchwork Denim Tote Bag",
 			"brand": "MARC JACOBS",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20504118001": {
 			"name": "Seaglass Round Drop Earrings",
 			"brand": "OSCAR DE LA RENTA",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20528448006": {
 			"name": "Otto Mini Leather Western Boots",
 			"brand": "REFORMATION",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20528447006": {
 			"name": "Otto Mini Snakeskin-Embossed Leather Western Boots",
 			"brand": "REFORMATION",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20415313001": {
 			"name": "Cléo Daniela 14K Gold Onyx Drop Earrings",
 			"brand": "ANZIE",
 			"notifiedPrice": 1199,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20415312001": {
 			"name": "Cléo Daniela 14K Gold Topaz Drop Earrings",
 			"brand": "ANZIE",
 			"notifiedPrice": 1199,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20353559001": {
 			"name": "Sienna 14K Gold Chain Bracelet",
 			"brand": "EF COLLECTION",
 			"notifiedPrice": 1999,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20515841001": {
 			"name": "Popcorn Leather Wallet",
 			"brand": "MARC JACOBS",
 			"notifiedPrice": 149,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20528450005": {
 			"name": "Orly Croc-Embossed Leather Western Boots",
 			"brand": "REFORMATION",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20528449008": {
 			"name": "Orly Western Boots In Cow Print",
 			"brand": "REFORMATION",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20513788002": {
 			"name": "Leora Lurex Mary Jane Ballet Flats",
 			"brand": "STUART WEITZMAN",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20513791003": {
 			"name": "Vinnie Patent Leather Wedge Thong Sandals",
 			"brand": "STUART WEITZMAN",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20474548001": {
 			"name": "Wilma Leather Thong Mules",
 			"brand": "AEYDE",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20518800001": {
 			"name": "Small Brooklyn Straw Shoulder Bag",
 			"brand": "COACH",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20506864007": {
 			"name": "Tabi Suede Pumps In Floral Print",
 			"brand": "MAISON MARGIELA",
 			"notifiedPrice": 1299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20515828001": {
 			"name": "Babe Woven Raffia Tote Bag",
 			"brand": "MARC JACOBS",
 			"notifiedPrice": 599,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20504115001": {
 			"name": "Pear Rhinestone Necklace",
@@ -786,49 +800,49 @@
 			"brand": "OSCAR DE LA RENTA",
 			"notifiedPrice": 599,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20483312001": {
 			"name": "Large Feather Earrings",
 			"brand": "OSCAR DE LA RENTA",
 			"notifiedPrice": 599,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20495522001": {
 			"name": "Rita Python-Embossed Leather Pumps",
 			"brand": "VERONICA BEARD",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20502049007": {
 			"name": "Piper Leather Mules",
 			"brand": "VINCE",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20353554002": {
 			"name": "14K Gold Multi Diamond Cluster Necklace",
 			"brand": "EF COLLECTION",
 			"notifiedPrice": 1999,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20438478001": {
 			"name": "Mia 14K Gold Diamond Stud Earring",
 			"brand": "EF COLLECTION",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20515824001": {
 			"name": "The Sack Camp Patchwork Denim Shoulder Bag",
 			"brand": "MARC JACOBS",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20504112001": {
 			"name": "Cascade Rhinestone Bracelet",
@@ -842,49 +856,49 @@
 			"brand": "OSCAR DE LA RENTA",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20504117001": {
 			"name": "Rhinestone Chain Drop Earrings",
 			"brand": "OSCAR DE LA RENTA",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20504121001": {
 			"name": "Seashell Stud Earrings",
 			"brand": "OSCAR DE LA RENTA",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20504111001": {
 			"name": "Pear Rhinestone Cluster Ring",
 			"brand": "OSCAR DE LA RENTA",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20487674010": {
 			"name": "Barbara Suede Clog Mules",
 			"brand": "VINCE",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-21T03:35:45.098Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20242530002": {
 			"name": "Mini 14K Gold Huggie Earring",
 			"brand": "EF COLLECTION",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20448183001": {
 			"name": "999 Angel Number Charm",
 			"brand": "SUGAR BLOSSOM",
 			"notifiedPrice": 20,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20492234001": {
 			"name": "Dextera Crystal Hoop Earrings",
@@ -905,21 +919,21 @@
 			"brand": "SWAROVSKI",
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20474430001": {
 			"name": "Mesmera Open Ring With Crystals",
 			"brand": "SWAROVSKI",
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20474408001": {
 			"name": "Matrix Crystal Knot Ring",
 			"brand": "SWAROVSKI",
 			"notifiedPrice": 119,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20454269007": {
 			"name": "Volley Leather Sneakers",
@@ -933,56 +947,56 @@
 			"brand": "COACH",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20485545003": {
 			"name": "1906L Mesh Loafer Sneakers",
 			"brand": "NEW BALANCE",
 			"notifiedPrice": 139,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20483307002": {
 			"name": "Crystal Arch Drop Earrings",
 			"brand": "OSCAR DE LA RENTA",
 			"notifiedPrice": 599,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20483307001": {
 			"name": "Crystal Arch Drop Earrings",
 			"brand": "OSCAR DE LA RENTA",
 			"notifiedPrice": 599,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20510509001": {
 			"name": "Julia Snakeskin-Embossed Thong Mules",
 			"brand": "TKEES",
 			"notifiedPrice": 149,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20449021001": {
 			"name": "Flat Cobra Necklace",
 			"brand": "BEN AMUN",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20449025001": {
 			"name": "Zuni Clip-On Drop Earrings",
 			"brand": "BEN AMUN",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20449030001": {
 			"name": "Callum Clip-On Earrings",
 			"brand": "BEN AMUN",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90475504001": {
 			"name": "Mini Freya Tote",
@@ -996,7 +1010,7 @@
 			"brand": "BURBERRY",
 			"notifiedPrice": 1180,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90495549001": {
 			"name": "Highlands Make-up Pouch",
@@ -1010,21 +1024,21 @@
 			"brand": "BURBERRY",
 			"notifiedPrice": 460,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90466115001": {
 			"name": "Highlands Compact Wallet",
 			"brand": "BURBERRY",
 			"notifiedPrice": 530,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90469172001": {
 			"name": "Horseshoe Chain Pouch",
 			"brand": "BURBERRY",
 			"notifiedPrice": 900,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90468989001": {
 			"name": "Small Highlands Shoulder Bag",
@@ -1038,182 +1052,182 @@
 			"brand": "BURBERRY",
 			"notifiedPrice": 970,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90423411001": {
 			"name": "Medium Freya Tote",
 			"brand": "BURBERRY",
 			"notifiedPrice": 1390,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90485662001": {
 			"name": "Garden Party Silk Scarf",
 			"brand": "BURBERRY",
 			"notifiedPrice": 460,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90485766001": {
 			"name": "Tulips Silk Scarf",
 			"brand": "BURBERRY",
 			"notifiedPrice": 460,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20360215003": {
 			"name": "Tubular Aviator Sunglasses",
 			"brand": "BURBERRY",
 			"notifiedPrice": 431,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20506862003": {
 			"name": "Heel-Less Leather Pumps",
 			"brand": "MAISON MARGIELA",
 			"notifiedPrice": 1299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90497093001": {
 			"name": "Topstitched Leather Mini M Bag",
 			"brand": "MAJE",
 			"notifiedPrice": 291,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90497094001": {
 			"name": "Leather And Nylon Backpack",
 			"brand": "MAJE",
 			"notifiedPrice": 343,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90497095001": {
 			"name": "Mini Leather And Nylon Backpack",
 			"brand": "MAJE",
 			"notifiedPrice": 291,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20439895001": {
 			"name": "Heart-Lock Bag Charm",
 			"brand": "MARTHA CALVO",
 			"notifiedPrice": 140,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20439902001": {
 			"name": "Initial D Bag Charm",
 			"brand": "MARTHA CALVO",
 			"notifiedPrice": 126,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20439892001": {
 			"name": "Most Wanted Bag Charm",
 			"brand": "MARTHA CALVO",
 			"notifiedPrice": 182,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20439899001": {
 			"name": "Initial H Bag Charm",
 			"brand": "MARTHA CALVO",
 			"notifiedPrice": 126,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20439901001": {
 			"name": "Initial C Bag Charm",
 			"brand": "MARTHA CALVO",
 			"notifiedPrice": 126,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20439909001": {
 			"name": "Initial V Bag Charm",
 			"brand": "MARTHA CALVO",
 			"notifiedPrice": 126,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20439894001": {
 			"name": "Wish Me Luck Bag Charm",
 			"brand": "MARTHA CALVO",
 			"notifiedPrice": 150,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20521986001": {
 			"name": "Medium Play Canvas Tote Bag",
 			"brand": "POLO RALPH LAUREN",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20521981001": {
 			"name": "Polo Play Canvas Tote Bag",
 			"brand": "POLO RALPH LAUREN",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20510518004": {
 			"name": "Salome Studded Leather Ballet Flats",
 			"brand": "REFORMATION",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90502888001": {
 			"name": "Mini Mambo Suede Bag",
 			"brand": "SANDRO",
 			"notifiedPrice": 312,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90477462001": {
 			"name": "Mini Mambo Suede Bag",
 			"brand": "SANDRO",
 			"notifiedPrice": 312,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90497363001": {
 			"name": "Ezmehralda Suede Bag",
 			"brand": "SANDRO",
 			"notifiedPrice": 438,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90474463001": {
 			"name": "Tangolino Leather And Suede Vanity Bag",
 			"brand": "SANDRO",
 			"notifiedPrice": 312,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90474461001": {
 			"name": "Le Mambo Plain Leather Bag",
 			"brand": "SANDRO",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90474462001": {
 			"name": "Le Mambo Suede Leather Bag",
 			"brand": "SANDRO",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90469428001": {
 			"name": "Tangoso Suede And Leather Bucket Bag",
 			"brand": "SANDRO",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20491830002": {
 			"name": "Arizona Big Buckle Leather Slide Sandals",
@@ -1227,21 +1241,21 @@
 			"brand": "BURBERRY",
 			"notifiedPrice": 2990,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90475562001": {
 			"name": "Mini Reversible Bloomsbury Tote​",
 			"brand": "BURBERRY",
 			"notifiedPrice": 1480,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90475559001": {
 			"name": "Medium Reversible Bloomsbury Tote?",
 			"brand": "BURBERRY",
 			"notifiedPrice": 1680,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90476093001": {
 			"name": "Top Handle Note Bag",
@@ -1255,35 +1269,35 @@
 			"brand": "BURBERRY",
 			"notifiedPrice": 1120,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90475566001": {
 			"name": "Mini B Clip Messenger Bag",
 			"brand": "BURBERRY",
 			"notifiedPrice": 1750,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90475510001": {
 			"name": "Small Check Folding Wallet",
 			"brand": "BURBERRY",
 			"notifiedPrice": 500,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90475589001": {
 			"name": "Thomas Bear Charm",
 			"brand": "BURBERRY",
 			"notifiedPrice": 390,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90475590001": {
 			"name": "Thomas Bear Charm",
 			"brand": "BURBERRY",
 			"notifiedPrice": 390,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90476083001": {
 			"name": "Medium Check Tote",
@@ -1304,147 +1318,147 @@
 			"brand": "BURBERRY",
 			"notifiedPrice": 2250,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90464556001": {
 			"name": "Small B Clip Messenger Bag",
 			"brand": "BURBERRY",
 			"notifiedPrice": 2250,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90469088001": {
 			"name": "Mini Highlands Bowling Bag?",
 			"brand": "BURBERRY",
 			"notifiedPrice": 1450,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90466100001": {
 			"name": "Highlands Crossbody Bag",
 			"brand": "BURBERRY",
 			"notifiedPrice": 1750,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90466103001": {
 			"name": "Medium Highlands Shoulder Bag",
 			"brand": "BURBERRY",
 			"notifiedPrice": 1520,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90466125001": {
 			"name": "Highlands Bowling Bag​",
 			"brand": "BURBERRY",
 			"notifiedPrice": 1820,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90466116001": {
 			"name": "Highlands Card Case",
 			"brand": "BURBERRY",
 			"notifiedPrice": 260,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90507513001": {
 			"name": "Knight Silk Scarf",
 			"brand": "BURBERRY",
 			"notifiedPrice": 340,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90475410001": {
 			"name": "Check Belt",
 			"brand": "BURBERRY",
 			"notifiedPrice": 410,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-24T16:35:30.315Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90476125003": {
 			"name": "Reversible Check Bloomsbury Belt?",
 			"brand": "BURBERRY",
 			"notifiedPrice": 400,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90495229001": {
 			"name": "Swan Lake Silk Scarf",
 			"brand": "BURBERRY",
 			"notifiedPrice": 480,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90495515001": {
 			"name": "Check Charm Silk Scarf",
 			"brand": "BURBERRY",
 			"notifiedPrice": 480,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90495516001": {
 			"name": "Check Charm Silk Scarf",
 			"brand": "BURBERRY",
 			"notifiedPrice": 480,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90495558001": {
 			"name": "Etched Knight Silk Scarf",
 			"brand": "BURBERRY",
 			"notifiedPrice": 460,
 			"notifiedAt": "2026-11-23T01:11:11.497Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90485674001": {
 			"name": "Check Silk Scarf Charm",
 			"brand": "BURBERRY",
 			"notifiedPrice": 310,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20518807001": {
 			"name": "Kisslock 27 Fringe Straw Frame Bag",
 			"brand": "COACH",
 			"notifiedPrice": 599,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20378487001": {
 			"name": "Mini Lola 14K Gold Chain Bracelet",
 			"brand": "EF COLLECTION",
 			"notifiedPrice": 799,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20515850001": {
 			"name": "The Large Mesh Pouch In Stripe Print",
 			"brand": "MARC JACOBS",
 			"notifiedPrice": 149,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20515840001": {
 			"name": "Hot Dog Leather Zip Wallet",
 			"brand": "MARC JACOBS",
 			"notifiedPrice": 149,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20521983001": {
 			"name": "Medium Play Raffia Tote Bag",
 			"brand": "POLO RALPH LAUREN",
 			"notifiedPrice": 599,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20521982001": {
 			"name": "Mini Polo ID Beaded Shoulder Bag",
 			"brand": "POLO RALPH LAUREN",
 			"notifiedPrice": 599,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90475600001": {
 			"name": "Bloomsbury Folding Card Case?",
@@ -1465,21 +1479,21 @@
 			"brand": "BURBERRY",
 			"notifiedPrice": 250,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90485795001": {
 			"name": "Daisy Silk Scarf",
 			"brand": "BURBERRY",
 			"notifiedPrice": 250,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20504119001": {
 			"name": "Pear Rhinestone Cluster Stud Earrings",
 			"brand": "OSCAR DE LA RENTA",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20471790001": {
 			"name": "Pearl Pavé Cluster Earrings",
@@ -1493,42 +1507,42 @@
 			"brand": "SWAROVSKI",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20483304001": {
 			"name": "Hammered Stones Chain Necklace",
 			"brand": "OSCAR DE LA RENTA",
 			"notifiedPrice": 799,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20492241001": {
 			"name": "Idyllia Crsytal Snowflake Bracelet",
 			"brand": "SWAROVSKI",
 			"notifiedPrice": 139,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20474434001": {
 			"name": "Sublima Crystal Dome Ring",
 			"brand": "SWAROVSKI",
 			"notifiedPrice": 139,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20415387001": {
 			"name": "Hyperbola Crystal Crossover Ring",
 			"brand": "SWAROVSKI",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20415388001": {
 			"name": "Hyperbola Infinity Ring",
 			"brand": "SWAROVSKI",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20496122001": {
 			"name": "Omella Leather Slingback Sandals",
@@ -1542,77 +1556,77 @@
 			"brand": "COACH",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20532970001": {
 			"name": "Tabby 26 Fringe Straw Shoulder Bag",
 			"brand": "COACH",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20522038001": {
 			"name": "Polo Bear Leather Bag Charm",
 			"brand": "POLO RALPH LAUREN",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20522039001": {
 			"name": "Polo Bear Leather Bag Charm",
 			"brand": "POLO RALPH LAUREN",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20490174002": {
 			"name": "Glenn Leather Slingback Flats",
 			"brand": "LA CANADIENNE",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20515823001": {
 			"name": "The Dakota Canvas Satchel",
 			"brand": "MARC JACOBS",
 			"notifiedPrice": 599,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20483306001": {
 			"name": "Crystal Prong Drop Earrings",
 			"brand": "OSCAR DE LA RENTA",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20483314001": {
 			"name": "Small Feather Earrings",
 			"brand": "OSCAR DE LA RENTA",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20521984001": {
 			"name": "Small Polo Play Crochet Crossbody Tote Bag",
 			"brand": "POLO RALPH LAUREN",
 			"notifiedPrice": 599,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20510519003": {
 			"name": "Inez Calf Hair Mules In Zebra Print",
 			"brand": "REFORMATION",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20491829001": {
 			"name": "Arizona Big Buckle Raffia Slide Sandals",
 			"brand": "BIRKENSTOCK",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20417328003": {
 			"name": "Florida Exquisite Patent Leather Slide Sandals",
@@ -1626,56 +1640,56 @@
 			"brand": "STAUD",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20504113001": {
 			"name": "Seaglass Collar Necklace",
 			"brand": "OSCAR DE LA RENTA",
 			"notifiedPrice": 799,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20511909001": {
 			"name": "Timmy Beaded Shoulder Bag",
 			"brand": "STAUD",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20422115001": {
 			"name": "14K Gold Diamond Letter Bracelet - R",
 			"brand": "MEJURI",
 			"notifiedPrice": 422,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20492246001": {
 			"name": "Matrix Crystal Pearl Hoop Earrings",
 			"brand": "SWAROVSKI",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20496121022": {
 			"name": "Oakville Lace And Satin Slingback Pumps",
 			"brand": "BADGLEY MISCHKA",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20496121003": {
 			"name": "Oakville Lace And Satin Slingback Pumps",
 			"brand": "BADGLEY MISCHKA",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20488758001": {
 			"name": "Boston Big Buckle Velvet Clogs",
 			"brand": "BIRKENSTOCK",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20493476012": {
 			"name": "XT-6 Sneakers",
@@ -1689,35 +1703,35 @@
 			"brand": "MARTHA CALVO",
 			"notifiedPrice": 140,
 			"notifiedAt": "2026-11-19T08:04:49.018Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20489828007": {
 			"name": "Suede Loafer Mules",
 			"brand": "JW ANDERSON",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-19T17:46:41.518Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20492955009": {
 			"name": "Mostro Metallic Sneakers",
 			"brand": "PUMA",
 			"notifiedPrice": 59,
 			"notifiedAt": "2026-11-19T17:46:41.518Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20510527011": {
 			"name": "Jessica Beaded Leather Thong Sandals",
 			"brand": "REFORMATION",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-11-19T17:46:41.518Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20510517009": {
 			"name": "Eden Leather Platform Thong Sandals",
 			"brand": "REFORMATION",
 			"notifiedPrice": 129,
 			"notifiedAt": "2026-11-19T17:46:41.518Z",
-			"lastSeen": "2026-11-22T12:03:24.814Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20487674005": {
 			"name": "Barbara Suede Clog Mules",
@@ -1738,21 +1752,21 @@
 			"brand": "BIRKENSTOCK",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-11-19T17:46:41.518Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90501793001": {
 			"name": "Metal Brooch With Rhinestones",
 			"brand": "WEEKEND MAX MARA",
 			"notifiedPrice": 91,
 			"notifiedAt": "2026-11-19T23:57:41.156Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90500959001": {
 			"name": "Double-strand Necklace With Large And Small Beads",
 			"brand": "WEEKEND MAX MARA",
 			"notifiedPrice": 137,
 			"notifiedAt": "2026-11-19T23:57:41.156Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90501802001": {
 			"name": "Metal Chain Choker Necklace",
@@ -1773,14 +1787,14 @@
 			"brand": "REFORMATION",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-11-20T14:28:49.922Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20496198003": {
 			"name": "Spark Satin Thong Sandals",
 			"brand": "RENE CAOVILLA",
 			"notifiedPrice": 999,
 			"notifiedAt": "2026-11-20T22:00:32.150Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20514452001": {
 			"name": "Nano Bolero Leather Bowling Bag",
@@ -1843,91 +1857,91 @@
 			"brand": "BURBERRY",
 			"notifiedPrice": 530,
 			"notifiedAt": "2026-11-23T01:11:11.497Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90495442001": {
 			"name": "Floral Crest Silk Scarf",
 			"brand": "BURBERRY",
 			"notifiedPrice": 530,
 			"notifiedAt": "2026-11-23T01:11:11.497Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90495445001": {
 			"name": "Floral Crest Silk Scarf",
 			"brand": "BURBERRY",
 			"notifiedPrice": 530,
 			"notifiedAt": "2026-11-23T01:11:11.497Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90485712001": {
 			"name": "Floral Ekd Silk Scarf",
 			"brand": "BURBERRY",
 			"notifiedPrice": 460,
 			"notifiedAt": "2026-11-23T01:11:11.497Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90466170001": {
 			"name": "Wide Ekd Wool Scarf",
 			"brand": "BURBERRY",
 			"notifiedPrice": 490,
 			"notifiedAt": "2026-11-23T01:11:11.497Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90466168001": {
 			"name": "Wide Ekd Wool Scarf",
 			"brand": "BURBERRY",
 			"notifiedPrice": 490,
 			"notifiedAt": "2026-11-23T01:11:11.497Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90466172001": {
 			"name": "Wide Ekd Wool Scarf",
 			"brand": "BURBERRY",
 			"notifiedPrice": 490,
 			"notifiedAt": "2026-11-23T01:11:11.497Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90466171001": {
 			"name": "Wide Ekd Wool Scarf",
 			"brand": "BURBERRY",
 			"notifiedPrice": 490,
 			"notifiedAt": "2026-11-23T01:11:11.497Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90485668001": {
 			"name": "Etched Knight Silk Scarf",
 			"brand": "BURBERRY",
 			"notifiedPrice": 460,
 			"notifiedAt": "2026-11-23T01:11:11.497Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90495513001": {
 			"name": "Knight Folding Umbrella",
 			"brand": "BURBERRY",
 			"notifiedPrice": 450,
 			"notifiedAt": "2026-11-23T01:11:11.497Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90462626001": {
 			"name": "Ekd Wool Scarf",
 			"brand": "BURBERRY",
 			"notifiedPrice": 500,
 			"notifiedAt": "2026-11-23T01:11:11.497Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90452770001": {
 			"name": "Ekd Wool Scarf",
 			"brand": "BURBERRY",
 			"notifiedPrice": 500,
 			"notifiedAt": "2026-11-23T01:11:11.497Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"90485773001": {
 			"name": "Skinny Reversible Etched Knight Silk Scarf",
 			"brand": "BURBERRY",
 			"notifiedPrice": 230,
 			"notifiedAt": "2026-11-23T01:11:11.497Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20508352003": {
 			"name": "X Strap Mine Suede Sandals",
@@ -1955,7 +1969,7 @@
 			"brand": "REFORMATION",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-11-23T21:46:39.885Z",
-			"lastSeen": "2026-11-24T05:38:36.026Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20510518002": {
 			"name": "Salome Studded Leather Ballet Flats",
@@ -1969,7 +1983,7 @@
 			"brand": "BIRKENSTOCK",
 			"notifiedPrice": 149,
 			"notifiedAt": "2026-11-23T21:46:39.885Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20510526003": {
 			"name": "Jessica Beaded Leather Sandals",
@@ -1990,21 +2004,21 @@
 			"brand": "ALAÏA",
 			"notifiedPrice": 599,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20503228003": {
 			"name": "Metallic Leather Thong Sandals",
 			"brand": "DRIES VAN NOTEN",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20474214001": {
 			"name": "Large Raffiachat Straw Tote Bag",
 			"brand": "VALENTINO GARAVANI",
 			"notifiedPrice": 999,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20489928003": {
 			"name": "Hula Leather Slingback Sandals",
@@ -2025,21 +2039,21 @@
 			"brand": "JIMMY CHOO",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20515771013": {
 			"name": "adidas Originals x Wales Bonner Gazelle Pony Hair Sneakers",
 			"brand": "ADIDAS",
 			"notifiedPrice": 99,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20512747004": {
 			"name": "Leather Ballerina Sneakers",
 			"brand": "DRIES VAN NOTEN",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20503224003": {
 			"name": "Metallic Leather Wedge Mules",
@@ -2053,7 +2067,7 @@
 			"brand": "BALENCIAGA",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20496979005": {
 			"name": "Cece Leather Ankle Boots",
@@ -2067,7 +2081,7 @@
 			"brand": "JIMMY CHOO",
 			"notifiedPrice": 699,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20450340001": {
 			"name": "Bon Bon Satin Clutch",
@@ -2095,7 +2109,7 @@
 			"brand": "JIMMY CHOO",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20488895003": {
 			"name": "Anise Patent Leather Mules",
@@ -2109,7 +2123,7 @@
 			"brand": "JIMMY CHOO",
 			"notifiedPrice": 999,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20489931003": {
 			"name": "Manaus Raffia Slide Sandals",
@@ -2123,42 +2137,42 @@
 			"brand": "JIMMY CHOO",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20493639012": {
 			"name": "On x Sky High Farm Goods Cloud 6 SHF Sneakers",
 			"brand": "ON",
 			"notifiedPrice": 99,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20488899003": {
 			"name": "Elsy Leather Slingback Sandals",
 			"brand": "JIMMY CHOO",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20450095003": {
 			"name": "James Leather Knee-High Boots",
 			"brand": "BOTTEGA VENETA",
 			"notifiedPrice": 1299,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20492936003": {
 			"name": "Loli Embellished Glitter Mary Jane Ballet Flats",
 			"brand": "JIMMY CHOO",
 			"notifiedPrice": 599,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20489925003": {
 			"name": "Bikini Leather Sandals",
 			"brand": "AQUAZZURA",
 			"notifiedPrice": 699,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20489932003": {
 			"name": "Manaus Raffia Mules",
@@ -2186,21 +2200,21 @@
 			"brand": "MARC JACOBS",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20464277001": {
 			"name": "14K Gold Fluted Heart Huggie Hoop Earrings",
 			"brand": "SYDNEY EVAN",
 			"notifiedPrice": 1499,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20464278001": {
 			"name": "14K Gold Medium Fluted Hoops Earrings",
 			"brand": "SYDNEY EVAN",
 			"notifiedPrice": 1499,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20515772003": {
 			"name": "adidas Originals x Wales Bonner Gazelle Snakeskin-Embossed Leather Sneakers",
@@ -2214,7 +2228,7 @@
 			"brand": "SYDNEY EVAN",
 			"notifiedPrice": 1199,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20489927003": {
 			"name": "Calypso Leather And Raffia Ankle-Tie Sandals",
@@ -2228,35 +2242,35 @@
 			"brand": "AQUAZZURA",
 			"notifiedPrice": 699,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20496909003": {
 			"name": "Safi Sculpted-Heel Mules",
 			"brand": "FERRAGAMO",
 			"notifiedPrice": 799,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20485145001": {
 			"name": "14K Gold Butterfly Cuff Ring With Diamonds",
 			"brand": "SYDNEY EVAN",
 			"notifiedPrice": 1199,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20463617001": {
 			"name": "Je Les V Crystal Hoop Earrings",
 			"brand": "VALENTINO GARAVANI",
 			"notifiedPrice": 599,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20495918004": {
 			"name": "City Suede Sneakers",
 			"brand": "BALENCIAGA",
 			"notifiedPrice": 599,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20503229003": {
 			"name": "Suede Sneaker Mules",
@@ -2270,21 +2284,21 @@
 			"brand": "SYDNEY EVAN",
 			"notifiedPrice": 999,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20464270001": {
 			"name": "14K Gold Fluted Heart Rondelle Charm Necklace With Diamonds",
 			"brand": "SYDNEY EVAN",
 			"notifiedPrice": 1999,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20464279001": {
 			"name": "14K Gold Fluted Heart Stud Earrings",
 			"brand": "SYDNEY EVAN",
 			"notifiedPrice": 599,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20480353001": {
 			"name": "Gold Beaded Bracelet With Diamond With 14K Gold Diamond Star Of David Charm",
@@ -2298,42 +2312,42 @@
 			"brand": "SYDNEY EVAN",
 			"notifiedPrice": 999,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20352129001": {
 			"name": "Gold Double Starburst Stud Earring With Diamonds",
 			"brand": "SYDNEY EVAN",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20082121001": {
 			"name": "14K Gold Evil Eye Chain Stud Earring With Diamond",
 			"brand": "SYDNEY EVAN",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20485143001": {
 			"name": "14K Gold Heart Stud Earrings With Diamonds",
 			"brand": "SYDNEY EVAN",
 			"notifiedPrice": 599,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20452169001": {
 			"name": "JH Essential Sterling Silver Pearl Hoop Earrings",
 			"brand": "JOHN HARDY",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20480354001": {
 			"name": "Medium 14K Gold Pavé Key Hole Lock Pendant Necklace With Diamonds",
 			"brand": "SYDNEY EVAN",
 			"notifiedPrice": 999,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20134003001": {
 			"name": "Bank Spinner 55 Aluminum Carry-On Suitcase",
@@ -2354,63 +2368,63 @@
 			"brand": "JOHN HARDY",
 			"notifiedPrice": 2835,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20481871001": {
 			"name": "The Everyday Coated Glitter  Zip Wallet",
 			"brand": "MARC JACOBS",
 			"notifiedPrice": 99,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20480368001": {
 			"name": "Small 14K Gold Heart Stud Earrings With Diamonds",
 			"brand": "SYDNEY EVAN",
 			"notifiedPrice": 999,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20485129001": {
 			"name": "Gold Beaded Bracelet With 14K Gold Burst Diamond Flower Charm",
 			"brand": "SYDNEY EVAN",
 			"notifiedPrice": 999,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20485130001": {
 			"name": "14K Gold Starburst Charm Bracelet With Diamonds",
 			"brand": "SYDNEY EVAN",
 			"notifiedPrice": 2730,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20487319002": {
 			"name": "Samba OG Leather Sneakers",
 			"brand": "ADIDAS",
 			"notifiedPrice": 79,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20452155001": {
 			"name": "Sterling Silver Smart Watch Strap, 18mm",
 			"brand": "JOHN HARDY",
 			"notifiedPrice": 1199,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20452176001": {
 			"name": "Surf Link Sterling Silver Ring",
 			"brand": "JOHN HARDY",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20480361001": {
 			"name": "Gold Beaded Bracelet With Small 14K Gold Diamond Shell Charm",
 			"brand": "SYDNEY EVAN",
 			"notifiedPrice": 999,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20485138001": {
 			"name": "14K Gold Ace Of Spades Pendant Necklace With Diamonds",
@@ -2424,175 +2438,252 @@
 			"brand": "VALENTINO GARAVANI",
 			"notifiedPrice": 799,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20482261001": {
 			"name": "Leather Card Holder",
 			"brand": "STRATHBERRY",
 			"notifiedPrice": 99,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20480352001": {
 			"name": "Labradorite Beaded Bracelet With 14K Gold Diamond Protective Eye Charm",
 			"brand": "SYDNEY EVAN",
 			"notifiedPrice": 499,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20485131001": {
 			"name": "Gold Beaded Bracelet With 14K Gold Diamond Rondelle",
 			"brand": "SYDNEY EVAN",
 			"notifiedPrice": 999,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20381096001": {
 			"name": "Aquamarine Beaded Bracelet With 14K Gold Diamond Rondelle",
 			"brand": "SYDNEY EVAN",
 			"notifiedPrice": 999,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20512955001": {
 			"name": "Le Bambino Chaîne Shoulder Bag",
 			"brand": "JACQUEMUS",
 			"notifiedPrice": 1299,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20485135001": {
 			"name": "Sapphire Beaded Bracelet With 14K Gold Diamond Marquise Eye Charm",
 			"brand": "SYDNEY EVAN",
 			"notifiedPrice": 1199,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20464276001": {
 			"name": "14K Gold Plumeria Stud Earrings With Diamonds",
 			"brand": "SYDNEY EVAN",
 			"notifiedPrice": 999,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20464280001": {
 			"name": "14K Gold Fluted Heart Ring With Rondelle With Diamonds",
 			"brand": "SYDNEY EVAN",
 			"notifiedPrice": 1999,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20468867001": {
 			"name": "The Mini Dual Leather Bag",
 			"brand": "MARC JACOBS",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20503786001": {
 			"name": "The Leather Card Case In Punk Scribble Print",
 			"brand": "MARC JACOBS",
 			"notifiedPrice": 79,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20480370001": {
 			"name": "Small 14K Gold Twist Rope Huggie Earrings",
 			"brand": "SYDNEY EVAN",
 			"notifiedPrice": 999,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20526921001": {
 			"name": "The Hudson Woven Top Handle Bag",
 			"brand": "DEMELLIER",
 			"notifiedPrice": 699,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20454269001": {
 			"name": "Volley Leather Sneakers",
 			"brand": "VEJA",
 			"notifiedPrice": 129,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20328850001": {
 			"name": "The Snapshot Leather Camera Bag",
 			"brand": "MARC JACOBS",
 			"notifiedPrice": 299,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20511913001": {
 			"name": "Large Christos Embroidered Tote Bag",
 			"brand": "STAUD",
 			"notifiedPrice": 699,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20475271001": {
 			"name": "Large Asterales Hoop Earrings",
 			"brand": "ALEXIS BITTAR",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20480375001": {
 			"name": "14K Gold Double Pearl And Diamond Open Ring",
 			"brand": "SYDNEY EVAN",
 			"notifiedPrice": 799,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20503913001": {
 			"name": "Summer Banana Raffia Tote Bag",
 			"brand": "CHLOÉ",
 			"notifiedPrice": 1599,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20512956001": {
 			"name": "Le Spiaggia Coeur Raffia Bag",
 			"brand": "JACQUEMUS",
 			"notifiedPrice": 699,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20515849001": {
 			"name": "The Large Mesh Tote Bag In Stripe Print",
 			"brand": "MARC JACOBS",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20506930001": {
 			"name": "Anchor Raffia Tote Bag",
 			"brand": "VERONICA BEARD",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20513841001": {
 			"name": "Small Antigona Basket Bag",
 			"brand": "GIVENCHY",
 			"notifiedPrice": 1999,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20518801001": {
 			"name": "Suede Barrel Bag",
 			"brand": "COACH",
 			"notifiedPrice": 199,
 			"notifiedAt": "2026-11-25T01:09:19.392Z",
-			"lastSeen": "2026-11-25T10:36:09.456Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
 		},
 		"20503229010": {
 			"name": "Suede Sneaker Mules",
 			"brand": "DRIES VAN NOTEN",
 			"notifiedPrice": 399,
 			"notifiedAt": "2026-11-25T10:36:10.736Z",
-			"lastSeen": "2026-11-25T10:36:10.736Z"
+			"lastSeen": "2026-11-25T20:15:45.290Z"
+		},
+		"20489928004": {
+			"name": "Hula Leather Slingback Sandals",
+			"brand": "AQUAZZURA",
+			"notifiedPrice": 499,
+			"notifiedAt": "2026-11-25T20:15:48.939Z",
+			"lastSeen": "2026-11-25T20:15:48.939Z"
+		},
+		"20503224006": {
+			"name": "Metallic Leather Wedge Mules",
+			"brand": "DRIES VAN NOTEN",
+			"notifiedPrice": 499,
+			"notifiedAt": "2026-11-25T20:15:48.939Z",
+			"lastSeen": "2026-11-25T20:15:48.939Z"
+		},
+		"20431075005": {
+			"name": "Sofia Metallic Leather Slingback Ballet Flats",
+			"brand": "BOTTEGA VENETA",
+			"notifiedPrice": 599,
+			"notifiedAt": "2026-11-25T20:15:48.939Z",
+			"lastSeen": "2026-11-25T20:15:48.939Z"
+		},
+		"20488895005": {
+			"name": "Anise Patent Leather Mules",
+			"brand": "JIMMY CHOO",
+			"notifiedPrice": 499,
+			"notifiedAt": "2026-11-25T20:15:48.939Z",
+			"lastSeen": "2026-11-25T20:15:48.939Z"
+		},
+		"20489931007": {
+			"name": "Manaus Raffia Slide Sandals",
+			"brand": "AQUAZZURA",
+			"notifiedPrice": 599,
+			"notifiedAt": "2026-11-25T20:15:48.939Z",
+			"lastSeen": "2026-11-25T20:15:48.939Z"
+		},
+		"20489932002": {
+			"name": "Manaus Raffia Mules",
+			"brand": "AQUAZZURA",
+			"notifiedPrice": 699,
+			"notifiedAt": "2026-11-25T20:15:48.939Z",
+			"lastSeen": "2026-11-25T20:15:48.939Z"
+		},
+		"20495920004": {
+			"name": "Duchesse Leather Pumps",
+			"brand": "BALENCIAGA",
+			"notifiedPrice": 799,
+			"notifiedAt": "2026-11-25T20:15:48.939Z",
+			"lastSeen": "2026-11-25T20:15:48.939Z"
+		},
+		"20515772005": {
+			"name": "adidas Originals x Wales Bonner Gazelle Snakeskin-Embossed Leather Sneakers",
+			"brand": "ADIDAS",
+			"notifiedPrice": 149,
+			"notifiedAt": "2026-11-25T20:15:48.939Z",
+			"lastSeen": "2026-11-25T20:15:48.939Z"
+		},
+		"20489927002": {
+			"name": "Calypso Leather And Raffia Ankle-Tie Sandals",
+			"brand": "AQUAZZURA",
+			"notifiedPrice": 999,
+			"notifiedAt": "2026-11-25T20:15:48.939Z",
+			"lastSeen": "2026-11-25T20:15:48.939Z"
+		},
+		"20508923004": {
+			"name": "Taekwondo Mei Leather Ballet Sneakers",
+			"brand": "ADIDAS",
+			"notifiedPrice": 79,
+			"notifiedAt": "2026-11-25T20:15:48.939Z",
+			"lastSeen": "2026-11-25T20:15:48.939Z"
+		},
+		"20328443007": {
+			"name": "Madrid Big Buckle Leather Slide Sandals",
+			"brand": "BIRKENSTOCK",
+			"notifiedPrice": 129,
+			"notifiedAt": "2026-11-25T20:15:48.939Z",
+			"lastSeen": "2026-11-25T20:15:48.939Z"
 		}
 	}
 }
